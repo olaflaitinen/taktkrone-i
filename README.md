@@ -1,12 +1,24 @@
 # TAKTKRONE-I: Metro Operations Control Center Language Model
 
-[![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
-[![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-blue)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
-[![Model DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8167-green)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
-[![Dataset DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8166-green)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C)](https://pytorch.org/)
+[![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange?logo=huggingface)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
+[![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-blue?logo=huggingface)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
+[![Model DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8167-green?logo=doi)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
+[![Dataset DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8166-green?logo=doi)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Transformers](https://img.shields.io/badge/Transformers-4.36+-FFD21E?logo=huggingface)](https://huggingface.co/docs/transformers)
+[![PEFT](https://img.shields.io/badge/PEFT-LoRA-blueviolet?logo=huggingface)](https://github.com/huggingface/peft)
+[![vLLM](https://img.shields.io/badge/vLLM-Optimized-purple?logo=v)](https://github.com/vllm-project/vllm)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![GitHub Stars](https://img.shields.io/github/stars/olaflaitinen/taktkrone-i?logo=github)](https://github.com/olaflaitinen/taktkrone-i)
+[![GitHub Issues](https://img.shields.io/github/issues/olaflaitinen/taktkrone-i?logo=github)](https://github.com/olaflaitinen/taktkrone-i/issues)
+[![Code Style](https://img.shields.io/badge/Code%20Style-Black-000000?logo=python)](https://github.com/psf/black)
+[![Linter](https://img.shields.io/badge/Linter-Ruff-D7FF64?logo=ruff)](https://github.com/astral-sh/ruff)
+[![Pre-commit](https://img.shields.io/badge/Pre--commit-Enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/)
+[![W&B](https://img.shields.io/badge/W%26B-Tracked-FFBE00?logo=weightsandbiases)](https://wandb.ai/)
 
 > **TAKTKRONE-I** is the inaugural model of **occLM** (Operations Control Center Language Model), part of the **metroLM** family of transit-domain specialized language models.
 
