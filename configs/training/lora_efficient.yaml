@@ -1,0 +1,138 @@
+# Training configuration: LoRA parameter-efficient fine-tuning
+# Memory-efficient training suitable for consumer GPUs
+
+model:
+  base_model: "meta-llama/Llama-3.1-8B-Instruct"
+  model_revision: "main"
+  load_in_4bit: true  # 4-bit quantization for efficiency
+  load_in_8bit: false
+  torch_dtype: "bfloat16"
+  device_map: "auto"
+  bnb_4bit_compute_dtype: "bfloat16"
+  bnb_4bit_use_double_quant: true
+  bnb_4bit_quant_type: "nf4"
+
+peft:
+  use_peft: true
+  peft_type: "lora"
+
+  # LoRA configuration
+  lora_r: 64
+  lora_alpha: 128
+  lora_dropout: 0.05
+
+  # Target modules for LoRA
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+  # LoRA scaling
+  lora_alpha_to_r_ratio: 2.0
+
+training:
+  output_dir: "models/taktkrone-lora-v0.1"
+  num_train_epochs: 5  # Can train longer with LoRA
+  per_device_train_batch_size: 8  # Larger batch possible with LoRA
+  per_device_eval_batch_size: 16
+  gradient_accumulation_steps: 4
+  learning_rate: 1.0e-4  # Higher LR often works with LoRA
+  weight_decay: 0.01
+  warmup_ratio: 0.05
+  lr_scheduler_type: "cosine"
+  max_seq_length: 4096
+
+  # Optimization
+  optim: "paged_adamw_8bit"  # Memory-efficient optimizer
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  max_grad_norm: 0.3
+
+  # Logging and saving
+  logging_steps: 10
+  save_steps: 250
+  eval_steps: 250
+  save_total_limit: 5
+  save_strategy: "steps"
+  evaluation_strategy: "steps"
+
+  # Mixed precision
+  fp16: false
+  bf16: true
+
+  # Other
+  gradient_checkpointing: true
+  seed: 42
+  dataloader_num_workers: 4
+  remove_unused_columns: false
+
+dataset:
+  train_file: "data/synthetic/train.jsonl"
+  validation_file: "data/synthetic/validation.jsonl"
+  test_file: "data/synthetic/test.jsonl"
+
+  max_samples_train: null
+  max_samples_eval: 1000
+  preprocessing_num_workers: 8
+
+  task_types:
+    - "situation_summarization"
+    - "disruption_diagnosis"
+    - "recovery_planning"
+    - "headway_regulation"
+    - "turnback_management"
+    - "conflict_resolution"
+
+  min_quality_score: 0.75
+  difficulty_levels:
+    - "medium"
+    - "hard"
+    - "expert"
+
+prompt:
+  system_prompt: |
+    You are an expert metro operations control center analyst providing decision support to OCC dispatchers and service controllers.
+
+    Your role is to:
+    - Analyze real-time transit network conditions
+    - Diagnose disruptions and identify root causes
+    - Recommend recovery strategies and operational interventions
+    - Quantify uncertainty in your analysis
+    - Highlight safety considerations
+    - Support human decision-making with clear rationales
+
+    Critical guidelines:
+    - You provide DECISION SUPPORT, not autonomous commands
+    - Always quantify confidence and uncertainty
+    - Flag when human review is required
+    - Never fabricate telemetry or network state data
+    - Respect topology constraints (terminals, crossovers, track layouts)
+    - Consider passenger impact in recommendations
+
+    Your outputs should be clear, concise, and actionable for OCC operators.
+
+sft:
+  packing: false
+  max_seq_length: 4096
+
+tracking:
+  use_wandb: true
+  wandb_project: "taktkrone"
+  wandb_run_name: "lora-efficient-v0.1"
+  wandb_log_model: true
+  report_to: ["wandb", "tensorboard"]
+
+compute:
+  use_accelerate: true
+  num_processes: null
+  mixed_precision: "bf16"
+
+# LoRA merging for inference (optional)
+merge_adapters: false  # Set to true to merge LoRA weights into base model

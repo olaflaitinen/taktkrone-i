@@ -1,0 +1,112 @@
+# Data Configuration for TAKTKRONE-I
+
+# Default data paths and configuration
+data:
+  # Base directory for all data storage
+  base_path: "./data"
+
+  # Raw ingested data
+  raw:
+    incident_reports: "${data.base_path}/raw/incidents"
+    realtime_events: "${data.base_path}/raw/events"
+    network_snapshots: "${data.base_path}/raw/snapshots"
+    operator_logs: "${data.base_path}/raw/logs"
+
+  # Processed/normalized data
+  processed:
+    incidents: "${data.base_path}/processed/incidents"
+    events: "${data.base_path}/processed/events"
+    dialogues: "${data.base_path}/processed/dialogues"
+    network_topology: "${data.base_path}/processed/topology"
+
+  # Synthetic training data
+  synthetic:
+    scenarios: "${data.base_path}/synthetic/scenarios"
+    dialogues: "${data.base_path}/synthetic/dialogues"
+    quality_scores: "${data.base_path}/synthetic/quality"
+
+  # Training datasets
+  training:
+    train_path: "${data.processed.dialogues}/train.jsonl"
+    val_path: "${data.processed.dialogues}/val.jsonl"
+    test_path: "${data.processed.dialogues}/test.jsonl"
+
+    # Data splits
+    train_ratio: 0.8
+    val_ratio: 0.1
+    test_ratio: 0.1
+
+  # Evaluation datasets
+  evaluation:
+    benchmarks: "${data.base_path}/evaluation/benchmarks"
+    test_sets: "${data.base_path}/evaluation/test_sets"
+    results: "${data.base_path}/evaluation/results"
+
+# Data quality settings
+quality:
+  min_dialogue_turns: 2
+  max_dialogue_turns: 20
+  min_incident_duration_minutes: 1
+  max_incident_duration_hours: 24
+
+  # Text quality
+  min_message_length: 5
+  max_message_length: 2000
+  blacklisted_words: []
+
+  # Completeness thresholds
+  required_fields_coverage: 0.9
+  optional_fields_coverage: 0.5
+
+# Validation rules
+validation:
+  schema_validation: true
+  completeness_check: true
+  topology_consistency: true
+  temporal_ordering: true
+
+  # Error handling
+  max_validation_errors: 10
+  error_on_schema_mismatch: true
+  skip_malformed_records: false
+
+# Data retention policy
+retention:
+  raw_data_days: 365
+  processed_data_days: 1095  # 3 years
+  synthetic_data_days: 730   # 2 years
+  logs_days: 90
+  backup_frequency_days: 7
+
+# Privacy and anonymization
+privacy:
+  anonymize_names: true
+  anonymize_locations: true
+  anonymize_timestamps: false
+  remove_pii: true
+
+  # PII patterns to detect/remove
+  pii_patterns:
+    - ssn: '\d{3}-\d{2}-\d{4}'
+    - phone: '\(\d{3}\)\s*\d{3}-\d{4}'
+    - email: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+
+# Storage configuration
+storage:
+  format: "parquet"  # parquet, json, jsonl
+  compression: "snappy"
+  partitioning:
+    - "operator"
+    - "year"
+    - "month"
+    - "day"
+
+  # Parquet specific
+  parquet:
+    row_group_size: 10000
+    page_size: 8192
+    dictionary_encoding: true
+
+  # File naming
+  file_prefix: "taktkrone"
+  timestamp_format: "%Y%m%d_%H%M%S"

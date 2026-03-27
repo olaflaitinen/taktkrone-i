@@ -1,0 +1,22 @@
+{
+  "entity": [
+    {
+      "id": "1",
+      "vehicle": {
+        "trip": {
+          "trip_id": "123456",
+          "route_id": "4",
+          "direction_id": 0
+        },
+        "position": {
+          "latitude": 40.7128,
+          "longitude": -74.0060
+        },
+        "timestamp": 1711540200,
+        "vehicle": {
+          "id": "4-1234"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "summ_001",
+    "incident_summary": "Signal failure at Times Square affecting 4/5/6 lines. Multiple trains delayed.",
+    "detailed_report": "Complete signal system failure at Times Square-42nd Street complex at 08:15. Track circuit T42-A15 showing continuous red indication. Four trains held in stations between 14th St and 59th St. MEIT responded at 08:20. Single tracking implemented at 08:35. Full service restored at 08:45.",
+    "expected_summary": "30-minute signal failure at Times Square complex affected 4/5/6 service. Single tracking implemented for recovery. Service restored after MEIT intervention.",
+    "key_points": [
+      "Duration: 30 minutes",
+      "Location: Times Square",
+      "Cause: Signal system failure",
+      "Resolution: MEIT intervention"
+    ]
+  },
+  {
+    "id": "summ_002",
+    "incident_summary": "Power outage at Harvard Square suspending Red Line service north of Central.",
+    "detailed_report": "Traction power failure reported at 16:42 affecting Harvard-Porter section. Emergency power protocols activated. All Red Line trains held south of Central Square. Bus shuttle service activated Harvard-Alewife at 17:00. Power restored by electrical crew at 17:27. Service testing commenced 17:30. Normal service resumed 17:45.",
+    "expected_summary": "45-minute power outage suspended Red Line service north of Central. Bus shuttle provided while electrical crew restored power.",
+    "key_points": [
+      "Duration: 45 minutes",
+      "Location: Harvard-Porter",
+      "Cause: Traction power failure",
+      "Mitigation: Bus shuttle"
+    ]
+  }
+]

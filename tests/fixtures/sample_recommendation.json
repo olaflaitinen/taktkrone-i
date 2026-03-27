@@ -1,0 +1,43 @@
+{
+  "action_id": "rec-test-001",
+  "incident_id": "test-001",
+  "timestamp": "2024-01-15T14:30:20Z",
+  "confidence_score": 0.92,
+  "recommended_actions": [
+    {
+      "priority": 1,
+      "action": "dispatch_maintenance",
+      "target": "signal_repair_team",
+      "location": "Station-X",
+      "urgency": "high",
+      "expected_duration_minutes": 15
+    },
+    {
+      "priority": 2,
+      "action": "communicate_to_passengers",
+      "target": "station_announcement_system",
+      "message": "Please be advised of minor service disruption",
+      "urgency": "medium"
+    },
+    {
+      "priority": 3,
+      "action": "divert_alternate_route",
+      "target": "line_b",
+      "capacity_warning": "approaching_maximum",
+      "urgency": "low"
+    }
+  ],
+  "reasoning": "Signal failure detected. Maintenance is primary action. Passenger communication and load balancing are secondary.",
+  "alternative_actions": [
+    {
+      "action": "shutdown_line",
+      "reason": "too_severe_for_normal_operations",
+      "not_recommended": true
+    }
+  ],
+  "safety_checks": {
+    "passenger_safety_risk": false,
+    "equipment_safety_risk": false,
+    "personnel_safety_risk": false
+  }
+}

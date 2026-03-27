@@ -1,0 +1,432 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taktkrone.metrolm.dev/schemas/experiment.schema.json",
+  "title": "TAKTKRONE-I Experiment Schema",
+  "description": "Schema for tracking training experiments and model development runs",
+  "type": "object",
+  "required": [
+    "experiment_id",
+    "experiment_name",
+    "created_at",
+    "status",
+    "base_model",
+    "training_config",
+    "dataset_config"
+  ],
+  "properties": {
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^exp_[a-z0-9]{8,16}$",
+      "description": "Unique experiment identifier"
+    },
+    "experiment_name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "description": "Human-readable experiment name"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1024,
+      "description": "Experiment description and hypothesis"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Experiment creation timestamp (ISO 8601)"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "running", "completed", "failed", "cancelled"],
+      "description": "Current experiment status"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_-]+$"
+      },
+      "description": "Tags for categorization and filtering"
+    },
+    "parent_experiment_id": {
+      "type": "string",
+      "pattern": "^exp_[a-z0-9]{8,16}$",
+      "description": "Parent experiment ID for experiment chains"
+    },
+    "base_model": {
+      "type": "object",
+      "required": ["model_id", "type"],
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "description": "Hugging Face model ID or local path"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["pretrained", "checkpoint", "finetuned"],
+          "description": "Type of base model"
+        },
+        "revision": {
+          "type": "string",
+          "description": "Model revision or commit hash"
+        },
+        "checkpoint_path": {
+          "type": "string",
+          "description": "Path to checkpoint if using local checkpoint"
+        }
+      }
+    },
+    "training_config": {
+      "type": "object",
+      "required": ["method", "hyperparameters"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["full_finetune", "lora", "qlora", "prefix_tuning", "prompt_tuning"],
+          "description": "Training method"
+        },
+        "framework": {
+          "type": "string",
+          "enum": ["trl", "transformers", "axolotl", "llama_factory"],
+          "default": "trl",
+          "description": "Training framework used"
+        },
+        "hyperparameters": {
+          "type": "object",
+          "properties": {
+            "learning_rate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "num_epochs": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "batch_size": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "gradient_accumulation_steps": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "warmup_ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "weight_decay": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_grad_norm": {
+              "type": "number",
+              "minimum": 0
+            },
+            "optimizer": {
+              "type": "string",
+              "enum": ["adamw", "adamw_8bit", "sgd", "adafactor"]
+            },
+            "lr_scheduler_type": {
+              "type": "string",
+              "enum": ["linear", "cosine", "constant", "constant_with_warmup"]
+            },
+            "max_seq_length": {
+              "type": "integer",
+              "minimum": 128,
+              "maximum": 131072
+            }
+          }
+        },
+        "lora_config": {
+          "type": "object",
+          "description": "LoRA-specific configuration (if method is lora/qlora)",
+          "properties": {
+            "r": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 256,
+              "description": "LoRA rank"
+            },
+            "lora_alpha": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "LoRA alpha scaling"
+            },
+            "lora_dropout": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "target_modules": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Module names to apply LoRA"
+            },
+            "bias": {
+              "type": "string",
+              "enum": ["none", "all", "lora_only"]
+            },
+            "task_type": {
+              "type": "string",
+              "enum": ["CAUSAL_LM", "SEQ_2_SEQ_LM"]
+            }
+          }
+        },
+        "quantization_config": {
+          "type": "object",
+          "description": "Quantization configuration (if using QLoRA)",
+          "properties": {
+            "load_in_4bit": {"type": "boolean"},
+            "load_in_8bit": {"type": "boolean"},
+            "bnb_4bit_compute_dtype": {
+              "type": "string",
+              "enum": ["float16", "bfloat16", "float32"]
+            },
+            "bnb_4bit_quant_type": {
+              "type": "string",
+              "enum": ["nf4", "fp4"]
+            },
+            "bnb_4bit_use_double_quant": {"type": "boolean"}
+          }
+        },
+        "deepspeed_config": {
+          "type": "object",
+          "description": "DeepSpeed configuration if used"
+        },
+        "fsdp_config": {
+          "type": "object",
+          "description": "FSDP configuration if used"
+        }
+      }
+    },
+    "dataset_config": {
+      "type": "object",
+      "required": ["train_dataset"],
+      "properties": {
+        "train_dataset": {
+          "type": "object",
+          "required": ["path", "version"],
+          "properties": {
+            "path": {"type": "string"},
+            "version": {"type": "string"},
+            "split": {"type": "string", "default": "train"},
+            "num_samples": {"type": "integer"},
+            "sha256": {"type": "string"}
+          }
+        },
+        "eval_dataset": {
+          "type": "object",
+          "properties": {
+            "path": {"type": "string"},
+            "version": {"type": "string"},
+            "split": {"type": "string", "default": "validation"},
+            "num_samples": {"type": "integer"},
+            "sha256": {"type": "string"}
+          }
+        },
+        "test_dataset": {
+          "type": "object",
+          "properties": {
+            "path": {"type": "string"},
+            "version": {"type": "string"},
+            "split": {"type": "string", "default": "test"},
+            "num_samples": {"type": "integer"},
+            "sha256": {"type": "string"}
+          }
+        },
+        "preprocessing": {
+          "type": "object",
+          "properties": {
+            "chat_template": {"type": "string"},
+            "add_eos": {"type": "boolean"},
+            "packing": {"type": "boolean"},
+            "shuffle": {"type": "boolean"},
+            "seed": {"type": "integer"}
+          }
+        }
+      }
+    },
+    "compute_config": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string",
+          "enum": ["local", "aws", "gcp", "azure", "runpod", "vast", "lambda"]
+        },
+        "gpu_type": {
+          "type": "string",
+          "description": "GPU model (e.g., A100, H100, RTX4090)"
+        },
+        "num_gpus": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "distributed_strategy": {
+          "type": "string",
+          "enum": ["none", "ddp", "fsdp", "deepspeed_zero2", "deepspeed_zero3"]
+        },
+        "estimated_hours": {
+          "type": "number",
+          "description": "Estimated training time in hours"
+        },
+        "actual_hours": {
+          "type": "number",
+          "description": "Actual training time in hours"
+        },
+        "cost_usd": {
+          "type": "number",
+          "description": "Compute cost in USD"
+        }
+      }
+    },
+    "training_metrics": {
+      "type": "object",
+      "description": "Metrics collected during training",
+      "properties": {
+        "final_train_loss": {"type": "number"},
+        "final_eval_loss": {"type": "number"},
+        "best_eval_loss": {"type": "number"},
+        "best_eval_step": {"type": "integer"},
+        "total_steps": {"type": "integer"},
+        "epochs_completed": {"type": "number"},
+        "training_time_seconds": {"type": "number"},
+        "samples_per_second": {"type": "number"},
+        "loss_history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step": {"type": "integer"},
+              "train_loss": {"type": "number"},
+              "eval_loss": {"type": "number"},
+              "learning_rate": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "evaluation_results": {
+      "type": "object",
+      "description": "Benchmark evaluation results",
+      "properties": {
+        "evaluated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "benchmarks": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "score": {"type": "number"},
+              "metrics": {
+                "type": "object",
+                "additionalProperties": {"type": "number"}
+              },
+              "num_samples": {"type": "integer"},
+              "status": {
+                "type": "string",
+                "enum": ["pass", "fail", "marginal", "skipped"]
+              }
+            }
+          }
+        },
+        "aggregate_score": {
+          "type": "number",
+          "description": "Weighted aggregate benchmark score (0-100)"
+        },
+        "safety_compliance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Safety benchmark compliance rate"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "description": "Output artifacts from experiment",
+      "properties": {
+        "model_checkpoint": {
+          "type": "string",
+          "description": "Path to best model checkpoint"
+        },
+        "final_checkpoint": {
+          "type": "string",
+          "description": "Path to final model checkpoint"
+        },
+        "adapter_path": {
+          "type": "string",
+          "description": "Path to LoRA adapter weights"
+        },
+        "merged_model": {
+          "type": "string",
+          "description": "Path to merged model (if applicable)"
+        },
+        "tensorboard_logs": {
+          "type": "string",
+          "description": "Path to TensorBoard logs"
+        },
+        "wandb_run_id": {
+          "type": "string",
+          "description": "Weights & Biases run ID"
+        },
+        "mlflow_run_id": {
+          "type": "string",
+          "description": "MLflow run ID"
+        },
+        "config_snapshot": {
+          "type": "string",
+          "description": "Path to configuration snapshot"
+        },
+        "evaluation_report": {
+          "type": "string",
+          "description": "Path to evaluation report"
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "author": {"type": "string"},
+          "content": {"type": "string"}
+        }
+      },
+      "description": "Experiment notes and observations"
+    },
+    "conclusion": {
+      "type": "object",
+      "description": "Post-experiment conclusions",
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "enum": ["success", "partial_success", "failure", "inconclusive"]
+        },
+        "hypothesis_validated": {"type": "boolean"},
+        "key_findings": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "next_steps": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "promote_to_baseline": {"type": "boolean"}
+      }
+    }
+  },
+  "additionalProperties": false
+}

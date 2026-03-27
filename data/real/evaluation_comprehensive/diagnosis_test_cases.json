@@ -1,0 +1,93 @@
+[
+  {
+    "id": "diag_brake_001",
+    "symptoms": {
+      "primary": "Multiple trains reporting brake system warnings",
+      "secondary": [
+        "Increased stopping distances",
+        "ATC intervention alerts",
+        "Wheel slip detection"
+      ],
+      "context": {
+        "weather": "light_rain",
+        "time_of_day": "morning_rush",
+        "temperature": "42F",
+        "recent_maintenance": "brake_pad_replacement_2_days_ago"
+      }
+    },
+    "network_data": {
+      "affected_routes": [
+        "Blue Line"
+      ],
+      "affected_stations": [
+        "Bowdoin",
+        "Government Center",
+        "State",
+        "Aquarium"
+      ],
+      "train_ids": [
+        "BL-1234",
+        "BL-1567",
+        "BL-1890"
+      ],
+      "speed_restrictions": "15 mph implemented"
+    },
+    "expected_diagnosis": {
+      "primary_cause": "wheel_rail_adhesion_loss",
+      "contributing_factors": [
+        "wet_weather",
+        "new_brake_pads",
+        "rail_contamination"
+      ],
+      "severity": "medium",
+      "recommended_actions": [
+        "implement_speed_restrictions",
+        "deploy_rail_cleaning_train",
+        "monitor_brake_performance",
+        "consider_sanding_operation"
+      ],
+      "confidence": 0.87
+    }
+  },
+  {
+    "id": "diag_communication_002",
+    "symptoms": {
+      "primary": "Intermittent radio communication failures",
+      "secondary": [
+        "Train-to-OCC communication drops",
+        "PA system malfunctions",
+        "Emergency communication interruptions"
+      ],
+      "context": {
+        "weather": "clear",
+        "time_of_day": "afternoon",
+        "recent_events": "radio_equipment_upgrade_last_week"
+      }
+    },
+    "network_data": {
+      "affected_routes": [
+        "Orange Line"
+      ],
+      "affected_sections": [
+        "Forest Hills to Oak Grove"
+      ],
+      "equipment_model": "Motorola_TETRA_DM4000",
+      "failure_pattern": "intermittent_every_15_minutes"
+    },
+    "expected_diagnosis": {
+      "primary_cause": "radio_frequency_interference",
+      "contributing_factors": [
+        "new_equipment_calibration",
+        "antenna_alignment"
+      ],
+      "severity": "high",
+      "recommended_actions": [
+        "emergency_communication_backup_activation",
+        "radio_technician_dispatch",
+        "frequency_analysis",
+        "antenna_inspection"
+      ],
+      "confidence": 0.82
+    }
+  }
+]

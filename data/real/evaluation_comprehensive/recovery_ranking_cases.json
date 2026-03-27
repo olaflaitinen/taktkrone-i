@@ -1,0 +1,60 @@
+[
+  {
+    "id": "recovery_flood_001",
+    "incident_scenario": {
+      "type": "flooding",
+      "location": "Union Station Lower Level",
+      "severity": "major",
+      "affected_systems": [
+        "track",
+        "electrical",
+        "platform_access"
+      ],
+      "constraints": [
+        "passenger_evacuation_complete",
+        "power_isolated",
+        "water_level_rising"
+      ]
+    },
+    "recovery_options": [
+      {
+        "option_id": "A",
+        "description": "Pump water and restore service immediately",
+        "estimated_duration": 120,
+        "resource_requirements": [
+          "pumping_equipment",
+          "electrical_team"
+        ],
+        "risk_level": "high",
+        "passenger_impact": "severe_delays"
+      },
+      {
+        "option_id": "B",
+        "description": "Bypass station and provide bus bridge",
+        "estimated_duration": 45,
+        "resource_requirements": [
+          "bus_fleet",
+          "traffic_coordination"
+        ],
+        "risk_level": "low",
+        "passenger_impact": "moderate_inconvenience"
+      },
+      {
+        "option_id": "C",
+        "description": "Wait for flood subsidence then assess",
+        "estimated_duration": 240,
+        "resource_requirements": [
+          "monitoring_team"
+        ],
+        "risk_level": "medium",
+        "passenger_impact": "extended_closure"
+      }
+    ],
+    "expected_ranking": [
+      "B",
+      "C",
+      "A"
+    ],
+    "rationale": "Safety first: Bus bridge minimizes risk while maintaining service. Option A too risky with rising water."
+  }
+]

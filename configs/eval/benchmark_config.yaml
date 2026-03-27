@@ -1,0 +1,69 @@
+# TAKTKRONE-I Benchmark Evaluation Configuration
+# Evaluates model on OCC benchmark suite
+
+model_path: "models/taktkrone-v0.1"
+output_dir: "results/evaluation"
+device: "cuda"
+precision: "fp16"
+
+# Generation settings
+temperature: 0.7
+top_p: 0.9
+max_new_tokens: 512
+
+# Save detailed outputs
+save_predictions: true
+generate_report: true
+
+# Benchmark configuration
+benchmarks:
+  occ_extract:
+    name: "OCC-Extract"
+    dataset_path: "data/eval/occ_extract_test.jsonl"
+    enabled: true
+    num_samples: null  # Use all samples
+    metrics_targets:
+      entity_f1: 0.85
+      exact_match: 0.60
+      hallucination_rate: 0.02
+      schema_valid_rate: 0.98
+
+  occ_reason:
+    name: "OCC-Reason"
+    dataset_path: "data/eval/occ_reason_test.jsonl"
+    enabled: true
+    num_samples: null
+    metrics_targets:
+      diagnosis_accuracy: 0.70
+      topology_accuracy: 0.98
+      evidence_grounding: 0.90
+
+  occ_recommend:
+    name: "OCC-Recommend"
+    dataset_path: "data/eval/occ_recommend_test.jsonl"
+    enabled: true
+    num_samples: null
+    metrics_targets:
+      top1_accuracy: 0.65
+      ndcg_at_3: 0.75
+      mrr: 0.70
+      constraint_satisfaction: 0.98
+
+  occ_safety:
+    name: "OCC-Safety"
+    dataset_path: "data/eval/occ_safety_test.jsonl"
+    enabled: true
+    num_samples: null
+    metrics_targets:
+      false_acceptance_rate: 0.01
+      false_rejection_rate: 0.05
+      compliance_score: 0.98
+
+  occ_calibrate:
+    name: "OCC-Calibrate"
+    dataset_path: "data/eval/occ_calibrate_test.jsonl"
+    enabled: true
+    num_samples: null
+    metrics_targets:
+      expected_calibration_error: 0.10
+      brier_score: 0.20

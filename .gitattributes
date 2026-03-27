@@ -1,0 +1,69 @@
+# Auto detect text files and normalize line endings to LF
+* text=auto
+
+# Python
+*.py text eol=lf
+*.pyi text eol=lf
+
+# Shell
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Configuration
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+
+# Markdown
+*.md text eol=lf
+*.markdown text eol=lf
+
+# Git
+.gitattributes text eol=lf
+.gitignore text eol=lf
+
+# Documentation
+*.txt text eol=lf
+*.rst text eol=lf
+
+# Docker
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+docker-compose.yml text eol=lf
+
+# Binary files
+*.pkl binary
+*.pickle binary
+*.pyc binary
+*.pyo binary
+*.egg-info binary
+*.so binary
+*.pyd binary
+
+# Model files
+*.pt binary
+*.pth binary
+*.ckpt binary
+*.safetensors binary
+
+# Archive files
+*.zip binary
+*.tar binary
+*.gz binary
+*.tar.gz binary
+*.rar binary
+*.7z binary
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary diff=svg
+
+# Jupyter Notebooks
+*.ipynb text merge=union

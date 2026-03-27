@@ -1,0 +1,245 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://metrolm.org/schemas/incident_record.v1.0.0.json",
+  "title": "IncidentRecord",
+  "description": "Canonical schema for transit disruption and incident events",
+  "type": "object",
+  "required": [
+    "id",
+    "schema_version",
+    "timestamp",
+    "operator",
+    "source",
+    "incident_type",
+    "severity",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique incident identifier"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Incident start time"
+    },
+    "operator": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of incident report"
+    },
+    "incident_type": {
+      "type": "string",
+      "enum": [
+        "signal_failure",
+        "track_obstruction",
+        "vehicle_breakdown",
+        "power_outage",
+        "police_activity",
+        "medical_emergency",
+        "weather_impact",
+        "crowding",
+        "door_malfunction",
+        "unauthorized_person_on_tracks",
+        "infrastructure_degradation",
+        "equipment_failure",
+        "crew_unavailability",
+        "planned_maintenance",
+        "other"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "monitoring", "resolved", "cleared"]
+    },
+    "title": {
+      "type": "string",
+      "description": "Brief incident title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed incident description"
+    },
+    "affected_entities": {
+      "type": "object",
+      "properties": {
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["northbound", "southbound", "eastbound", "westbound", "both"]
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "primary_station": {
+          "type": "string"
+        },
+        "between_stations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 2
+        },
+        "track_segment": {
+          "type": "string"
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "latitude": {
+              "type": "number"
+            },
+            "longitude": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "detected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reported_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "first_response_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "resolved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "cleared_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "properties": {
+        "delay_minutes": {
+          "type": "object",
+          "properties": {
+            "average": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          }
+        },
+        "affected_trains": {
+          "type": "integer"
+        },
+        "estimated_passengers": {
+          "type": "integer"
+        },
+        "service_changes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "actions_taken": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "action_type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "outcome": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "root_cause": {
+      "type": "object",
+      "properties": {
+        "determined": {
+          "type": "boolean"
+        },
+        "cause": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "details": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "ingestion_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ingestion_method": {
+          "type": "string"
+        },
+        "source_url": {
+          "type": "string"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

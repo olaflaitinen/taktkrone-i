@@ -1,0 +1,229 @@
+production_deployment:
+  environment: "production"
+  cluster: "taktkrone-prod-cluster"
+  namespace: "occlm-prod"
+  release_version: "v1.0.0"
+
+infrastructure:
+  compute:
+    gpu_nodes:
+      - node_type: "a100-40gb"
+        replicas: 2
+        resources:
+          gpu_memory: "40Gi"
+          cpu_cores: 16
+          memory: "128Gi"
+          storage: "1Ti"
+    cpu_nodes:
+      - node_type: "standard-cpu"
+        replicas: 3
+        resources:
+          cpu_cores: 8
+          memory: "32Gi"
+          storage: "500Gi"
+
+  networking:
+    load_balancer:
+      type: "Application"
+      ssl_termination: true
+      certificate_arn: "arn:aws:acm:us-east-1:123456789:certificate/abc123"
+    ingress:
+      domain: "api.taktkrone.com"
+      paths:
+        - path: "/v1/chat"
+          service: "occlm-api"
+          port: 8000
+        - path: "/v1/health"
+          service: "occlm-api"
+          port: 8000
+        - path: "/metrics"
+          service: "occlm-api"
+          port: 8000
+
+  storage:
+    model_storage:
+      type: "s3"
+      bucket: "taktkrone-models"
+      path: "production/models"
+    data_storage:
+      type: "s3"
+      bucket: "taktkrone-data"
+      path: "production/data"
+    logs:
+      type: "cloudwatch"
+      log_group: "/aws/taktkrone/production"
+      retention_days: 90
+
+services:
+  occlm_api:
+    image: "taktkrone/occlm-api:v1.0.0"
+    replicas: 3
+    strategy: "RollingUpdate"
+    resources:
+      requests:
+        cpu: "2000m"
+        memory: "8Gi"
+        nvidia.com/gpu: 1
+      limits:
+        cpu: "4000m"
+        memory: "16Gi"
+        nvidia.com/gpu: 1
+    environment:
+      MODEL_PATH: "/models/taktkrone-real-v1"
+      MAX_SEQUENCE_LENGTH: "4096"
+      BATCH_SIZE: "4"
+      TEMPERATURE: "0.7"
+      TOP_P: "0.9"
+      MAX_TOKENS: "512"
+    health_checks:
+      liveness:
+        path: "/health"
+        interval: 30
+        timeout: 10
+        failure_threshold: 3
+      readiness:
+        path: "/ready"
+        interval: 10
+        timeout: 5
+        failure_threshold: 2
+
+  vector_store:
+    image: "qdrant/qdrant:v1.7.0"
+    replicas: 2
+    resources:
+      requests:
+        cpu: "1000m"
+        memory: "4Gi"
+      limits:
+        cpu: "2000m"
+        memory: "8Gi"
+    storage:
+      size: "100Gi"
+      storage_class: "ssd"
+
+  redis_cache:
+    image: "redis:7-alpine"
+    replicas: 1
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "2Gi"
+      limits:
+        cpu: "1000m"
+        memory: "4Gi"
+    storage:
+      size: "50Gi"
+      storage_class: "ssd"
+
+monitoring:
+  prometheus:
+    enabled: true
+    scrape_interval: "30s"
+    retention: "30d"
+    alerts:
+      - name: "HighLatency"
+        condition: "p95_latency > 2000"
+        severity: "warning"
+      - name: "HighErrorRate"
+        condition: "error_rate > 0.05"
+        severity: "critical"
+      - name: "ModelServerDown"
+        condition: "up == 0"
+        severity: "critical"
+
+  grafana:
+    enabled: true
+    dashboards:
+      - "occlm-performance"
+      - "occlm-errors"
+      - "occlm-usage"
+    alerts:
+      slack_webhook: "https://hooks.slack.com/services/T00/B00/XXX"
+      pagerduty_key: "integration_key_here"
+
+  logging:
+    fluentd:
+      enabled: true
+      output: "cloudwatch"
+    structured_logs: true
+    log_level: "INFO"
+
+security:
+  authentication:
+    type: "api_key"
+    header: "X-API-Key"
+    validation_endpoint: "/auth/validate"
+
+  network_policies:
+    enabled: true
+    deny_all_by_default: true
+    allowed_ingress:
+      - from: "load-balancer"
+        to: "occlm-api"
+        ports: [8000]
+      - from: "occlm-api"
+        to: "vector-store"
+        ports: [6333]
+      - from: "occlm-api"
+        to: "redis-cache"
+        ports: [6379]
+
+  secrets:
+    api_keys:
+      secret_name: "occlm-api-keys"
+      keys: ["openai_api_key", "wandb_api_key"]
+    model_access:
+      secret_name: "model-credentials"
+      keys: ["huggingface_token"]
+
+autoscaling:
+  horizontal_pod_autoscaler:
+    enabled: true
+    min_replicas: 2
+    max_replicas: 10
+    metrics:
+      - type: "Resource"
+        resource:
+          name: "cpu"
+          target: 70
+      - type: "Resource"
+        resource:
+          name: "memory"
+          target: 80
+      - type: "Pods"
+        pods:
+          metric:
+            name: "requests_per_second"
+          target: 50
+
+  vertical_pod_autoscaler:
+    enabled: false
+    update_mode: "Auto"
+
+backup:
+  enabled: true
+  schedule: "0 3 * * *"  # Daily at 3 AM
+  retention: "30d"
+  destinations:
+    - type: "s3"
+      bucket: "taktkrone-backups"
+      path: "production/daily"
+
+disaster_recovery:
+  multi_region: true
+  regions: ["us-east-1", "us-west-2"]
+  rto: "30m"  # Recovery Time Objective
+  rpo: "5m"   # Recovery Point Objective
+
+  failover:
+    automatic: true
+    health_check_failures: 3
+    health_check_interval: "10s"
+
+compliance:
+  data_residency: "US"
+  encryption:
+    at_rest: true
+    in_transit: true
+  audit_logging: true
+  data_retention: "7y"

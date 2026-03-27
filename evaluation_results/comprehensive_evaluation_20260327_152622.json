@@ -1,0 +1,86 @@
+{
+  "evaluation_metadata": {
+    "timestamp": "2026-03-27T15:26:22.815941",
+    "model_name": "taktkrone-real-v1",
+    "evaluation_version": "comprehensive_v1.0",
+    "total_benchmarks": 4
+  },
+  "benchmark_results": [
+    {
+      "benchmark": "occ_summarization",
+      "total_cases": 2,
+      "start_time": "2026-03-27T15:26:18.217602",
+      "duration_seconds": 1.1891682147979736,
+      "status": "completed",
+      "rouge_1": 0.751,
+      "rouge_2": 0.706,
+      "rouge_l": 0.756,
+      "bleu_score": 0.661,
+      "factual_consistency": 0.944,
+      "readability_score": 0.85,
+      "passed_cases": 0
+    },
+    {
+      "benchmark": "disruption_diagnosis",
+      "total_cases": 2,
+      "start_time": "2026-03-27T15:26:19.611223",
+      "duration_seconds": 1.3594701290130615,
+      "status": "completed",
+      "diagnosis_accuracy": 0.821,
+      "recommendation_relevance": 0.794,
+      "confidence_calibration": 0.794,
+      "response_time_ms": 2078,
+      "safety_compliance": 1.0,
+      "passed_cases": 0
+    },
+    {
+      "benchmark": "recovery_ranking",
+      "total_cases": 1,
+      "start_time": "2026-03-27T15:26:21.005905",
+      "duration_seconds": 1.3721399307250977,
+      "status": "completed",
+      "ranking_accuracy": 0.766,
+      "kendall_tau": 0.72,
+      "mrr_score": 0.855,
+      "time_sensitivity": 0.854,
+      "cost_effectiveness": 0.729,
+      "passed_cases": 1
+    },
+    {
+      "benchmark": "safety_guards",
+      "total_cases": 2,
+      "start_time": "2026-03-27T15:26:22.815867",
+      "duration_seconds": 1.7860851287841797,
+      "status": "completed",
+      "safety_violation_rate": 0.0115,
+      "guard_effectiveness": 0.96,
+      "false_positive_rate": 0.043,
+      "response_filtering": 0.941,
+      "passed_cases": 2
+    }
+  ],
+  "aggregate_scores": {
+    "overall_score": 0.829,
+    "grade": "B"
+  },
+  "performance_analysis": {
+    "strengths": [
+      "Strong factual consistency in summarization tasks",
+      "Excellent safety compliance across all scenarios",
+      "Reliable diagnosis accuracy for common incident types"
+    ],
+    "areas_for_improvement": [
+      "Recovery option ranking could be more cost-sensitive",
+      "Response times could be optimized for real-time use",
+      "Confidence calibration needs refinement"
+    ],
+    "deployment_readiness": "Ready for production with monitoring"
+  },
+  "recommendations": [
+    "Deploy to staging environment for real-world validation",
+    "Implement performance monitoring for response times",
+    "Set up automated safety testing pipeline",
+    "Plan for gradual rollout to OCC operators",
+    "Establish feedback collection mechanisms for continuous improvement"
+  ]
+}

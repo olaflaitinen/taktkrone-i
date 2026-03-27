@@ -1,0 +1,46 @@
+{
+  "dialogue_id": "test-dialogue-001",
+  "timestamp": "2024-01-15T14:30:00Z",
+  "participants": [
+    {
+      "id": "operator-001",
+      "role": "train_operator"
+    },
+    {
+      "id": "occ-001",
+      "role": "occ_dispatcher"
+    }
+  ],
+  "turns": [
+    {
+      "turn_number": 1,
+      "speaker_id": "operator-001",
+      "speaker_role": "train_operator",
+      "message": "OCC, we have a signal failure on Track 1 northbound at Station-X",
+      "timestamp": "2024-01-15T14:30:00Z",
+      "sentiment": "urgent"
+    },
+    {
+      "turn_number": 2,
+      "speaker_id": "occ-001",
+      "speaker_role": "occ_dispatcher",
+      "message": "Copy that. Hold your train at the station. Signal maintenance is being dispatched.",
+      "timestamp": "2024-01-15T14:30:15Z",
+      "sentiment": "calm"
+    },
+    {
+      "turn_number": 3,
+      "speaker_id": "operator-001",
+      "speaker_role": "train_operator",
+      "message": "Understood. Passengers are notified. ETA on maintenance?",
+      "timestamp": "2024-01-15T14:30:30Z",
+      "sentiment": "neutral"
+    }
+  ],
+  "key_information_extracted": {
+    "incident_type": "signal_failure",
+    "location": "Track 1 northbound at Station-X",
+    "severity": "medium",
+    "immediate_action": "hold_train"
+  }
+}

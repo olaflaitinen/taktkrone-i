@@ -1,0 +1,18 @@
+[
+  {
+    "id": "diag_001",
+    "symptoms": "Multiple trains reporting brake system warnings on Blue Line",
+    "context": "Morning rush hour, dry weather conditions, no recent maintenance",
+    "expected_diagnosis": "Likely wheel slip conditions due to rail contamination. Recommend speed restrictions and rail cleaning.",
+    "severity": "medium",
+    "confidence": 0.85
+  },
+  {
+    "id": "diag_002",
+    "symptoms": "Intermittent signal failures across entire Northern section",
+    "context": "Heavy rainfall in past 24 hours, aging signal infrastructure",
+    "expected_diagnosis": "Water ingress in signal equipment causing intermittent failures. Requires immediate inspection and weather protection.",
+    "severity": "high",
+    "confidence": 0.9
+  }
+]

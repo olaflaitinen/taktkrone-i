@@ -1,0 +1,513 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://metrolm.org/schemas/synthetic_scenario.v1.0.0.json",
+  "title": "SyntheticScenario",
+  "description": "Complete synthetic OCC scenario for training and evaluation",
+  "type": "object",
+  "required": [
+    "scenario_id",
+    "schema_version",
+    "timestamp_utc",
+    "operator",
+    "scenario_type",
+    "incident_briefing",
+    "network_state",
+    "reasoning_trace",
+    "instruction_sample",
+    "taxonomy",
+    "metadata"
+  ],
+  "properties": {
+    "scenario_id": {
+      "type": "string",
+      "description": "Unique scenario identifier",
+      "pattern": "^scn_[a-z0-9_]+$",
+      "examples": ["scn_mta_bunching_001", "scn_mbta_signal_042"]
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scenario timestamp (simulated time)"
+    },
+    "operator": {
+      "type": "string",
+      "enum": ["mta_nyct", "mbta", "wmata", "bart", "tfl", "generic"]
+    },
+    "scenario_type": {
+      "type": "string",
+      "description": "High-level scenario category",
+      "enum": [
+        "bunching",
+        "gapping",
+        "signal_failure",
+        "disabled_train",
+        "terminal_congestion",
+        "crossover_unavailable",
+        "station_incident",
+        "weather_impact",
+        "partial_suspension",
+        "multi_incident",
+        "recovery_planning",
+        "baseline_normal"
+      ]
+    },
+    "incident_briefing": {
+      "type": "object",
+      "description": "Human-readable incident summary",
+      "required": ["summary", "observed_state", "trigger_time"],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "Concise incident description",
+          "minLength": 20,
+          "maxLength": 500
+        },
+        "observed_state": {
+          "type": "object",
+          "description": "Key observable metrics",
+          "additionalProperties": true
+        },
+        "trigger_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "telemetry_completeness": {
+          "type": "string",
+          "enum": ["full", "high", "moderate", "low", "minimal"]
+        },
+        "data_sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "network_state": {
+      "type": "object",
+      "description": "Detailed network state at scenario time",
+      "required": ["affected_lines", "train_positions", "headways"],
+      "properties": {
+        "affected_lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "affected_stations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "affected_direction": {
+          "type": "string",
+          "enum": ["northbound", "southbound", "eastbound", "westbound", "both"]
+        },
+        "train_positions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "train_id": { "type": "string" },
+              "trip_id": { "type": "string" },
+              "current_station": { "type": "string" },
+              "next_station": { "type": "string" },
+              "delay_seconds": { "type": "integer" },
+              "status": { "type": "string" }
+            }
+          }
+        },
+        "headways": {
+          "type": "object",
+          "description": "Current headways by segment",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "actual_seconds": { "type": "integer" },
+              "scheduled_seconds": { "type": "integer" },
+              "deviation_seconds": { "type": "integer" }
+            }
+          }
+        },
+        "active_alerts": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "infrastructure_status": {
+          "type": "object",
+          "properties": {
+            "crossovers": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": ["available", "unavailable", "maintenance"]
+              }
+            },
+            "terminals": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": ["normal", "congested", "limited", "closed"]
+              }
+            }
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "constraint_type": { "type": "string" },
+              "description": { "type": "string" },
+              "affected_locations": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "reasoning_trace": {
+      "type": "object",
+      "description": "Full OCC reasoning process",
+      "required": ["operational_hypotheses", "action_candidates", "selected_intervention", "justification"],
+      "properties": {
+        "operational_hypotheses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["hypothesis_id", "description", "confidence"],
+            "properties": {
+              "hypothesis_id": { "type": "string" },
+              "description": { "type": "string" },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "supporting_evidence": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "contradicting_evidence": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "action_candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["action_id", "action_type", "description", "feasibility"],
+            "properties": {
+              "action_id": { "type": "string" },
+              "action_type": {
+                "type": "string",
+                "enum": [
+                  "hold_train",
+                  "express_operation",
+                  "short_turn",
+                  "skip_stop",
+                  "additional_train",
+                  "reduce_frequency",
+                  "switch_track",
+                  "platform_shift",
+                  "bridge_service",
+                  "communication",
+                  "escalation",
+                  "monitor",
+                  "verification"
+                ]
+              },
+              "description": { "type": "string" },
+              "feasibility": {
+                "type": "string",
+                "enum": ["high", "medium", "low", "infeasible"]
+              },
+              "expected_benefit": { "type": "string" },
+              "expected_cost": { "type": "string" },
+              "constraints_satisfied": { "type": "boolean" },
+              "constraint_violation": { "type": "string" }
+            }
+          }
+        },
+        "selected_intervention": {
+          "type": "object",
+          "required": ["primary_action", "selection_rationale"],
+          "properties": {
+            "primary_action": { "type": "string" },
+            "secondary_action": { "type": ["string", "null"] },
+            "selection_rationale": { "type": "string" }
+          }
+        },
+        "justification": {
+          "type": "object",
+          "required": ["text", "key_factors"],
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Full justification text",
+              "minLength": 50
+            },
+            "key_factors": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "expected_kpi_change": {
+          "type": "object",
+          "properties": {
+            "headway_variance_reduction": { "type": "number" },
+            "time_to_normal_operations_minutes": { "type": "number" },
+            "passenger_delay_minutes_total": { "type": "number" },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "risks_and_alternatives": {
+          "type": "object",
+          "properties": {
+            "primary_risks": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "fallback_action": { "type": "string" },
+            "alternatives_rejected": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "action": { "type": "string" },
+                  "rejection_reason": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "escalation_recommendation": {
+          "type": "object",
+          "properties": {
+            "escalate": { "type": "boolean" },
+            "escalation_level": { "type": ["string", "null"] },
+            "escalation_reason": { "type": ["string", "null"] },
+            "human_review_recommended": { "type": "boolean" },
+            "review_reason": { "type": "string" }
+          }
+        }
+      }
+    },
+    "instruction_sample": {
+      "type": "object",
+      "description": "Formatted instruction tuning sample",
+      "required": ["messages", "task_type"],
+      "properties": {
+        "messages": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["role", "content"],
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["system", "user", "assistant"]
+              },
+              "content": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "SUM", "DRH", "HCS", "DAE", "TFR",
+            "DCR", "LRS", "SEX", "CAC", "AAR",
+            "CRP", "SRF"
+          ]
+        },
+        "retrieval_context": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "document_id": { "type": "string" },
+              "title": { "type": "string" },
+              "snippet": { "type": "string" },
+              "relevance_score": { "type": "number" }
+            }
+          }
+        },
+        "expected_output_structured": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "taxonomy": {
+      "type": "object",
+      "description": "Full taxonomy classification",
+      "required": [
+        "incident_type",
+        "severity",
+        "difficulty",
+        "split"
+      ],
+      "properties": {
+        "line": { "type": "string" },
+        "topology_type": {
+          "type": "string",
+          "enum": ["linear", "branching", "junction", "terminal", "loop", "crossover_zone", "interlining"]
+        },
+        "terminal_complexity": {
+          "type": "string",
+          "enum": ["simple", "moderate", "complex", "major", "none"]
+        },
+        "service_pattern": {
+          "type": "string",
+          "enum": ["peak_am", "peak_pm", "midday", "evening", "overnight", "weekend", "holiday", "special_event"]
+        },
+        "incident_type": {
+          "type": "string",
+          "enum": ["SIG", "THS", "TDS", "TCG", "CXU", "SOC", "PLT", "PME", "PWR", "WTH", "PWO", "RSS", "TUP", "CRW", "RPL", "PSS", "BAS"]
+        },
+        "incident_subtype": { "type": "string" },
+        "severity": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"]
+        },
+        "duration_class": {
+          "type": "string",
+          "enum": ["brief", "short", "moderate", "extended", "prolonged"]
+        },
+        "passenger_impact": {
+          "type": "string",
+          "enum": ["minimal", "low", "moderate", "high", "severe"]
+        },
+        "recovery_stage": {
+          "type": "string",
+          "enum": ["detection", "assessment", "response", "stabilization", "recovery", "post_incident"]
+        },
+        "telemetry_completeness": {
+          "type": "string",
+          "enum": ["full", "high", "moderate", "low", "minimal"]
+        },
+        "ambiguity_level": {
+          "type": "string",
+          "enum": ["clear", "minor_ambiguity", "moderate_ambiguity", "high_ambiguity", "contradictory"]
+        },
+        "confidence_target": {
+          "type": "string",
+          "enum": ["very_high", "high", "moderate", "low", "abstain"]
+        },
+        "output_mode": {
+          "type": "string",
+          "enum": ["text_summary", "structured_only", "text_with_structure", "action_recommendation", "explanation", "refusal", "clarification_request"]
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["easy", "medium", "hard", "expert"]
+        },
+        "split": {
+          "type": "string",
+          "enum": ["train", "validation", "test", "benchmark", "adversarial"]
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Generation and validation metadata",
+      "required": ["generation_method", "template_id", "quality_score", "topology_validated"],
+      "properties": {
+        "generation_method": {
+          "type": "string",
+          "enum": [
+            "rule_based",
+            "simulation",
+            "paraphrase",
+            "counterfactual",
+            "perturbation",
+            "negative",
+            "manual"
+          ]
+        },
+        "template_id": { "type": "string" },
+        "template_version": { "type": "string" },
+        "generation_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "generator_version": { "type": "string" },
+        "random_seed": { "type": "integer" },
+        "quality_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "topology_validated": { "type": "boolean" },
+        "plausibility_validated": { "type": "boolean" },
+        "human_reviewed": { "type": "boolean" },
+        "reviewer_id": { "type": "string" },
+        "review_notes": { "type": "string" },
+        "validation_errors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "parent_scenario_id": {
+          "type": "string",
+          "description": "If derived from another scenario"
+        },
+        "variant_type": {
+          "type": "string",
+          "enum": ["original", "paraphrase", "counterfactual", "perturbation", "negative"]
+        }
+      }
+    },
+    "ground_truth": {
+      "type": "object",
+      "description": "Gold standard labels for evaluation",
+      "properties": {
+        "expected_diagnosis": { "type": "string" },
+        "expected_actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action_type": { "type": "string" },
+              "priority": { "type": "integer" },
+              "required": { "type": "boolean" }
+            }
+          }
+        },
+        "factual_constraints": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Facts that must be respected in response"
+        },
+        "forbidden_content": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Content that must not appear in response"
+        },
+        "required_entities": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "minimum_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "maximum_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}

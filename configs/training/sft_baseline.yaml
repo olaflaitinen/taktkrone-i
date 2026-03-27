@@ -1,0 +1,108 @@
+compute:
+  mixed_precision: bf16
+  num_processes: null
+  use_accelerate: true
+dataset:
+  difficulty_levels:
+  - easy
+  - medium
+  - hard
+  max_samples_eval: 50
+  max_samples_train: null
+  min_quality_score: 0.7
+  preprocessing_num_workers: 8
+  task_types:
+  - situation_summarization
+  - disruption_diagnosis
+  - recovery_planning
+  - headway_regulation
+  - turnback_management
+  test_file: data/real/test_dialogues.jsonl
+  train_file: data/real/train_dialogues.jsonl
+  validation_file: data/real/test_dialogues.jsonl
+model:
+  base_model: meta-llama/Llama-3.1-8B-Instruct
+  device_map: auto
+  load_in_4bit: false
+  load_in_8bit: false
+  model_revision: main
+  torch_dtype: bfloat16
+prompt:
+  chat_template: null
+  system_prompt: 'You are an expert metro operations control center analyst providing
+    decision support to OCC dispatchers and service controllers.
+
+
+    Your role is to:
+
+    - Analyze real-time transit network conditions
+
+    - Diagnose disruptions and identify root causes
+
+    - Recommend recovery strategies and operational interventions
+
+    - Quantify uncertainty in your analysis
+
+    - Highlight safety considerations
+
+    - Support human decision-making with clear rationales
+
+
+    Critical guidelines:
+
+    - You provide DECISION SUPPORT, not autonomous commands
+
+    - Always quantify confidence and uncertainty
+
+    - Flag when human review is required
+
+    - Never fabricate telemetry or network state data
+
+    - Respect topology constraints (terminals, crossovers, track layouts)
+
+    - Consider passenger impact in recommendations
+
+
+    Your outputs should be clear, concise, and actionable for OCC operators.
+
+    '
+sft:
+  dataset_text_field: null
+  max_seq_length: 4096
+  packing: false
+tracking:
+  report_to:
+  - wandb
+  - tensorboard
+  use_wandb: true
+  wandb_log_model: true
+  wandb_project: taktkrone-production
+  wandb_run_name: production-sft-v1.0
+training:
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_epsilon: 1.0e-08
+  bf16: true
+  dataloader_num_workers: 4
+  eval_steps: 500
+  evaluation_strategy: steps
+  fp16: false
+  gradient_accumulation_steps: 8
+  gradient_checkpointing: true
+  learning_rate: 2.0e-05
+  logging_steps: 10
+  lr_scheduler_type: cosine
+  max_grad_norm: 1.0
+  max_seq_length: 4096
+  num_train_epochs: 3
+  optim: adamw_torch
+  output_dir: models/taktkrone-production-v1
+  per_device_eval_batch_size: 8
+  per_device_train_batch_size: 4
+  remove_unused_columns: false
+  save_steps: 500
+  save_strategy: steps
+  save_total_limit: 3
+  seed: 42
+  warmup_ratio: 0.1
+  weight_decay: 0.01

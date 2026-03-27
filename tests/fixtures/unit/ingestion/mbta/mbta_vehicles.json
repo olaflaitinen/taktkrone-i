@@ -1,0 +1,40 @@
+{
+  "data": [
+    {
+      "id": "vehicle_123",
+      "type": "vehicle",
+      "attributes": {
+        "bearing": 135,
+        "current_status": "IN_TRANSIT_TO",
+        "current_stop_sequence": 5,
+        "direction_id": 1,
+        "label": "123",
+        "latitude": 42.3601,
+        "longitude": -71.0589,
+        "occupancy_status": "FEW_SEATS_AVAILABLE",
+        "speed": 25.5,
+        "updated_at": "2024-03-27T10:30:00-04:00"
+      },
+      "relationships": {
+        "route": {
+          "data": {
+            "id": "Red",
+            "type": "route"
+          }
+        },
+        "stop": {
+          "data": {
+            "id": "place-harsq",
+            "type": "stop"
+          }
+        },
+        "trip": {
+          "data": {
+            "id": "trip_123",
+            "type": "trip"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+# Keep notebooks in notebooks/ directory
+!notebooks/*.ipynb
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Data directories
+data/raw/
+data/normalized/
+data/synthetic/
+data/eval/
+data/topology/
+data/vectorstore/
+!data/.gitkeep
+
+# Model checkpoints
+models/
+!models/.gitkeep
+*.pth
+*.pt
+*.bin
+# Allow HuggingFace model files
+!huggingface_model/*.safetensors
+
+# Results and logs
+results/
+logs/
+runs/
+wandb/
+mlruns/
+outputs/
+!results/.gitkeep
+!logs/.gitkeep
+
+# Parquet and data files
+*.parquet
+*.arrow
+*.feather
+*.pkl
+*.pickle
+# Allow example and HuggingFace dataset files
+!examples/*.jsonl
+!huggingface_dataset/*.jsonl
+
+# Large files
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# Docker
+.dockerignore
+
+# Documentation builds
+docs/_build/
+site/
+
+# Cache
+.cache/
+*.cache
+
+# Monitoring
+prometheus_data/
+grafana_data/
+
+# Secrets
+secrets/
+*.key
+*.pem
+api_keys.txt

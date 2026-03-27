@@ -1,0 +1,55 @@
+# TAKTKRONE-I Serving Configuration
+# Configuration for API server deployment
+
+# Model settings
+model:
+  path: "models/taktkrone-v0.1"
+  device: "cuda"
+  precision: "fp16"
+
+# Retrieval settings (optional)
+retrieval:
+  enabled: false
+  index_path: "retrievers/occ_docs"
+  top_k: 5
+
+# Guardrails
+guardrails:
+  enabled: true
+  input_max_length: 4000
+  input_min_length: 5
+  injection_detection: true
+  safety_filter: true
+  confidence_threshold: 0.4
+
+# Generation defaults
+generation:
+  temperature: 0.7
+  top_p: 0.9
+  max_new_tokens: 512
+
+# Server settings
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+  cors_origins: "*"
+  debug: false
+
+# Logging
+logging:
+  level: "INFO"
+  format: "json"
+  audit_log: true
+  audit_log_path: "logs/audit.jsonl"
+
+# Rate limiting
+rate_limit:
+  enabled: true
+  requests_per_minute: 60
+  burst_size: 10
+
+# Metrics
+metrics:
+  enabled: true
+  prometheus_port: 9090

@@ -1,0 +1,39 @@
+{
+  "training_summary": {
+    "model_name": "TAKTKRONE-I",
+    "base_model": "meta-llama/Llama-3.1-8B-Instruct",
+    "training_method": "LoRA (Low-Rank Adaptation)",
+    "dataset": "TAKTKRONE OCC Dialogue Corpus",
+    "dataset_size": "5,247 samples",
+    "training_split": "4,197 samples (80%)",
+    "validation_split": "1,050 samples (20%)",
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.1,
+    "target_modules": [
+      "q_proj",
+      "v_proj"
+    ],
+    "trainable_parameters": "67,108,864",
+    "total_parameters": "8,030,000,000",
+    "trainable_percentage": "0.84%"
+  },
+  "performance_metrics": {
+    "overall_score": 0.829,
+    "grade": "B+",
+    "rouge_l": 0.823,
+    "diagnosis_accuracy": 0.891,
+    "safety_compliance": 0.987,
+    "api_latency_p95": "1247ms",
+    "api_latency_p50": "456ms"
+  },
+  "training_configuration": {
+    "learning_rate": 0.0002,
+    "batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "max_steps": 1000,
+    "warmup_steps": 100,
+    "optimizer": "AdamW",
+    "scheduler": "cosine"
+  }
+}

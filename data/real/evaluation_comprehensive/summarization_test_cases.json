@@ -1,0 +1,66 @@
+[
+  {
+    "id": "summ_signal_001",
+    "input_type": "incident_report",
+    "raw_incident": {
+      "timestamp": "2024-03-27T08:15:00Z",
+      "operator": "mta_nyct",
+      "location": "Times Square-42nd Street",
+      "incident_type": "signal_failure",
+      "detailed_events": [
+        "08:15 - Signal system failure detected on T42-A15 circuit",
+        "08:16 - All 4/5/6 trains held at safe locations",
+        "08:18 - MEIT team dispatched to location",
+        "08:22 - Field supervisor deployed to Times Square platform",
+        "08:25 - Customer information announcements activated",
+        "08:30 - Single tracking operation implemented",
+        "08:35 - First train moved through single track",
+        "08:42 - Signal equipment reset successful",
+        "08:45 - Normal service restored on all tracks"
+      ]
+    },
+    "expected_summary": "30-minute signal failure at Times Square-42nd Street caused delays on 4/5/6 lines. MEIT team implemented single tracking for recovery. Service fully restored by 08:45.",
+    "key_metrics": {
+      "duration_minutes": 30,
+      "affected_lines": [
+        "4",
+        "5",
+        "6"
+      ],
+      "passenger_impact": "high",
+      "resolution_method": "single_tracking"
+    },
+    "quality_score": 0.95
+  },
+  {
+    "id": "summ_power_002",
+    "input_type": "incident_report",
+    "raw_incident": {
+      "timestamp": "2024-03-27T16:42:00Z",
+      "operator": "mbta",
+      "location": "Harvard Square - Porter",
+      "incident_type": "power_outage",
+      "detailed_events": [
+        "16:42 - Traction power loss reported Harvard-Porter section",
+        "16:42 - All Red Line trains held south of Central Square",
+        "16:45 - Emergency power protocols activated",
+        "16:48 - Electrical maintenance crew dispatched",
+        "16:55 - Bus shuttle service activated Harvard-Alewife",
+        "17:15 - Power fault isolated to transformer TR-45",
+        "17:27 - Backup power restored, testing commenced",
+        "17:35 - Service test train successful",
+        "17:40 - Normal passenger service resumed"
+      ]
+    },
+    "expected_summary": "58-minute power outage suspended Red Line service north of Central. Bus shuttle provided during repair. Power restored via backup transformer, normal service resumed at 17:40.",
+    "key_metrics": {
+      "duration_minutes": 58,
+      "affected_lines": [
+        "Red"
+      ],
+      "passenger_impact": "medium",
+      "mitigation": "bus_shuttle"
+    },
+    "quality_score": 0.92
+  }
+]

@@ -1,0 +1,251 @@
+{
+  "operators": {
+    "mta_nyct": {
+      "name": "Metropolitan Transportation Authority - New York City Transit",
+      "official_name": "MTA New York City Transit",
+      "region": "New York City Metropolitan Area",
+      "country": "United States",
+      "timezone": "America/New_York",
+      "contact": {
+        "website": "https://new.mta.info",
+        "customer_service": "511",
+        "emergency": "911"
+      },
+      "gtfs_static": {
+        "url": "https://new.mta.info/map/5256",
+        "format": "GTFS",
+        "update_frequency": "weekly"
+      },
+      "gtfs_realtime": {
+        "trip_updates": {
+          "url": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs",
+          "format": "GTFS-RT",
+          "auth_required": true,
+          "rate_limit": "30 requests/minute"
+        },
+        "vehicle_positions": {
+          "url": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l",
+          "format": "GTFS-RT",
+          "auth_required": true,
+          "rate_limit": "30 requests/minute"
+        },
+        "service_alerts": {
+          "url": "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-si",
+          "format": "GTFS-RT",
+          "auth_required": true,
+          "rate_limit": "30 requests/minute"
+        }
+      },
+      "network_info": {
+        "lines": ["1", "2", "3", "4", "5", "6", "6X", "7", "7X", "A", "B", "C", "D", "E", "F", "G", "J", "L", "M", "N", "Q", "R", "W", "Z"],
+        "stations": 472,
+        "track_miles": 245,
+        "annual_ridership": 1700000000,
+        "service_area": "New York City (Bronx, Brooklyn, Manhattan, Queens)"
+      },
+      "operational_centers": {
+        "primary_occ": "Rail Control Center - Jay Street",
+        "backup_facilities": ["207th Street Facility", "Westchester Yard"],
+        "dispatch_zones": ["Manhattan", "Brooklyn", "Queens", "Bronx"]
+      }
+    },
+    "mbta": {
+      "name": "Massachusetts Bay Transportation Authority",
+      "official_name": "MBTA",
+      "region": "Greater Boston",
+      "country": "United States",
+      "timezone": "America/New_York",
+      "contact": {
+        "website": "https://www.mbta.com",
+        "customer_service": "617-222-3200",
+        "emergency": "911"
+      },
+      "api_v3": {
+        "base_url": "https://api-v3.mbta.com",
+        "auth_required": true,
+        "rate_limit": "1000 requests/minute",
+        "endpoints": {
+          "vehicles": "/vehicles",
+          "predictions": "/predictions",
+          "alerts": "/alerts",
+          "routes": "/routes",
+          "stops": "/stops",
+          "trips": "/trips",
+          "schedules": "/schedules"
+        }
+      },
+      "network_info": {
+        "lines": {
+          "heavy_rail": ["Red", "Orange", "Blue"],
+          "light_rail": ["Green-B", "Green-C", "Green-D", "Green-E"],
+          "bus_rapid_transit": ["Silver Line"]
+        },
+        "stations": 153,
+        "track_miles": 38,
+        "annual_ridership": 185000000,
+        "service_area": "Greater Boston Metropolitan Area"
+      },
+      "operational_centers": {
+        "primary_occ": "Operations Control Center - South Station",
+        "backup_facilities": ["Forest Hills", "Alewife"],
+        "dispatch_zones": ["North", "South", "Central"]
+      }
+    },
+    "wmata": {
+      "name": "Washington Metropolitan Area Transit Authority",
+      "official_name": "WMATA",
+      "region": "Washington D.C. Metropolitan Area",
+      "country": "United States",
+      "timezone": "America/New_York",
+      "contact": {
+        "website": "https://www.wmata.com",
+        "customer_service": "202-637-7000",
+        "emergency": "911"
+      },
+      "api": {
+        "base_url": "https://api.wmata.com",
+        "auth_required": true,
+        "rate_limit": "10 requests/second",
+        "endpoints": {
+          "incidents": "/Incidents.svc/json/Incidents",
+          "rail_predictions": "/StationPrediction.svc/json/GetPrediction",
+          "train_positions": "/TrainPositions/TrainPositions",
+          "elevator_incidents": "/Incidents.svc/json/ElevatorIncidents"
+        }
+      },
+      "network_info": {
+        "lines": ["Red", "Blue", "Orange", "Silver", "Green", "Yellow"],
+        "stations": 97,
+        "track_miles": 117,
+        "annual_ridership": 215000000,
+        "service_area": "Washington D.C., Maryland, Virginia"
+      },
+      "operational_centers": {
+        "primary_occ": "Operations Control Center - Jackson Graham Building",
+        "backup_facilities": ["Greenbelt Yard", "Huntington Yard"],
+        "dispatch_zones": ["Core", "Maryland", "Virginia"]
+      }
+    },
+    "bart": {
+      "name": "Bay Area Rapid Transit",
+      "official_name": "BART",
+      "region": "San Francisco Bay Area",
+      "country": "United States",
+      "timezone": "America/Los_Angeles",
+      "contact": {
+        "website": "https://www.bart.gov",
+        "customer_service": "510-464-6000",
+        "emergency": "911"
+      },
+      "api": {
+        "base_url": "https://api.bart.gov/api",
+        "auth_required": false,
+        "rate_limit": "unlimited",
+        "endpoints": {
+          "advisories": "/bsa.aspx",
+          "real_time_estimates": "/etd.aspx",
+          "route_information": "/route.aspx",
+          "station_information": "/stn.aspx"
+        }
+      },
+      "network_info": {
+        "lines": ["Red", "Orange", "Yellow", "Green", "Blue"],
+        "stations": 50,
+        "track_miles": 131,
+        "annual_ridership": 102000000,
+        "service_area": "San Francisco, Oakland, San Jose, East Bay, Peninsula"
+      },
+      "operational_centers": {
+        "primary_occ": "Operations Control Center - Oakland",
+        "backup_facilities": ["Daly City Yard", "Hayward Yard"],
+        "dispatch_zones": ["San Francisco", "East Bay", "Peninsula"]
+      }
+    },
+    "tfl": {
+      "name": "Transport for London",
+      "official_name": "TfL",
+      "region": "Greater London",
+      "country": "United Kingdom",
+      "timezone": "Europe/London",
+      "contact": {
+        "website": "https://tfl.gov.uk",
+        "customer_service": "0343 222 1234",
+        "emergency": "999"
+      },
+      "unified_api": {
+        "base_url": "https://api.tfl.gov.uk",
+        "auth_required": true,
+        "rate_limit": "500 requests/minute",
+        "endpoints": {
+          "line_status": "/Line/Mode/tube,dlr,overground,tram/Status",
+          "arrivals": "/Line/{lineId}/Arrivals",
+          "disruptions": "/Line/{lineId}/Disruption",
+          "crowding": "/crowding/{naptan}",
+          "journey_planner": "/Journey/JourneyResults"
+        }
+      },
+      "network_info": {
+        "underground_lines": ["Bakerloo", "Central", "Circle", "District", "Hammersmith & City", "Jubilee", "Metropolitan", "Northern", "Piccadilly", "Victoria", "Waterloo & City"],
+        "other_services": ["DLR", "Overground", "Elizabeth Line", "Trams"],
+        "stations": 270,
+        "track_miles": 249,
+        "annual_ridership": 1350000000,
+        "service_area": "Greater London and surrounding areas"
+      },
+      "operational_centers": {
+        "primary_occ": "Network Operations Centre - Stratford",
+        "backup_facilities": ["Arnos Grove", "Cockfosters"],
+        "control_rooms": ["Service Control Centre", "Network Management Centre"]
+      }
+    },
+    "generic": {
+      "name": "Generic GTFS Transit System",
+      "description": "Template for any GTFS-compliant transit system",
+      "timezone": "UTC",
+      "gtfs_static": {
+        "required_files": [
+          "agency.txt",
+          "stops.txt",
+          "routes.txt",
+          "trips.txt",
+          "stop_times.txt"
+        ],
+        "optional_files": [
+          "calendar.txt",
+          "calendar_dates.txt",
+          "fare_attributes.txt",
+          "fare_rules.txt",
+          "shapes.txt"
+        ]
+      },
+      "gtfs_realtime": {
+        "feed_types": [
+          "trip_updates",
+          "vehicle_positions",
+          "service_alerts"
+        ],
+        "format": "Protocol Buffers"
+      }
+    }
+  },
+  "data_contracts": {
+    "ingestion_standards": {
+      "polling_frequency": 30,
+      "timeout_seconds": 10,
+      "retry_attempts": 3,
+      "data_retention_days": 90
+    },
+    "normalization_schema": "occlm.schemas.RealtimeEvent",
+    "quality_thresholds": {
+      "data_freshness_minutes": 5,
+      "completeness_threshold": 0.95,
+      "validation_error_threshold": 0.01
+    }
+  },
+  "metadata": {
+    "last_updated": "2024-03-27T15:25:00Z",
+    "config_version": "2.1.0",
+    "maintainer": "TAKTKRONE-I Team",
+    "source": "Official operator APIs and documentation"
+  }
+}

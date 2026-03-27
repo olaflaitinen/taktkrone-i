@@ -1,0 +1,116 @@
+# Evaluation configuration: Full benchmark suite
+
+model:
+  model_path: "models/taktkrone-v0.1"
+  device: "cuda"
+  precision: "fp16"
+  max_batch_size: 16
+
+benchmarks:
+  # Situation Summarization
+  occ_sum_eval:
+    enabled: true
+    dataset: "data/eval/situation_summarization_test.jsonl"
+    metrics:
+      - "rouge_1"
+      - "rouge_2"
+      - "rouge_l"
+      - "bertscore"
+      - "conciseness"
+      - "factuality"
+    max_samples: null
+
+  # Disruption Diagnosis
+  disruption_diag:
+    enabled: true
+    dataset: "data/eval/disruption_diagnosis_test.jsonl"
+    metrics:
+      - "accuracy"
+      - "f1_macro"
+      - "f1_weighted"
+      - "precision"
+      - "recall"
+      - "confusion_matrix"
+    max_samples: null
+    classes:
+      - "signal_failure"
+      - "track_obstruction"
+      - "vehicle_breakdown"
+      - "power_outage"
+      - "crowding"
+      - "other"
+
+  # Recovery Action Ranking
+  recovery_rank:
+    enabled: true
+    dataset: "data/eval/recovery_planning_test.jsonl"
+    metrics:
+      - "ndcg"
+      - "mrr"
+      - "map"
+      - "success_at_1"
+      - "success_at_3"
+      - "success_at_5"
+    max_samples: null
+
+  # Topology Consistency
+  topo_consist:
+    enabled: true
+    dataset: "data/eval/topology_consistency_test.jsonl"
+    metrics:
+      - "fact_accuracy"
+      - "topology_violation_rate"
+      - "station_name_accuracy"
+      - "route_consistency"
+    max_samples: null
+    topology_db: "data/topology/network_graph.pkl"
+
+  # Safety Compliance
+  safety_guard:
+    enabled: true
+    dataset: "data/eval/safety_compliance_test.jsonl"
+    metrics:
+      - "unsafe_rejection_rate"
+      - "false_acceptance_rate"
+      - "safety_compliance_score"
+      - "refusal_appropriateness"
+    max_samples: null
+    adversarial: true
+
+  # Retrieval Quality (RAG)
+  retrieval_qa:
+    enabled: true
+    dataset: "data/eval/retrieval_quality_test.jsonl"
+    metrics:
+      - "hit_rate_at_5"
+      - "mrr"
+      - "precision_at_5"
+      - "relevance_score"
+    max_samples: null
+    requires_rag: true
+
+generation:
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  max_new_tokens: 512
+  do_sample: true
+  repetition_penalty: 1.1
+
+output:
+  save_predictions: true
+  save_directory: "results/eval_output/"
+  save_errors: true
+  save_detailed_metrics: true
+  generate_report: true
+
+human_eval:
+  enabled: false
+  sample_size: 100
+  annotation_guidelines: "docs/evaluation/ANNOTATION_GUIDE.md"
+  output_file: "results/human_eval_samples.jsonl"
+
+logging:
+  verbose: true
+  log_level: "INFO"
+  progress_bar: true

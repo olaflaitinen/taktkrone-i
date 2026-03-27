@@ -1,0 +1,283 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://metrolm.org/schemas/occ_dialogue_sample.v1.0.0.json",
+  "title": "OCCDialogueSample",
+  "description": "Instruction tuning sample for OCC decision support training",
+  "type": "object",
+  "required": [
+    "id",
+    "schema_version",
+    "timestamp",
+    "operator",
+    "source",
+    "task_type",
+    "messages",
+    "metadata"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique sample identifier",
+      "examples": ["sample_001", "synthetic_delay_diagnosis_042"]
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Sample creation or scenario timestamp"
+    },
+    "operator": {
+      "type": "string",
+      "description": "Transit operator for this scenario"
+    },
+    "source": {
+      "type": "string",
+      "description": "Data source (e.g., 'synthetic', 'historical', 'human_annotated')",
+      "enum": ["synthetic", "historical", "human_annotated", "simulation"]
+    },
+    "task_type": {
+      "type": "string",
+      "description": "Primary OCC task category",
+      "enum": [
+        "situation_summarization",
+        "disruption_diagnosis",
+        "recovery_planning",
+        "headway_regulation",
+        "turnback_management",
+        "conflict_resolution",
+        "after_action_review",
+        "information_extraction",
+        "question_answering"
+      ]
+    },
+    "messages": {
+      "type": "array",
+      "description": "Conversation messages in instruction-following format",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["system", "user", "assistant"]
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional speaker name/ID"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Sample-level metadata for filtering and analysis",
+      "required": ["difficulty", "split"],
+      "properties": {
+        "difficulty": {
+          "type": "string",
+          "enum": ["easy", "medium", "hard", "expert"],
+          "description": "Estimated complexity of the reasoning task"
+        },
+        "split": {
+          "type": "string",
+          "enum": ["train", "validation", "test"],
+          "description": "Dataset split assignment"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Transit lines/routes involved"
+        },
+        "disruption_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Types of disruptions in scenario",
+          "examples": [["signal_failure", "delay_propagation"]]
+        },
+        "actions_required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Expected action types in response",
+          "examples": [["short_turn", "hold_train"]]
+        },
+        "temporal_complexity": {
+          "type": "string",
+          "enum": ["single_moment", "short_window", "extended_sequence"],
+          "description": "Temporal reasoning complexity"
+        },
+        "retrieval_required": {
+          "type": "boolean",
+          "description": "Whether RAG context is needed"
+        },
+        "safety_critical": {
+          "type": "boolean",
+          "description": "Whether scenario involves safety-critical decisions"
+        },
+        "quality_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Human-assessed quality score (if available)"
+        },
+        "generation_method": {
+          "type": "string",
+          "description": "How this sample was created",
+          "examples": ["rule_based_scenario_engine", "llm_synthetic", "human_authored"]
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "created_by": {
+              "type": "string"
+            },
+            "reviewed": {
+              "type": "boolean"
+            },
+            "annotations": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "ground_truth": {
+      "type": "object",
+      "description": "Optional structured ground truth for evaluation",
+      "properties": {
+        "expected_entities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expected_actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action_type": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "integer"
+              },
+              "rationale": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "correct_diagnosis": {
+          "type": "string"
+        },
+        "factual_constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Facts that must be respected in response"
+        }
+      }
+    },
+    "context_data": {
+      "type": "object",
+      "description": "Structured context that may be provided to model",
+      "properties": {
+        "network_snapshot": {
+          "type": "object",
+          "description": "Current network state reference"
+        },
+        "recent_events": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "topology_context": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "id": "sample_delay_diagnosis_001",
+      "schema_version": "1.0.0",
+      "timestamp": "2026-03-27T17:30:00Z",
+      "operator": "mta_nyct",
+      "source": "synthetic",
+      "task_type": "disruption_diagnosis",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are an expert metro operations control center analyst. Analyze transit situations and provide clear, actionable recommendations. Always quantify uncertainty and flag safety considerations."
+        },
+        {
+          "role": "user",
+          "content": "Line 1 southbound trains are experiencing 10-15 minute delays between 96th St and Times Square. The last three trains are bunched within 2 minutes of each other. What is likely causing this and what should we do?"
+        },
+        {
+          "role": "assistant",
+          "content": "Analysis: This appears to be a signal-related delay at or near 96th St station, causing initial headway disruption that has propagated into train bunching. \n\nLikely Root Cause (confidence: 0.75):\n- Signal system delay at 96th St holding trains\n- Extended dwell times due to crowding from initial delays\n- Compounding effect as scheduled headways break down\n\nRecommended Actions:\n1. IMMEDIATE: Verify signal status at 96th St with signal maintainer (Priority: HIGH)\n2. SHORT-TERM: Consider holding the leading train in the bunch at 42nd St for 3-4 minutes to re-establish spacing (Priority: MEDIUM)\n3. PARALLEL: Prepare short-turn option at Chambers St if delays exceed 20 minutes (Priority: LOW)\n\nExpected Impact:\n- Holding action should restore 5-6 minute headways within 20 minutes\n- Short turn would reduce service gap to 8 minutes maximum\n\nUncertainties:\n- Actual signal issue may require longer repair time\n- Passenger load on held train may become uncomfortable\n\nSafety Notes:\n- Monitor platform crowding at downstream stations\n- Ensure held train operator is informed and supported\n- Do not short-turn if switch at Chambers is under maintenance"
+        }
+      ],
+      "metadata": {
+        "difficulty": "medium",
+        "split": "train",
+        "lines": ["1"],
+        "disruption_types": ["signal_delay", "bunching"],
+        "actions_required": ["holding", "short_turn_preparation"],
+        "temporal_complexity": "short_window",
+        "retrieval_required": true,
+        "safety_critical": false,
+        "quality_score": 0.88,
+        "generation_method": "rule_based_scenario_engine",
+        "provenance": {
+          "created_at": "2026-03-27T10:00:00Z",
+          "created_by": "scenario_generator_v1",
+          "reviewed": true
+        }
+      },
+      "ground_truth": {
+        "expected_entities": ["Line 1", "96th St", "Times Square", "42nd St", "Chambers St"],
+        "expected_actions": [
+          {
+            "action_type": "signal_verification",
+            "priority": 1,
+            "rationale": "Must confirm root cause before intervention"
+          },
+          {
+            "action_type": "holding",
+            "priority": 2,
+            "rationale": "Primary headway restoration strategy"
+          }
+        ],
+        "correct_diagnosis": "signal_delay_with_bunching",
+        "factual_constraints": [
+          "96th St has bidirectional signaling",
+          "Chambers St is a valid short-turn location",
+          "Normal headway on Line 1 is 5-6 minutes during peak"
+        ]
+      }
+    }
+  ]
+}

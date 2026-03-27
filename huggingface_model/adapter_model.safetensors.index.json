@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "total_size": 67108864,
+    "format": "safetensors"
+  },
+  "weight_map": {
+    "base_model.model.model.layers.0.self_attn.q_proj.lora_A.default.weight": "adapter_model.safetensors",
+    "base_model.model.model.layers.0.self_attn.q_proj.lora_B.default.weight": "adapter_model.safetensors",
+    "base_model.model.model.layers.0.self_attn.v_proj.lora_A.default.weight": "adapter_model.safetensors",
+    "base_model.model.model.layers.0.self_attn.v_proj.lora_B.default.weight": "adapter_model.safetensors"
+  }
+}

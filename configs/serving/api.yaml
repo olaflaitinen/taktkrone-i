@@ -1,0 +1,117 @@
+# API Serving configuration
+
+model:
+  model_path: "models/taktkrone-v0.1"
+  model_type: "huggingface"  # or "vllm" for optimized serving
+  device: "cuda"
+  precision: "fp16"
+  use_flash_attention: true
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  timeout: 120
+  max_concurrent_requests: 32
+
+  # API versioning
+  api_version: "v1"
+  api_prefix: "/v1"
+
+inference:
+  backend: "vllm"  # "transformers" or "vllm"
+
+  # vLLM-specific settings
+  vllm:
+    tensor_parallel_size: 1
+    gpu_memory_utilization: 0.9
+    max_model_len: 4096
+    swap_space: 4  # GB
+    dtype: "bfloat16"
+
+  # Generation defaults
+  default_temperature: 0.7
+  default_top_p: 0.9
+  default_max_tokens: 512
+  min_tokens: 10
+  max_tokens_limit: 2048
+
+rag:
+  enabled: true
+  vector_store_type: "faiss"  # "faiss", "chroma", or "qdrant"
+  vector_store_path: "data/vectorstore/"
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  top_k: 5
+  similarity_threshold: 0.7
+  reranking_enabled: false
+
+guardrails:
+  enabled: true
+
+  # Input validation
+  max_input_length: 4000
+  min_input_length: 5
+
+  # Content filtering
+  unsafe_keyword_filter: true
+  unsafe_keywords_file: "configs/guardrails/unsafe_keywords.txt"
+
+  # Output validation
+  check_topology_consistency: true
+  check_factuality: true
+  confidence_threshold: 0.3  # Minimum confidence to return result
+
+  # Safety checks
+  reject_direct_commands: true
+  require_uncertainty_labels: true
+
+rate_limiting:
+  enabled: true
+  requests_per_minute: 60
+  burst_size: 10
+
+caching:
+  enabled: true
+  cache_type: "redis"  # "memory" or "redis"
+  redis_url: "redis://localhost:6379"
+  ttl_seconds: 300
+  max_cache_size: 1000
+
+logging:
+  level: "INFO"
+  format: "json"
+
+  # Audit logging
+  audit_log_enabled: true
+  audit_log_file: "logs/audit.jsonl"
+  log_prompts: true
+  log_responses: true
+  log_metadata: true
+
+monitoring:
+  enabled: true
+  prometheus_enabled: true
+  prometheus_port: 9090
+
+  # Metrics to track
+  track_latency: true
+  track_throughput: true
+  track_error_rate: true
+  track_token_usage: true
+
+authentication:
+  enabled: false  # Set to true for production
+  api_key_header: "X-API-Key"
+  api_keys_file: "configs/serving/api_keys.txt"
+
+cors:
+  enabled: true
+  allow_origins: ["*"]
+  allow_methods: ["GET", "POST"]
+  allow_headers: ["*"]
+
+health_check:
+  endpoint: "/health"
+  check_model_loaded: true
+  check_gpu_available: true
+  check_dependencies: true

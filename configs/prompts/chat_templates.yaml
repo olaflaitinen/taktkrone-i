@@ -1,0 +1,139 @@
+# Chat Templates for TAKTKRONE-I
+
+# Base system prompt for OCC assistance
+system_prompt: |
+  You are TAKTKRONE-I, an AI assistant specialized in helping transit Operations Control Centers (OCCs)
+  with incident response and decision making. You have expertise in:
+
+  - Transit incident analysis and classification
+  - Recovery action recommendations
+  - Operator communication assistance
+  - Service disruption analysis
+  - Passenger impact assessment
+
+  Always prioritize safety and provide clear, actionable recommendations.
+  If uncertain about safety-critical decisions, recommend human review.
+
+# Incident analysis prompt template
+incident_analysis: |
+  Analyze the following transit incident and provide recommendations:
+
+  **Incident Details:**
+  - Type: {{incident_type}}
+  - Location: {{location}}
+  - Time: {{timestamp}}
+  - Severity: {{severity}}
+  - Description: {{description}}
+
+  **Current Status:**
+  {{current_status}}
+
+  **Questions:**
+  1. What are the immediate actions the OCC should take?
+  2. What is the estimated impact on passenger service?
+  3. What recovery actions should be implemented?
+  4. Are there any safety considerations?
+
+  Provide clear, prioritized recommendations.
+
+# Dialogue continuation template
+dialogue_continue: |
+  You are participating in an ongoing OCC conversation about a transit incident.
+
+  **Context:**
+  {{incident_context}}
+
+  **Conversation History:**
+  {{dialogue_history}}
+
+  **Latest Message:**
+  {{latest_message}}
+
+  Continue the conversation as an AI assistant providing helpful analysis and recommendations.
+
+# Summarization template
+incident_summary: |
+  Create a concise summary of the following transit incident:
+
+  **Raw Incident Data:**
+  {{incident_data}}
+
+  **Requirements:**
+  - Include incident type, location, duration, and impact
+  - Mention key actions taken
+  - Note resolution status
+  - Keep summary under 200 words
+  - Use professional OCC terminology
+
+# Classification template
+incident_classification: |
+  Classify the following transit incident into one of these categories:
+
+  **Categories:**
+  - signal_failure
+  - power_outage
+  - track_obstruction
+  - vehicle_fault
+  - weather_impact
+  - security_incident
+  - medical_emergency
+  - staff_shortage
+  - overcrowding
+  - timetable_issue
+  - unknown
+
+  **Incident Description:**
+  {{incident_description}}
+
+  **Classification:** [category]
+  **Confidence:** [0.0-1.0]
+  **Reasoning:** [brief explanation]
+
+# Recovery ranking template
+recovery_ranking: |
+  Given the following incident scenario, rank these recovery actions in order of priority:
+
+  **Incident:** {{incident_summary}}
+
+  **Available Actions:**
+  {{available_actions}}
+
+  **Ranking Criteria:**
+  - Passenger safety (highest priority)
+  - Service restoration speed
+  - Resource efficiency
+  - Cost effectiveness
+
+  Rank from 1 (highest priority) to N (lowest priority) and explain reasoning.
+
+# Safety check template
+safety_validation: |
+  Review the following OCC recommendation for safety compliance:
+
+  **Incident:** {{incident_description}}
+  **Recommendation:** {{recommendation}}
+
+  **Safety Check:**
+  - Does this ensure passenger safety? (Yes/No)
+  - Does this ensure staff safety? (Yes/No)
+  - Does this follow standard operating procedures? (Yes/No)
+  - Are there any risk factors? (List them)
+
+  **Approval Status:** [APPROVED/NEEDS_REVIEW/REJECTED]
+  **Required Actions:** [if any]
+
+# Multi-turn dialogue starter template
+dialogue_starter: |
+  **Incident Alert**
+
+  A {{incident_type}} has been reported {{location}}.
+
+  **Initial Information:**
+  - Time: {{timestamp}}
+  - Severity: {{severity_level}}
+  - Affected Line(s): {{affected_lines}}
+  - Initial Impact: {{initial_impact}}
+
+  **Status:** ACTIVE - Awaiting OCC Response
+
+  How should the OCC respond to this incident?

@@ -1,0 +1,54 @@
+{
+  "scenario_id": "test-001",
+  "incident_type": "signal_failure",
+  "transit_system": "test-system",
+  "timestamp": "2024-01-15T14:30:00Z",
+  "initial_state": {
+    "affected_lines": ["Line-A", "Line-B"],
+    "affected_stations": ["Station-X", "Station-Y"],
+    "passenger_load": "high",
+    "weather": "clear",
+    "time_of_day": "afternoon_peak"
+  },
+  "incident_progression": [
+    {
+      "time_offset_minutes": 0,
+      "event": "initial_report",
+      "source": "train_operator",
+      "description": "Signal failure detected on Track 1 northbound"
+    },
+    {
+      "time_offset_minutes": 2,
+      "event": "incident_confirmation",
+      "source": "station_staff",
+      "description": "Confirmed vision-based observation of failed signal"
+    },
+    {
+      "time_offset_minutes": 5,
+      "event": "decision_made",
+      "source": "occ",
+      "decision": "dispatch_maintenance",
+      "description": "Signal maintenance team dispatched to Station-X"
+    }
+  ],
+  "operator_actions": [
+    {
+      "timestamp": "2024-01-15T14:30:15Z",
+      "action_type": "communication",
+      "target": "OCC",
+      "message": "Signal failure, requesting instructions"
+    },
+    {
+      "timestamp": "2024-01-15T14:30:45Z",
+      "action_type": "service_modification",
+      "target": "on_train",
+      "modification": "holding_at_station"
+    }
+  ],
+  "resolution": {
+    "root_cause": "Failed signal relay module",
+    "resolution_time_minutes": 18,
+    "permanent_fix": true,
+    "outcome": "service_resumed"
+  }
+}

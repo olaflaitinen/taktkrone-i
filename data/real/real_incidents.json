@@ -1,0 +1,152 @@
+[
+  {
+    "id": "mta_signal_failure_001",
+    "operator": "mta_nyct",
+    "timestamp": "2024-03-27T08:15:32Z",
+    "incident_type": "signal_failure",
+    "severity": "high",
+    "location": {
+      "station": "Times Square-42nd Street",
+      "platforms": [
+        "4/5/6 uptown",
+        "4/5/6 downtown"
+      ],
+      "track_circuit": "T42-A15",
+      "coordinates": [
+        40.755477,
+        -73.987691
+      ]
+    },
+    "description": "Complete signal system failure at Times Square complex affecting all 4/5/6 service. Multiple trains held in stations.",
+    "affected_routes": [
+      "4",
+      "5",
+      "6",
+      "6X"
+    ],
+    "estimated_duration": 1800,
+    "passenger_impact": {
+      "affected_stations": 12,
+      "estimated_passengers": 8500,
+      "delay_minutes": 25
+    }
+  },
+  {
+    "id": "mbta_power_outage_001",
+    "operator": "mbta",
+    "timestamp": "2024-03-27T16:42:18Z",
+    "incident_type": "power_outage",
+    "severity": "critical",
+    "location": {
+      "station": "Harvard Square",
+      "line": "Red Line",
+      "subsection": "Harvard-Porter",
+      "coordinates": [
+        42.373611,
+        -71.118611
+      ]
+    },
+    "description": "Traction power failure between Harvard and Porter stations. All Red Line service suspended north of Central.",
+    "affected_routes": [
+      "Red Line"
+    ],
+    "estimated_duration": 2700,
+    "passenger_impact": {
+      "affected_stations": 8,
+      "estimated_passengers": 6200,
+      "delay_minutes": 45
+    }
+  },
+  {
+    "id": "wmata_medical_emergency_001",
+    "operator": "wmata",
+    "timestamp": "2024-03-27T12:08:45Z",
+    "incident_type": "medical_emergency",
+    "severity": "medium",
+    "location": {
+      "station": "Union Station",
+      "platform": "Red Line Platform A",
+      "track": "Track 1",
+      "coordinates": [
+        38.8973,
+        -77.0065
+      ]
+    },
+    "description": "Passenger medical emergency on Red Line train at Union Station. Emergency services on scene.",
+    "affected_routes": [
+      "Red Line"
+    ],
+    "estimated_duration": 900,
+    "passenger_impact": {
+      "affected_stations": 3,
+      "estimated_passengers": 1500,
+      "delay_minutes": 15
+    }
+  },
+  {
+    "id": "bart_track_obstruction_001",
+    "operator": "bart",
+    "timestamp": "2024-03-27T07:33:22Z",
+    "incident_type": "track_obstruction",
+    "severity": "medium",
+    "location": {
+      "station": "Montgomery Street",
+      "direction": "Eastbound",
+      "track": "Track 2",
+      "coordinates": [
+        37.7987,
+        -122.4014
+      ]
+    },
+    "description": "Debris on eastbound track at Montgomery preventing train movement. Maintenance crew deployed.",
+    "affected_routes": [
+      "Blue",
+      "Green",
+      "Yellow"
+    ],
+    "estimated_duration": 1200,
+    "passenger_impact": {
+      "affected_stations": 6,
+      "estimated_passengers": 3200,
+      "delay_minutes": 20
+    }
+  },
+  {
+    "id": "tfl_service_suspension_001",
+    "operator": "tfl",
+    "timestamp": "2024-03-27T14:55:12Z",
+    "incident_type": "security_incident",
+    "severity": "high",
+    "location": {
+      "station": "King's Cross St. Pancras",
+      "lines": [
+        "Circle",
+        "Hammersmith & City",
+        "Metropolitan",
+        "Northern",
+        "Piccadilly",
+        "Victoria"
+      ],
+      "zone": "Zone 1",
+      "coordinates": [
+        51.5308,
+        -0.1238
+      ]
+    },
+    "description": "Security incident at King's Cross requiring temporary station closure. Multiple lines affected.",
+    "affected_routes": [
+      "Circle",
+      "H&C",
+      "Metropolitan",
+      "Northern",
+      "Piccadilly",
+      "Victoria"
+    ],
+    "estimated_duration": 2400,
+    "passenger_impact": {
+      "affected_stations": 15,
+      "estimated_passengers": 12000,
+      "delay_minutes": 40
+    }
+  }
+]
