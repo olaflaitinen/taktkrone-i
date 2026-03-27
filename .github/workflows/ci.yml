@@ -114,7 +114,7 @@ jobs:
               with open(schema_file) as f:
                   schema = json.load(f)
               # Basic validation that schema is valid JSON
-              assert '\$schema' in schema or 'type' in schema
+              assert 'type' in schema or 'properties' in schema
           print('All schemas valid')
           "
 
