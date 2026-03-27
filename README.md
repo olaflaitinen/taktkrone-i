@@ -1,51 +1,12 @@
 # TAKTKRONE-I: Metro Operations Control Center Language Model
 
-<!-- Hugging Face Badges -->
-<p align="center">
-  <a href="https://huggingface.co/olaflaitinen/taktkrone-i"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-orange?style=for-the-badge" alt="HuggingFace Model"></a>
-  <a href="https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-blue?style=for-the-badge" alt="HuggingFace Dataset"></a>
-  <a href="https://huggingface.co/olaflaitinen/taktkrone-i"><img src="https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8167-green?style=for-the-badge&logo=doi" alt="Model DOI"></a>
-  <a href="https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus"><img src="https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8166-green?style=for-the-badge&logo=doi" alt="Dataset DOI"></a>
-</p>
-
-<!-- ArXiv & Academic Badges -->
-<p align="center">
-  <a href="https://arxiv.org/abs/2026.00000"><img src="https://img.shields.io/badge/arXiv-2026.00000-b31b1b?style=for-the-badge&logo=arxiv" alt="arXiv"></a>
-  <a href="https://zenodo.org/record/8166"><img src="https://img.shields.io/badge/Zenodo-10.57967%2Fhf%2F8167-blue?style=for-the-badge&logo=zenodo" alt="Zenodo"></a>
-  <a href="https://paperswithcode.com/paper/taktkrone-i"><img src="https://img.shields.io/badge/Papers%20With%20Code-TAKTKRONE--I-21cbce?style=for-the-badge&logo=paperswithcode" alt="Papers With Code"></a>
-</p>
-
-<!-- Project Status Badges -->
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square&logo=apache" alt="License"></a>
-  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
-  <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C?style=flat-square&logo=pytorch&logoColor=white" alt="PyTorch"></a>
-  <a href="https://huggingface.co/docs/transformers"><img src="https://img.shields.io/badge/Transformers-4.36%2B-FFD21E?style=flat-square&logo=huggingface" alt="Transformers"></a>
-</p>
-
-<!-- Code Quality Badges -->
-<p align="center">
-  <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/Code%20Style-Black-000000?style=flat-square&logo=python" alt="Black"></a>
-  <a href="http://mypy-lang.org/"><img src="https://img.shields.io/badge/Type%20Check-MyPy-blue?style=flat-square&logo=python" alt="MyPy"></a>
-  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/Linter-Ruff-D7FF64?style=flat-square&logo=ruff" alt="Ruff"></a>
-  <a href="https://pre-commit.com/"><img src="https://img.shields.io/badge/Pre--Commit-Enabled-brightgreen?style=flat-square&logo=pre-commit" alt="Pre-commit"></a>
-</p>
-
-<!-- Infrastructure Badges -->
-<p align="center">
-  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"></a>
-  <a href="https://kubernetes.io/"><img src="https://img.shields.io/badge/Kubernetes-Ready-326CE5?style=flat-square&logo=kubernetes&logoColor=white" alt="Kubernetes"></a>
-  <a href="https://github.com/vllm-project/vllm"><img src="https://img.shields.io/badge/vLLM-Optimized-purple?style=flat-square" alt="vLLM"></a>
-  <a href="https://wandb.ai/"><img src="https://img.shields.io/badge/W%26B-Tracked-FFBE00?style=flat-square&logo=weightsandbiases" alt="Weights & Biases"></a>
-</p>
-
-<!-- GitHub & Community Badges -->
-<p align="center">
-  <a href="https://github.com/olaflaitinen/taktkrone-i"><img src="https://img.shields.io/github/stars/olaflaitinen/taktkrone-i?style=flat-square&logo=github" alt="GitHub Stars"></a>
-  <a href="https://github.com/olaflaitinen/taktkrone-i/issues"><img src="https://img.shields.io/github/issues/olaflaitinen/taktkrone-i?style=flat-square&logo=github" alt="GitHub Issues"></a>
-  <a href="https://github.com/olaflaitinen/taktkrone-i/pulls"><img src="https://img.shields.io/github/issues-pr/olaflaitinen/taktkrone-i?style=flat-square&logo=github" alt="Pull Requests"></a>
-  <a href="https://github.com/olaflaitinen/taktkrone-i/graphs/contributors"><img src="https://img.shields.io/github/contributors/olaflaitinen/taktkrone-i?style=flat-square&logo=github" alt="Contributors"></a>
-</p>
+[![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
+[![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-blue)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
+[![Model DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8167-green)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
+[![Dataset DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8166-green)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C)](https://pytorch.org/)
 
 > **TAKTKRONE-I** is the inaugural model of **occLM** (Operations Control Center Language Model), part of the **metroLM** family of transit-domain specialized language models.
 
