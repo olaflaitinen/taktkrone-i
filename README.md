@@ -2,6 +2,7 @@
 
 [![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange?logo=huggingface)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
 [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-blue?logo=huggingface)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19258193-blue?logo=zenodo)](https://doi.org/10.5281/zenodo.19258193)
 [![Model DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8167-green?logo=doi)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
 [![Dataset DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8166-green?logo=doi)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache)](LICENSE)
