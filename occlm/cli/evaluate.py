@@ -3,7 +3,6 @@
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional
 
 import typer
 
@@ -19,9 +18,9 @@ def evaluate(
         help="Comma-separated list of benchmarks or 'all'",
     ),
     output_dir: str = typer.Option("results/evaluation", help="Output directory"),
-    subset_size: Optional[int] = typer.Option(None, help="Use subset of test cases"),
+    subset_size: int | None = typer.Option(None, help="Use subset of test cases"),
     format: str = typer.Option("json", help="Output format: json or html"),
-    comparison_model: Optional[str] = typer.Option(None, help="Compare with another model"),
+    comparison_model: str | None = typer.Option(None, help="Compare with another model"),
     device: str = typer.Option("cpu", help="Device: cpu or cuda"),
     batch_size: int = typer.Option(32, help="Batch size for evaluation"),
     progress: bool = typer.Option(True, help="Show progress bar"),
@@ -32,8 +31,8 @@ def evaluate(
         occlm evaluate --model-path model.pth --benchmarks all --output-dir results/
     """
     try:
+
         from occlm.evaluation.benchmark import UnifiedBenchmarkRunner
-        from tqdm import tqdm
 
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -63,7 +62,7 @@ def evaluate(
             """Skeleton generation function."""
             return text[:50]
 
-        def dummy_retrieve(query: str, corpus: dict) -> List[str]:
+        def dummy_retrieve(query: str, corpus: dict) -> list[str]:
             """Skeleton retrieval function."""
             return list(corpus.keys())[:5]
 
@@ -126,7 +125,7 @@ def evaluate(
 def run_benchmark(
     benchmark_name: str = typer.Option(..., help="Benchmark name"),
     model_path: str = typer.Option(..., help="Model path"),
-    dataset_path: Optional[str] = typer.Option(None, help="Dataset path"),
+    dataset_path: str | None = typer.Option(None, help="Dataset path"),
     output_file: str = typer.Option("result.json", help="Output file"),
 ):
     """Run single benchmark.

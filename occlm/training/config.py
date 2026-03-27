@@ -4,10 +4,9 @@ TAKTKRONE-I Training Configuration.
 Defines configuration classes for model training using Pydantic.
 """
 
-from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -43,7 +42,7 @@ class LoRAConfig(BaseModel):
     r: int = Field(default=64, ge=1, le=256, description="LoRA rank")
     lora_alpha: int = Field(default=128, ge=1, description="LoRA alpha scaling")
     lora_dropout: float = Field(default=0.05, ge=0.0, le=1.0)
-    target_modules: List[str] = Field(
+    target_modules: list[str] = Field(
         default=[
             "q_proj", "k_proj", "v_proj", "o_proj",
             "gate_proj", "up_proj", "down_proj"
@@ -52,11 +51,12 @@ class LoRAConfig(BaseModel):
     )
     bias: Literal["none", "all", "lora_only"] = "none"
     task_type: Literal["CAUSAL_LM", "SEQ_2_SEQ_LM"] = "CAUSAL_LM"
-    modules_to_save: Optional[List[str]] = None
+    modules_to_save: list[str] | None = None
 
     def to_peft_config(self):
         """Convert to PEFT LoraConfig"""
-        from peft import LoraConfig as PeftLoraConfig, TaskType
+        from peft import LoraConfig as PeftLoraConfig
+        from peft import TaskType
 
         task_type_map = {
             "CAUSAL_LM": TaskType.CAUSAL_LM,
@@ -140,8 +140,8 @@ class DatasetConfig(BaseModel):
     """Dataset configuration"""
 
     train_path: str = Field(description="Path to training data")
-    eval_path: Optional[str] = Field(default=None, description="Path to validation data")
-    test_path: Optional[str] = Field(default=None, description="Path to test data")
+    eval_path: str | None = Field(default=None, description="Path to validation data")
+    test_path: str | None = Field(default=None, description="Path to test data")
 
     dataset_version: str = "0.1.0"
     chat_template: str = "chatml"
@@ -151,9 +151,9 @@ class DatasetConfig(BaseModel):
     seed: int = 42
 
     # Preprocessing
-    max_samples: Optional[int] = None
-    filter_by_operator: Optional[List[str]] = None
-    filter_by_task_type: Optional[List[str]] = None
+    max_samples: int | None = None
+    filter_by_operator: list[str] | None = None
+    filter_by_task_type: list[str] | None = None
 
 
 class ModelConfig(BaseModel):
@@ -161,7 +161,7 @@ class ModelConfig(BaseModel):
 
     model_id: str = Field(description="Hugging Face model ID or local path")
     model_type: Literal["pretrained", "checkpoint", "finetuned"] = "pretrained"
-    revision: Optional[str] = None
+    revision: str | None = None
     trust_remote_code: bool = False
     torch_dtype: Literal["auto", "float16", "bfloat16", "float32"] = "auto"
 
@@ -172,8 +172,8 @@ class TrainingConfig(BaseModel):
     # Experiment metadata
     experiment_id: str
     experiment_name: str
-    description: Optional[str] = None
-    tags: List[str] = Field(default_factory=list)
+    description: str | None = None
+    tags: list[str] = Field(default_factory=list)
 
     # Core configuration
     method: TrainingMethod = TrainingMethod.LORA
@@ -182,12 +182,12 @@ class TrainingConfig(BaseModel):
     dataset: DatasetConfig
 
     # Optional method-specific configs
-    lora: Optional[LoRAConfig] = None
-    quantization: Optional[QuantizationConfig] = None
+    lora: LoRAConfig | None = None
+    quantization: QuantizationConfig | None = None
 
     # Output paths
     output_dir: str = "models/experiments"
-    logging_dir: Optional[str] = None
+    logging_dir: str | None = None
 
     # Tracking
     use_wandb: bool = False
@@ -255,7 +255,7 @@ class TrainingConfig(BaseModel):
             greater_is_better=False,
         )
 
-    def _get_report_to(self) -> List[str]:
+    def _get_report_to(self) -> list[str]:
         """Get reporting backends"""
         backends = ["tensorboard"]
         if self.use_wandb:
@@ -265,7 +265,7 @@ class TrainingConfig(BaseModel):
         return backends
 
 
-def load_config(config_path: Union[str, Path]) -> TrainingConfig:
+def load_config(config_path: str | Path) -> TrainingConfig:
     """Load training configuration from YAML file"""
     import yaml
 
@@ -275,7 +275,7 @@ def load_config(config_path: Union[str, Path]) -> TrainingConfig:
     return TrainingConfig(**config_dict)
 
 
-def save_config(config: TrainingConfig, output_path: Union[str, Path]) -> None:
+def save_config(config: TrainingConfig, output_path: str | Path) -> None:
     """Save training configuration to YAML file"""
     import yaml
 

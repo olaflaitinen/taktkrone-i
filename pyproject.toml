@@ -135,6 +135,8 @@ occlm = ["data/**/*", "configs/**/*", "py.typed"]
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -148,10 +150,13 @@ ignore = [
     "E501",  # line too long, handled by black
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
+    "B904",  # raise in except without from
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
+"notebooks/*.ipynb" = ["ALL"]
+"huggingface_dataset/*.py" = ["I001"]
 
 [tool.black]
 line-length = 88

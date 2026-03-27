@@ -20,12 +20,13 @@ __license__ = "Apache 2.0"
 
 # Core schemas
 from occlm.schemas import (
-    RealtimeEvent,
-    NetworkSnapshot,
-    IncidentRecord,
-    OCCDialogueSample,
     ActionRecommendation,
+    IncidentRecord,
+    NetworkSnapshot,
+    OCCDialogueSample,
+    RealtimeEvent,
 )
+
 
 # Submodule imports (lazy loading for optional dependencies)
 def _lazy_import(module_name):

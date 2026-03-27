@@ -10,9 +10,9 @@ Provides safety mechanisms including:
 - Audit trail logging
 """
 
-from typing import Dict, List, Any, Optional, Tuple
 import re
 from enum import Enum
+from typing import Any, Optional, Tuple
 
 __version__ = "0.1.0"
 
@@ -25,7 +25,7 @@ class SafetyLevel(str, Enum):
 class ValidationResult:
     """Result of safety validation."""
 
-    def __init__(self, is_safe: bool, reason: Optional[str] = None, confidence: float = 1.0):
+    def __init__(self, is_safe: bool, reason: str | None = None, confidence: float = 1.0):
         self.is_safe = is_safe
         self.reason = reason
         self.confidence = confidence
@@ -59,7 +59,7 @@ class OutputFilter:
     def __init__(self, safety_level: SafetyLevel = SafetyLevel.MODERATE):
         self.safety_level = safety_level
 
-    def filter_output(self, text: str) -> Tuple[str, ValidationResult]:
+    def filter_output(self, text: str) -> tuple[str, ValidationResult]:
         """Filter output text and return cleaned version."""
         # Completed: Implement output filtering
         return text, ValidationResult(True)
@@ -74,7 +74,7 @@ class PIIDetector:
             'email': r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
         }
 
-    def detect_pii(self, text: str) -> List[Dict[str, Any]]:
+    def detect_pii(self, text: str) -> list[dict[str, Any]]:
         """Detect PII in text."""
         # Completed: Implement PII detection
         return []
@@ -94,9 +94,9 @@ class AuditTrail:
     """Maintain audit trail for guardrail actions."""
 
     def __init__(self):
-        self.actions: List[Dict[str, Any]] = []
+        self.actions: list[dict[str, Any]] = []
 
-    def log_action(self, action_type: str, details: Dict[str, Any]) -> None:
+    def log_action(self, action_type: str, details: dict[str, Any]) -> None:
         """Log a guardrail action."""
         # Completed: Implement audit logging
         pass

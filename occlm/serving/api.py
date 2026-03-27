@@ -8,7 +8,7 @@ import logging
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request, status
@@ -16,13 +16,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
+from .audit_logger import AuditLogger
 from .engine import (
     AsyncOCCInferenceEngine,
     InferenceRequest,
-    InferenceResult,
     OCCResponse,
 )
-from .audit_logger import AuditLogger
 from .guardrails import GuardrailsManager
 
 __all__ = [
@@ -40,7 +39,7 @@ class QueryRequest(BaseModel):
 
     query: str = Field(min_length=5, max_length=4000, description="User query")
     operator: str = Field(default="generic", description="Operator code")
-    context: Optional[Dict[str, Any]] = Field(default=None, description="Additional context")
+    context: dict[str, Any] | None = Field(default=None, description="Additional context")
     max_tokens: int = Field(default=512, ge=1, le=4096)
     temperature: float = Field(default=0.7, ge=0.0, le=2.0)
 
@@ -53,19 +52,19 @@ class QueryResponse(BaseModel):
     response: OCCResponse
     latency_ms: float
     model_version: str
-    guardrails_triggered: List[str] = Field(default_factory=list)
+    guardrails_triggered: list[str] = Field(default_factory=list)
 
 
 class BatchQueryRequest(BaseModel):
     """Batch query request."""
 
-    queries: List[QueryRequest] = Field(min_length=1, max_length=32)
+    queries: list[QueryRequest] = Field(min_length=1, max_length=32)
 
 
 class BatchQueryResponse(BaseModel):
     """Batch query response."""
 
-    results: List[QueryResponse]
+    results: list[QueryResponse]
     total_latency_ms: float
     batch_id: str
 
@@ -83,7 +82,7 @@ class ReadyResponse(BaseModel):
     """Readiness check response."""
 
     ready: bool
-    reason: Optional[str] = None
+    reason: str | None = None
 
 
 class ModelInfoResponse(BaseModel):
@@ -100,14 +99,14 @@ class ErrorResponse(BaseModel):
     """Error response."""
 
     error: str
-    detail: Optional[str] = None
-    request_id: Optional[str] = None
+    detail: str | None = None
+    request_id: str | None = None
 
 
 # Global instances
-engine: Optional[AsyncOCCInferenceEngine] = None
-audit_logger: Optional[AuditLogger] = None
-guardrails: Optional[GuardrailsManager] = None
+engine: AsyncOCCInferenceEngine | None = None
+audit_logger: AuditLogger | None = None
+guardrails: GuardrailsManager | None = None
 
 
 def get_engine() -> AsyncOCCInferenceEngine:

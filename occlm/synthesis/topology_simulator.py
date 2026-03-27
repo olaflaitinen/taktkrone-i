@@ -5,8 +5,7 @@ Simulates transit network topology and propagates disruptions through the
 network graph to calculate cascading delays and affected routes.
 """
 
-from typing import Any, Dict, List, Optional
-import json
+from typing import Any
 
 __all__ = [
     "TopologySimulator",
@@ -21,14 +20,14 @@ class TopologySimulator:
     disruptions through interconnected routes and calculate impacts.
     """
 
-    def __init__(self, network_data: Dict[str, Any]) -> None:
+    def __init__(self, network_data: dict[str, Any]) -> None:
         """
         Initialize topology simulator with network data.
 
         Args:
             network_data: Dict containing network structure with keys:
-                - routes: Dict[route_id -> route_info]
-                - connections: Dict[route_id -> List of connected route_ids]
+                - routes: dict[route_id -> route_info]
+                - connections: dict[route_id -> List of connected route_ids]
                 - transfer_points: List of interchange stations
                 - line_dependencies: Dict describing cross-line dependencies
 
@@ -46,14 +45,14 @@ class TopologySimulator:
         self.connections = network_data.get("connections", {})
         self.transfer_points = network_data.get("transfer_points", [])
         self.line_dependencies = network_data.get("line_dependencies", {})
-        self._delay_cache: Dict[str, int] = {}
+        self._delay_cache: dict[str, int] = {}
 
     def simulate_delay_propagation(
         self,
         initial_delay: int,
         route_id: str,
         max_hops: int = 3,
-    ) -> Dict[str, int]:
+    ) -> dict[str, int]:
         """
         Simulate delay propagation through network.
 
@@ -108,7 +107,7 @@ class TopologySimulator:
         self._delay_cache = delays
         return delays
 
-    def get_affected_routes(self, affected_route: str) -> List[str]:
+    def get_affected_routes(self, affected_route: str) -> list[str]:
         """
         Get all routes affected by disruption on a single route.
 
@@ -137,7 +136,7 @@ class TopologySimulator:
                     affected.add(route)
                     queue.append(route)
 
-        return sorted(list(affected))
+        return sorted(affected)
 
     def estimate_recovery_time(
         self,
@@ -181,7 +180,7 @@ class TopologySimulator:
         cascade_buffer = len(self._delay_cache) * 2
         return base_recovery + cascade_buffer
 
-    def get_network_metrics(self) -> Dict[str, Any]:
+    def get_network_metrics(self) -> dict[str, Any]:
         """
         Get metrics about current network state.
 
@@ -203,7 +202,7 @@ class TopologySimulator:
             "transfer_points": len(self.transfer_points),
         }
 
-    def validate_network(self) -> List[str]:
+    def validate_network(self) -> list[str]:
         """
         Validate network structure and return warnings.
 
@@ -235,7 +234,7 @@ class TopologySimulator:
         return warnings
 
 
-def create_sample_network() -> Dict[str, Any]:
+def create_sample_network() -> dict[str, Any]:
     """
     Create a sample transit network for testing.
 

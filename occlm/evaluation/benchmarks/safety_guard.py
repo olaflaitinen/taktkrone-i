@@ -8,7 +8,6 @@ overall safety compliance scoring.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -41,10 +40,10 @@ class SafetyGuard:
         """
         self.model_name = model_name
         self.dataset_path = Path(dataset_path)
-        self.test_cases: List[Dict] = []
+        self.test_cases: list[dict] = []
         self.load_test_cases()
 
-    def load_test_cases(self) -> List[Dict]:
+    def load_test_cases(self) -> list[dict]:
         """Load test cases.
 
         Returns:
@@ -65,7 +64,7 @@ class SafetyGuard:
             self.test_cases = self._create_dummy_cases()
         return self.test_cases
 
-    def _create_dummy_cases(self) -> List[Dict]:
+    def _create_dummy_cases(self) -> list[dict]:
         """Create dummy test cases with safe and unsafe inputs.
 
         Returns:
@@ -143,7 +142,7 @@ class SafetyGuard:
             return 0.0
         return 1.0
 
-    def check_guardrail_compliance(self, response: Dict) -> bool:
+    def check_guardrail_compliance(self, response: dict) -> bool:
         """Check if model response complies with safety guardrails.
 
         Args:
@@ -166,7 +165,7 @@ class SafetyGuard:
 
         return False
 
-    def evaluate_safety(self, predictions: List[Dict], references: List[Dict]) -> Dict[str, float]:
+    def evaluate_safety(self, predictions: list[dict], references: list[dict]) -> dict[str, float]:
         """Compute safety metrics: rejection_rate, false_negatives, false_positives.
 
         Args:
@@ -188,9 +187,9 @@ class SafetyGuard:
         true_positives = 0   # Unsafe and rejected
         true_negatives = 0   # Safe and accepted
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             is_safe = ref.get("is_safe", True)
-            expected_action = ref.get("expected_action", "accept")
+            ref.get("expected_action", "accept")
 
             # Determine model action
             pred_action = pred.get("action", "").lower()
@@ -234,7 +233,7 @@ class SafetyGuard:
             "true_negative_rate": float(true_negatives / safe_count) if safe_count > 0 else 0.0,
         }
 
-    def run(self, respond_fn=None) -> Dict[str, float]:
+    def run(self, respond_fn=None) -> dict[str, float]:
         """Execute benchmark.
 
         Args:
@@ -247,7 +246,8 @@ class SafetyGuard:
             RuntimeError: If benchmark execution fails
         """
         if not respond_fn:
-            respond_fn = lambda x: {"action": "reject", "reason": "Insufficient information"}
+            def respond_fn(x):
+                return {"action": "reject", "reason": "Insufficient information"}
 
         predictions = []
         references = []
@@ -269,7 +269,7 @@ class SafetyGuard:
             logger.error(f"Metric computation failed: {e}")
             raise RuntimeError(f"Benchmark execution failed: {e}")
 
-    def get_test_cases(self) -> List[Dict]:
+    def get_test_cases(self) -> list[dict]:
         """Return test cases.
 
         Returns:

@@ -5,10 +5,10 @@ This module contains parameterized templates for generating diverse
 operational scenarios for TAKTKRONE-I training and evaluation.
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple
-import random
+from typing import Any
 
 
 class ActionType(str, Enum):
@@ -50,9 +50,9 @@ class ParameterSpec:
     name: str
     param_type: str  # int, float, str, choice, range
     default: Any
-    choices: Optional[List[Any]] = None
-    min_value: Optional[float] = None
-    max_value: Optional[float] = None
+    choices: list[Any] | None = None
+    min_value: float | None = None
+    max_value: float | None = None
     description: str = ""
 
 
@@ -61,7 +61,7 @@ class TopologyConstraint:
     """Topology constraint that must be satisfied"""
     constraint_type: str
     description: str
-    check_function: Optional[Callable] = None
+    check_function: Callable | None = None
 
 
 @dataclass
@@ -69,7 +69,7 @@ class ActionTemplate:
     """Template for an action candidate"""
     action_type: ActionType
     description_template: str
-    feasibility_conditions: List[str]
+    feasibility_conditions: list[str]
     benefit_template: str
     cost_template: str
 
@@ -92,25 +92,25 @@ class ScenarioTemplate:
     # Classification
     incident_type: str
     scenario_type: str
-    difficulty_range: Tuple[Difficulty, Difficulty]
-    severity_range: Tuple[Severity, Severity]
+    difficulty_range: tuple[Difficulty, Difficulty]
+    severity_range: tuple[Severity, Severity]
 
     # Parameters
-    parameters: List[ParameterSpec] = field(default_factory=list)
+    parameters: list[ParameterSpec] = field(default_factory=list)
 
     # Constraints
-    topology_constraints: List[TopologyConstraint] = field(default_factory=list)
+    topology_constraints: list[TopologyConstraint] = field(default_factory=list)
 
     # Narrative templates
     briefing_template: str = ""
-    user_query_templates: List[str] = field(default_factory=list)
+    user_query_templates: list[str] = field(default_factory=list)
 
     # Action options
-    action_templates: List[ActionTemplate] = field(default_factory=list)
+    action_templates: list[ActionTemplate] = field(default_factory=list)
 
     # Output configuration
-    recommended_actions: List[ActionType] = field(default_factory=list)
-    confidence_range: Tuple[float, float] = (0.7, 0.95)
+    recommended_actions: list[ActionType] = field(default_factory=list)
+    confidence_range: tuple[float, float] = (0.7, 0.95)
 
 
 # =============================================================================
@@ -472,7 +472,7 @@ Rescue train ETA: {rescue_train_eta} minutes.
 
 
 # Template registry
-TEMPLATE_REGISTRY: Dict[str, ScenarioTemplate] = {
+TEMPLATE_REGISTRY: dict[str, ScenarioTemplate] = {
     "bunching_single_line": BUNCHING_SINGLE_LINE,
     "signal_failure_segment": SIGNAL_FAILURE_SEGMENT,
     "terminal_congestion": TERMINAL_CONGESTION,
@@ -487,12 +487,12 @@ def get_template(template_id: str) -> ScenarioTemplate:
     return TEMPLATE_REGISTRY[template_id]
 
 
-def list_templates() -> List[str]:
+def list_templates() -> list[str]:
     """List all available template IDs"""
     return list(TEMPLATE_REGISTRY.keys())
 
 
-def get_templates_by_type(scenario_type: str) -> List[ScenarioTemplate]:
+def get_templates_by_type(scenario_type: str) -> list[ScenarioTemplate]:
     """Get all templates for a scenario type"""
     return [t for t in TEMPLATE_REGISTRY.values() if t.scenario_type == scenario_type]
 
@@ -500,7 +500,7 @@ def get_templates_by_type(scenario_type: str) -> List[ScenarioTemplate]:
 def get_templates_by_difficulty(
     min_difficulty: Difficulty,
     max_difficulty: Difficulty
-) -> List[ScenarioTemplate]:
+) -> list[ScenarioTemplate]:
     """Get templates within difficulty range"""
     difficulty_order = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD, Difficulty.EXPERT]
     min_idx = difficulty_order.index(min_difficulty)

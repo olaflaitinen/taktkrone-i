@@ -9,7 +9,6 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -31,8 +30,8 @@ class BenchmarkConfig(BaseModel):
     name: str
     dataset_path: str
     enabled: bool = True
-    num_samples: Optional[int] = None
-    metrics_targets: Dict[str, float] = Field(default_factory=dict)
+    num_samples: int | None = None
+    metrics_targets: dict[str, float] = Field(default_factory=dict)
 
 
 class EvaluationConfig(BaseModel):
@@ -49,7 +48,7 @@ class EvaluationConfig(BaseModel):
     max_new_tokens: int = 512
 
     # Benchmarks
-    benchmarks: Dict[str, BenchmarkConfig] = Field(default_factory=dict)
+    benchmarks: dict[str, BenchmarkConfig] = Field(default_factory=dict)
 
     # Reporting
     save_predictions: bool = True
@@ -62,12 +61,12 @@ class BenchmarkResult:
 
     name: str
     status: str  # pass, fail, marginal, error
-    metrics: Dict[str, float] = field(default_factory=dict)
-    targets: Dict[str, float] = field(default_factory=dict)
+    metrics: dict[str, float] = field(default_factory=dict)
+    targets: dict[str, float] = field(default_factory=dict)
     num_samples: int = 0
     elapsed_seconds: float = 0.0
-    errors: List[str] = field(default_factory=list)
-    predictions_path: Optional[str] = None
+    errors: list[str] = field(default_factory=list)
+    predictions_path: str | None = None
 
     @property
     def passed(self) -> bool:
@@ -95,7 +94,7 @@ class BenchmarkRunner:
 
     def __init__(
         self,
-        config: Union[EvaluationConfig, str, Path],
+        config: EvaluationConfig | str | Path,
         model=None,
         tokenizer=None,
     ):
@@ -113,13 +112,13 @@ class BenchmarkRunner:
         self.config = config
         self.model = model
         self.tokenizer = tokenizer
-        self.results: Dict[str, BenchmarkResult] = {}
+        self.results: dict[str, BenchmarkResult] = {}
 
         # Create output directory
         self.output_dir = Path(config.output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    def _load_config(self, path: Union[str, Path]) -> EvaluationConfig:
+    def _load_config(self, path: str | Path) -> EvaluationConfig:
         """Load configuration from file"""
         import yaml
 
@@ -150,7 +149,7 @@ class BenchmarkRunner:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
-    def run_all(self) -> Dict[str, BenchmarkResult]:
+    def run_all(self) -> dict[str, BenchmarkResult]:
         """Run all enabled benchmarks"""
         if self.model is None:
             self.load_model()
@@ -273,8 +272,8 @@ class BenchmarkRunner:
     def _load_dataset(
         self,
         path: str,
-        max_samples: Optional[int] = None,
-    ) -> List[Dict]:
+        max_samples: int | None = None,
+    ) -> list[dict]:
         """Load benchmark dataset"""
         data = []
 
@@ -290,8 +289,8 @@ class BenchmarkRunner:
 
     def _generate_predictions(
         self,
-        dataset: List[Dict],
-    ) -> List[Dict]:
+        dataset: list[dict],
+    ) -> list[dict]:
         """Generate model predictions for dataset"""
         predictions = []
 
@@ -308,7 +307,7 @@ class BenchmarkRunner:
 
         return predictions
 
-    def _format_input(self, sample: Dict) -> List[Dict[str, str]]:
+    def _format_input(self, sample: dict) -> list[dict[str, str]]:
         """Format sample as chat messages"""
         messages = []
 
@@ -324,7 +323,7 @@ class BenchmarkRunner:
 
         return messages
 
-    def _generate_single(self, messages: List[Dict[str, str]]) -> str:
+    def _generate_single(self, messages: list[dict[str, str]]) -> str:
         """Generate response for single input"""
         import torch
 
@@ -354,7 +353,7 @@ class BenchmarkRunner:
 
         return response
 
-    def _parse_output(self, output: str) -> Dict:
+    def _parse_output(self, output: str) -> dict:
         """Parse model output into structured form"""
         result = {"raw_output": output}
 
@@ -379,7 +378,7 @@ class BenchmarkRunner:
     def _save_predictions(
         self,
         benchmark_name: str,
-        predictions: List[Dict],
+        predictions: list[dict],
     ) -> str:
         """Save predictions to file"""
         path = self.output_dir / f"{benchmark_name}_predictions.jsonl"
@@ -508,10 +507,10 @@ class BenchmarkRunner:
 
 def evaluate_model(
     model_path: str,
-    config_path: Optional[str] = None,
-    benchmarks: Optional[List[str]] = None,
+    config_path: str | None = None,
+    benchmarks: list[str] | None = None,
     output_dir: str = "results/evaluation",
-) -> Dict[str, BenchmarkResult]:
+) -> dict[str, BenchmarkResult]:
     """
     Convenience function to evaluate model.
 
@@ -575,9 +574,9 @@ class UnifiedBenchmarkRunner:
         self.model_name = model_name
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.results: Dict[str, Dict[str, float]] = {}
+        self.results: dict[str, dict[str, float]] = {}
 
-    def run_all_benchmarks(self, generate_fn=None, retrieve_fn=None, classify_fn=None) -> Dict[str, Dict[str, float]]:
+    def run_all_benchmarks(self, generate_fn=None, retrieve_fn=None, classify_fn=None) -> dict[str, dict[str, float]]:
         """Run all benchmarks with provided functions.
 
         Args:

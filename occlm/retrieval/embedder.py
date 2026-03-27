@@ -1,7 +1,6 @@
 """Dense embedding generation for RAG."""
 
 import logging
-from typing import List, Optional
 
 import numpy as np
 
@@ -36,7 +35,7 @@ class Embedder:
                 logger.error("sentence-transformers not installed. Install with: pip install sentence-transformers")
                 raise
 
-    def embed(self, texts: List[str], batch_size: int = 32) -> np.ndarray:
+    def embed(self, texts: list[str], batch_size: int = 32) -> np.ndarray:
         """Generate embeddings for list of texts.
 
         Args:

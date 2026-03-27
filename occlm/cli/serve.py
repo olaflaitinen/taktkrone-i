@@ -6,9 +6,6 @@ Typer CLI for starting TAKTKRONE-I servers (API + Gradio demo).
 
 import logging
 import os
-import subprocess
-from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -199,8 +196,8 @@ def all(
     Example:
         occlm serve all --model-path metrolm/taktkrone-i-v0.1
     """
-    import time
     import threading
+    import time
 
     logger.info("Starting TAKTKRONE-I API and Demo servers")
     logger.info(f"API: {api_host}:{api_port}")

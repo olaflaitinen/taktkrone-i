@@ -6,7 +6,7 @@ All schemas correspond to JSON Schema definitions in data_contracts/
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -27,8 +27,8 @@ class Provenance(BaseModel):
 
     ingestion_time: datetime = Field(description="When data was ingested")
     ingestion_method: str = Field(description="Adapter or method used")
-    raw_source_url: Optional[str] = Field(default=None, description="Source API URL")
-    source_version: Optional[str] = Field(
+    raw_source_url: str | None = Field(default=None, description="Source API URL")
+    source_version: str | None = Field(
         default=None, description="Source data version"
     )
 
@@ -38,7 +38,7 @@ class GeoLocation(BaseModel):
 
     latitude: float = Field(ge=-90, le=90)
     longitude: float = Field(ge=-180, le=180)
-    bearing: Optional[float] = Field(default=None, ge=0, le=360)
+    bearing: float | None = Field(default=None, ge=0, le=360)
 
 
 class RealtimeEvent(BaseModel):
@@ -62,16 +62,16 @@ class RealtimeEvent(BaseModel):
     ]
     provenance: Provenance
 
-    route_id: Optional[str] = None
-    trip_id: Optional[str] = None
-    stop_id: Optional[str] = None
-    vehicle_id: Optional[str] = None
-    direction_id: Optional[Literal[0, 1]] = None
-    data: Optional[Dict[str, Any]] = Field(default_factory=dict)
-    delay_seconds: Optional[int] = None
-    confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
-    geo_location: Optional[GeoLocation] = None
-    tags: List[str] = Field(default_factory=list)
+    route_id: str | None = None
+    trip_id: str | None = None
+    stop_id: str | None = None
+    vehicle_id: str | None = None
+    direction_id: Literal[0, 1] | None = None
+    data: dict[str, Any] | None = Field(default_factory=dict)
+    delay_seconds: int | None = None
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+    geo_location: GeoLocation | None = None
+    tags: list[str] = Field(default_factory=list)
 
     class Config:
         json_schema_extra = {
@@ -102,11 +102,11 @@ class NetworkSnapshot(BaseModel):
     source: str
     provenance: Provenance
 
-    active_trips: List[Dict[str, Any]] = Field(default_factory=list)
-    vehicle_positions: List[Dict[str, Any]] = Field(default_factory=list)
-    active_alerts: List[Dict[str, Any]] = Field(default_factory=list)
-    line_status: Dict[str, str] = Field(default_factory=dict)
-    network_metrics: Dict[str, Any] = Field(default_factory=dict)
+    active_trips: list[dict[str, Any]] = Field(default_factory=list)
+    vehicle_positions: list[dict[str, Any]] = Field(default_factory=list)
+    active_alerts: list[dict[str, Any]] = Field(default_factory=list)
+    line_status: dict[str, str] = Field(default_factory=dict)
+    network_metrics: dict[str, Any] = Field(default_factory=dict)
 
 
 class IncidentRecord(BaseModel):
@@ -137,16 +137,16 @@ class IncidentRecord(BaseModel):
     severity: Literal["low", "medium", "high", "critical"]
     status: Literal["active", "monitoring", "resolved", "cleared"]
 
-    title: Optional[str] = None
-    description: Optional[str] = None
-    affected_entities: Dict[str, Any] = Field(default_factory=dict)
-    location: Dict[str, Any] = Field(default_factory=dict)
-    timeline: Dict[str, datetime] = Field(default_factory=dict)
-    impact: Dict[str, Any] = Field(default_factory=dict)
-    actions_taken: List[Dict[str, Any]] = Field(default_factory=list)
-    root_cause: Optional[Dict[str, Any]] = None
-    provenance: Optional[Provenance] = None
-    tags: List[str] = Field(default_factory=list)
+    title: str | None = None
+    description: str | None = None
+    affected_entities: dict[str, Any] = Field(default_factory=dict)
+    location: dict[str, Any] = Field(default_factory=dict)
+    timeline: dict[str, datetime] = Field(default_factory=dict)
+    impact: dict[str, Any] = Field(default_factory=dict)
+    actions_taken: list[dict[str, Any]] = Field(default_factory=list)
+    root_cause: dict[str, Any] | None = None
+    provenance: Provenance | None = None
+    tags: list[str] = Field(default_factory=list)
 
 
 class Message(BaseModel):
@@ -154,7 +154,7 @@ class Message(BaseModel):
 
     role: Literal["system", "user", "assistant"]
     content: str = Field(min_length=1)
-    name: Optional[str] = None
+    name: str | None = None
 
 
 class OCCDialogueSample(BaseModel):
@@ -176,16 +176,16 @@ class OCCDialogueSample(BaseModel):
         "information_extraction",
         "question_answering",
     ]
-    messages: List[Message] = Field(min_length=2)
-    metadata: Dict[str, Any] = Field(
+    messages: list[Message] = Field(min_length=2)
+    metadata: dict[str, Any] = Field(
         description="Must include difficulty and split fields"
     )
-    ground_truth: Optional[Dict[str, Any]] = None
-    context_data: Optional[Dict[str, Any]] = None
+    ground_truth: dict[str, Any] | None = None
+    context_data: dict[str, Any] | None = None
 
     @field_validator("metadata")
     @classmethod
-    def validate_metadata(cls, v: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_metadata(cls, v: dict[str, Any]) -> dict[str, Any]:
         """Ensure required metadata fields exist"""
         required = ["difficulty", "split"]
         for field in required:
@@ -201,14 +201,14 @@ class ActionRecommendation(BaseModel):
     schema_version: Literal["1.0.0"] = "1.0.0"
     timestamp: datetime
     operator: Operator
-    request_context: Dict[str, Any]
-    analysis: Dict[str, Any]
-    recommendations: List[Dict[str, Any]] = Field(min_length=1)
-    uncertainties: List[Dict[str, Any]] = Field(default_factory=list)
-    safety_notes: List[str] = Field(default_factory=list)
-    retrieval_references: List[Dict[str, Any]] = Field(default_factory=list)
-    model_metadata: Optional[Dict[str, Any]] = None
-    human_oversight: Optional[Dict[str, Any]] = None
+    request_context: dict[str, Any]
+    analysis: dict[str, Any]
+    recommendations: list[dict[str, Any]] = Field(min_length=1)
+    uncertainties: list[dict[str, Any]] = Field(default_factory=list)
+    safety_notes: list[str] = Field(default_factory=list)
+    retrieval_references: list[dict[str, Any]] = Field(default_factory=list)
+    model_metadata: dict[str, Any] | None = None
+    human_oversight: dict[str, Any] | None = None
 
 
 __all__ = [

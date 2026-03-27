@@ -7,7 +7,6 @@ Input/output validation, safety compliance checking, language detection.
 import logging
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 __all__ = [
     "GuardrailsManager",
@@ -23,7 +22,7 @@ class ValidationResult:
     is_valid: bool
     reason: str
     severity: str = "info"  # info, warning, error
-    flagged_content: Optional[List[str]] = None
+    flagged_content: list[str] | None = None
 
 
 class GuardrailsManager:
@@ -193,7 +192,7 @@ class GuardrailsManager:
             severity="info",
         )
 
-    def check_safety_compliance(self, response: str) -> Dict[str, any]:
+    def check_safety_compliance(self, response: str) -> dict[str, any]:
         """Check response for safety compliance.
 
         Args:
@@ -233,7 +232,7 @@ class GuardrailsManager:
 
         return compliance
 
-    def detect_language(self, text: str) -> Dict[str, any]:
+    def detect_language(self, text: str) -> dict[str, any]:
         """Detect language of text (basic implementation).
 
         Args:
@@ -264,7 +263,7 @@ class GuardrailsManager:
             logger.debug("langdetect not available, skipping language detection")
             return {"language": "unknown", "confidence": 0.0}
 
-    def _check_pii(self, text: str) -> Dict[str, any]:
+    def _check_pii(self, text: str) -> dict[str, any]:
         """Check for PII in text.
 
         Args:
@@ -288,7 +287,7 @@ class GuardrailsManager:
             "samples": samples,
         }
 
-    def get_validation_stats(self) -> Dict[str, any]:
+    def get_validation_stats(self) -> dict[str, any]:
         """Get validation configuration stats.
 
         Returns:

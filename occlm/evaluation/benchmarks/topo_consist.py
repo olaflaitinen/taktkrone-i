@@ -8,7 +8,6 @@ travel times for transit networks.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +29,11 @@ class TopologyConsistency:
         """
         self.model_name = model_name
         self.dataset_path = Path(dataset_path)
-        self.test_cases: List[Dict] = []
+        self.test_cases: list[dict] = []
         self.topology = self._load_topology()
         self.load_test_cases()
 
-    def _load_topology(self) -> Dict:
+    def _load_topology(self) -> dict:
         """Load network topology reference.
 
         Returns:
@@ -66,7 +65,7 @@ class TopologyConsistency:
             "max_travel_time_minutes": 60,
         }
 
-    def load_test_cases(self) -> List[Dict]:
+    def load_test_cases(self) -> list[dict]:
         """Load test cases.
 
         Returns:
@@ -87,7 +86,7 @@ class TopologyConsistency:
             self.test_cases = self._create_dummy_cases()
         return self.test_cases
 
-    def _create_dummy_cases(self) -> List[Dict]:
+    def _create_dummy_cases(self) -> list[dict]:
         """Create dummy test cases.
 
         Returns:
@@ -103,7 +102,7 @@ class TopologyConsistency:
             for i in range(100)
         ]
 
-    def validate_topology(self, response: Dict) -> Dict[str, bool]:
+    def validate_topology(self, response: dict) -> dict[str, bool]:
         """Validate if response respects network topology.
 
         Args:
@@ -155,8 +154,8 @@ class TopologyConsistency:
         return checks
 
     def evaluate_topology(
-        self, predictions: List[Dict], references: List[Dict]
-    ) -> Dict[str, float]:
+        self, predictions: list[dict], references: list[dict]
+    ) -> dict[str, float]:
         """Compute topology consistency metrics.
 
         Args:
@@ -176,7 +175,7 @@ class TopologyConsistency:
         false_positives = 0  # Claimed invalid stops/routes
         false_negatives = 0  # Missed valid stops/routes
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             checks = self.validate_topology(pred)
 
             # Count violations
@@ -205,7 +204,7 @@ class TopologyConsistency:
             "consistency_score": 1.0 - float(error_rate),
         }
 
-    def check_line_connectivity(self, lines: List[str]) -> bool:
+    def check_line_connectivity(self, lines: list[str]) -> bool:
         """Check if given lines are connected.
 
         Args:
@@ -228,7 +227,7 @@ class TopologyConsistency:
 
         return True
 
-    def run(self, generate_fn=None) -> Dict[str, float]:
+    def run(self, generate_fn=None) -> dict[str, float]:
         """Execute benchmark.
 
         Args:
@@ -241,7 +240,8 @@ class TopologyConsistency:
             RuntimeError: If benchmark execution fails
         """
         if not generate_fn:
-            generate_fn = lambda x: {"lines": ["L1"], "stops": ["St1", "St2"], "travel_times": {}}
+            def generate_fn(x):
+                return {"lines": ["L1"], "stops": ["St1", "St2"], "travel_times": {}}
 
         predictions = []
         references = []
@@ -263,7 +263,7 @@ class TopologyConsistency:
             logger.error(f"Metric computation failed: {e}")
             raise RuntimeError(f"Benchmark execution failed: {e}")
 
-    def get_test_cases(self) -> List[Dict]:
+    def get_test_cases(self) -> list[dict]:
         """Return test cases.
 
         Returns:

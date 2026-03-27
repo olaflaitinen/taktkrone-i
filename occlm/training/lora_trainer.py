@@ -8,9 +8,7 @@ memory-efficient fine-tuning.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
-
-from pydantic import BaseModel, Field
+from typing import Any
 
 try:
     import torch
@@ -18,8 +16,7 @@ except ImportError:
     torch = None
 
 try:
-    from peft import LoraConfig, get_peft_model
-    from peft import TaskType
+    from peft import LoraConfig, TaskType, get_peft_model
 except ImportError:
     LoraConfig = None
     get_peft_model = None
@@ -30,8 +27,8 @@ try:
         AutoModelForCausalLM,
         AutoTokenizer,
         BitsAndBytesConfig,
-        TrainingArguments,
         Trainer,
+        TrainingArguments,
     )
 except ImportError:
     AutoModelForCausalLM = None
@@ -40,7 +37,7 @@ except ImportError:
     TrainingArguments = None
     Trainer = None
 
-from .config import TrainingConfig, QuantizationConfig, LoRAConfig
+from .config import QuantizationConfig, TrainingConfig
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +48,7 @@ class LoRATrainer:
     def __init__(
         self,
         config: TrainingConfig,
-        device: Optional[str] = None,
+        device: str | None = None,
     ):
         """
         Initialize LoRA trainer.
@@ -222,9 +219,9 @@ class LoRATrainer:
     def train(
         self,
         train_dataset: Any,
-        eval_dataset: Optional[Any] = None,
-        data_collator: Optional[Any] = None,
-    ) -> Dict[str, Any]:
+        eval_dataset: Any | None = None,
+        data_collator: Any | None = None,
+    ) -> dict[str, Any]:
         """
         Execute LoRA training.
 
@@ -259,7 +256,7 @@ class LoRATrainer:
         # Train
         train_result = self.trainer.train()
 
-        logger.info(f"LoRA training completed")
+        logger.info("LoRA training completed")
         logger.info(
             f"Final train loss: {train_result.training_loss:.4f}"
         )
@@ -268,7 +265,7 @@ class LoRATrainer:
 
     def save_lora_adapters(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         include_config: bool = True,
     ) -> None:
         """
@@ -319,8 +316,8 @@ class LoRATrainer:
 
     def load_lora_adapters(
         self,
-        model: Optional[Any] = None,
-        path: Optional[Union[str, Path]] = None,
+        model: Any | None = None,
+        path: str | Path | None = None,
     ) -> Any:
         """
         Load LoRA adapters onto model.
@@ -391,7 +388,7 @@ class LoRATrainer:
 
     def save_merged_model(
         self,
-        path: Union[str, Path],
+        path: str | Path,
     ) -> None:
         """
         Save merged model.
@@ -422,7 +419,7 @@ class LoRATrainer:
 
         logger.info(f"Merged model saved to {path}")
 
-    def get_trainable_parameters_count(self) -> Dict[
+    def get_trainable_parameters_count(self) -> dict[
         str, int
     ]:
         """Get count of trainable and total parameters."""
@@ -447,7 +444,7 @@ class LoRATrainer:
             ),
         }
 
-    def create_adapter_summary(self) -> Dict[str, Any]:
+    def create_adapter_summary(self) -> dict[str, Any]:
         """
         Create summary of LoRA adapter configuration.
 
@@ -497,7 +494,7 @@ class LoRATrainer:
 
     def inspect_adapter_weights(
         self,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Inspect LoRA adapter weights for debugging.
 
@@ -534,7 +531,7 @@ class LoRATrainer:
 
         return inspector
 
-    def estimate_memory_usage(self) -> Dict[str, float]:
+    def estimate_memory_usage(self) -> dict[str, float]:
         """
         Estimate memory usage during training.
 
@@ -601,7 +598,7 @@ class LoRATrainer:
 
         return estimates
 
-    def validate_trainer_setup(self) -> Dict[
+    def validate_trainer_setup(self) -> dict[
         str, Any
     ]:
         """

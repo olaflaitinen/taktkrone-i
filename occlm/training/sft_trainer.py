@@ -7,11 +7,11 @@ transformers and TRL libraries.
 
 import json
 import logging
-import os
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 try:
     import torch
@@ -24,8 +24,8 @@ try:
     from transformers import (
         AutoModelForCausalLM,
         AutoTokenizer,
-        TrainingArguments,
         Trainer,
+        TrainingArguments,
     )
 except ImportError:
     AutoModelForCausalLM = None
@@ -33,7 +33,7 @@ except ImportError:
     TrainingArguments = None
     Trainer = None
 
-from .config import TrainingConfig, HyperparametersConfig
+from .config import TrainingConfig
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class TrainingState(BaseModel):
     current_step: int = 0
     current_epoch: int = 0
     best_eval_loss: float = float("inf")
-    best_checkpoint: Optional[str] = None
+    best_checkpoint: str | None = None
     total_steps: int = 0
 
 
@@ -54,7 +54,7 @@ class OCCTrainer:
     def __init__(
         self,
         config: TrainingConfig,
-        device: Optional[str] = None,
+        device: str | None = None,
     ):
         """
         Initialize SFT trainer.
@@ -90,9 +90,9 @@ class OCCTrainer:
         self.state = TrainingState()
 
         # Metrics tracking
-        self.train_losses: List[float] = []
-        self.eval_losses: List[float] = []
-        self.learning_rates: List[float] = []
+        self.train_losses: list[float] = []
+        self.eval_losses: list[float] = []
+        self.learning_rates: list[float] = []
 
     def load_model_and_tokenizer(self) -> None:
         """Load model and tokenizer from config."""
@@ -141,9 +141,9 @@ class OCCTrainer:
     def train(
         self,
         train_dataset: Any,
-        eval_dataset: Optional[Any] = None,
-        data_collator: Optional[Callable] = None,
-    ) -> Dict[str, Any]:
+        eval_dataset: Any | None = None,
+        data_collator: Callable | None = None,
+    ) -> dict[str, Any]:
         """
         Execute training loop.
 
@@ -179,7 +179,7 @@ class OCCTrainer:
         # Train
         train_result = self.trainer.train()
 
-        logger.info(f"Training completed")
+        logger.info("Training completed")
         logger.info(
             f"Final train loss: {train_result.training_loss:.4f}"
         )
@@ -213,8 +213,8 @@ class OCCTrainer:
     def evaluate(
         self,
         eval_dataset: Any,
-        data_collator: Optional[Callable] = None,
-    ) -> Dict[str, float]:
+        data_collator: Callable | None = None,
+    ) -> dict[str, float]:
         """
         Evaluate model on dataset.
 
@@ -265,7 +265,7 @@ class OCCTrainer:
 
     def save_checkpoint(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         include_config: bool = True,
     ) -> None:
         """
@@ -315,7 +315,7 @@ class OCCTrainer:
 
     def load_checkpoint(
         self,
-        path: Union[str, Path],
+        path: str | Path,
     ) -> None:
         """
         Load model from checkpoint.
@@ -366,7 +366,7 @@ class OCCTrainer:
 
         logger.info(f"Checkpoint loaded from {path}")
 
-    def get_metrics_summary(self) -> Dict[str, Any]:
+    def get_metrics_summary(self) -> dict[str, Any]:
         """Get summary of training metrics."""
         summary = {
             "num_training_steps": self.state.current_step,
@@ -416,7 +416,7 @@ class OCCTrainer:
 
     def compute_training_stats(
         self,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Compute comprehensive training statistics.
 
@@ -474,7 +474,7 @@ class OCCTrainer:
 
     def create_loss_plot(
         self,
-        output_path: Union[str, Path],
+        output_path: str | Path,
     ) -> None:
         """
         Create visualization of training and eval loss curves.
@@ -521,8 +521,8 @@ class OCCTrainer:
 
     def validate_checkpoint(
         self,
-        checkpoint_path: Union[str, Path],
-    ) -> Dict[str, Any]:
+        checkpoint_path: str | Path,
+    ) -> dict[str, Any]:
         """
         Validate saved checkpoint is loadable.
 
@@ -585,7 +585,7 @@ class OCCTrainer:
 
         return validation
 
-    def log_model_architecture(self) -> Dict[str, Any]:
+    def log_model_architecture(self) -> dict[str, Any]:
         """
         Log model architecture information.
 
@@ -625,7 +625,7 @@ class OCCTrainer:
 
     def create_optimization_report(
         self,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Create detailed optimization report.
 

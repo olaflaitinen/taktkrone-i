@@ -6,11 +6,16 @@ any operator with GTFS and GTFS-RT feeds, without requiring operator-specific
 implementations.
 """
 
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any
 
 from occlm.ingestion import IngestionAdapter
-from occlm.schemas import IncidentRecord, NetworkSnapshot, Operator, Provenance, RealtimeEvent
+from occlm.schemas import (
+    IncidentRecord,
+    NetworkSnapshot,
+    RealtimeEvent,
+)
 
 
 class GenericGTFSAdapter(IngestionAdapter):
@@ -28,7 +33,7 @@ class GenericGTFSAdapter(IngestionAdapter):
     - operators_list: Expected list of operator values
     """
 
-    def __init__(self, operator_code: str, api_key: str, config: Dict[str, Any]):
+    def __init__(self, operator_code: str, api_key: str, config: dict[str, Any]):
         """
         Initialize generic GTFS adapter with configuration.
 
@@ -53,8 +58,8 @@ class GenericGTFSAdapter(IngestionAdapter):
 
     def fetch_realtime_events(
         self,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
     ) -> Iterator[RealtimeEvent]:
         """
         Fetch GTFS-RT events using configured feed URLs.
@@ -84,7 +89,7 @@ class GenericGTFSAdapter(IngestionAdapter):
         raise NotImplementedError("Generic GTFS-RT ingestion to be implemented")
 
     def fetch_network_snapshot(
-        self, timestamp: Optional[datetime] = None
+        self, timestamp: datetime | None = None
     ) -> NetworkSnapshot:
         """
         Fetch system-wide snapshot using configured sources.
@@ -114,9 +119,9 @@ class GenericGTFSAdapter(IngestionAdapter):
     def fetch_incidents(
         self,
         active_only: bool = True,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
-    ) -> List[IncidentRecord]:
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
+    ) -> list[IncidentRecord]:
         """
         Fetch incidents from GTFS-RT service alerts.
 
@@ -143,7 +148,7 @@ class GenericGTFSAdapter(IngestionAdapter):
         # - Handle severity classification
         raise NotImplementedError("Generic GTFS incident fetching to be implemented")
 
-    def fetch_static_network(self) -> Dict[str, Any]:
+    def fetch_static_network(self) -> dict[str, Any]:
         """
         Download and parse GTFS static data from configured URL.
 
@@ -183,7 +188,7 @@ class GenericGTFSAdapter(IngestionAdapter):
         # - Return aggregate health status
         return False
 
-    def get_supported_lines(self) -> List[str]:
+    def get_supported_lines(self) -> list[str]:
         """
         Get list of supported lines from static GTFS data.
 

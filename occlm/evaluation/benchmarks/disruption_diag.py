@@ -8,7 +8,6 @@ performance metrics for 10 disruption categories.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -45,20 +44,20 @@ class DisruptionDiagnosis:
         """
         self.model_name = model_name
         self.dataset_path = Path(dataset_path)
-        self.test_cases: List[Dict] = []
+        self.test_cases: list[dict] = []
         self.class_weights = self._compute_class_weights()
         self.load_test_cases()
 
-    def _compute_class_weights(self) -> Dict[str, float]:
+    def _compute_class_weights(self) -> dict[str, float]:
         """Compute weights for imbalanced classification.
 
         Returns:
             Dict mapping class labels to weights
         """
         base_weight = 1.0 / len(self.DISRUPTION_CLASSES)
-        return {cls: base_weight for cls in self.DISRUPTION_CLASSES}
+        return dict.fromkeys(self.DISRUPTION_CLASSES, base_weight)
 
-    def load_test_cases(self) -> List[Dict]:
+    def load_test_cases(self) -> list[dict]:
         """Load test cases.
 
         Returns:
@@ -79,7 +78,7 @@ class DisruptionDiagnosis:
             self.test_cases = self._create_dummy_cases()
         return self.test_cases
 
-    def _create_dummy_cases(self) -> List[Dict]:
+    def _create_dummy_cases(self) -> list[dict]:
         """Create dummy test cases.
 
         Returns:
@@ -101,8 +100,8 @@ class DisruptionDiagnosis:
         return cases
 
     def evaluate_classification(
-        self, predictions: List[str], references: List[str]
-    ) -> Dict[str, float]:
+        self, predictions: list[str], references: list[str]
+    ) -> dict[str, float]:
         """Compute classification metrics: accuracy, precision, recall, F1.
 
         Args:
@@ -118,7 +117,7 @@ class DisruptionDiagnosis:
         if len(predictions) != len(references):
             raise ValueError("Predictions and references must have same length")
 
-        accuracy = np.mean([p == r for p, r in zip(predictions, references)])
+        accuracy = np.mean([p == r for p, r in zip(predictions, references, strict=False)])
 
         # Per-class metrics
         precisions = []
@@ -127,9 +126,9 @@ class DisruptionDiagnosis:
         weighted_f1_components = []
 
         for class_label in self.DISRUPTION_CLASSES:
-            tp = sum(1 for p, r in zip(predictions, references) if p == r == class_label)
-            fp = sum(1 for p, r in zip(predictions, references) if p == class_label and r != class_label)
-            fn = sum(1 for p, r in zip(predictions, references) if p != class_label and r == class_label)
+            tp = sum(1 for p, r in zip(predictions, references, strict=False) if p == r == class_label)
+            fp = sum(1 for p, r in zip(predictions, references, strict=False) if p == class_label and r != class_label)
+            fn = sum(1 for p, r in zip(predictions, references, strict=False) if p != class_label and r == class_label)
 
             precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
             recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
@@ -159,8 +158,8 @@ class DisruptionDiagnosis:
         }
 
     def evaluate_per_class_metrics(
-        self, predictions: List[str], references: List[str]
-    ) -> Dict[str, Dict[str, float]]:
+        self, predictions: list[str], references: list[str]
+    ) -> dict[str, dict[str, float]]:
         """Compute per-class detailed metrics.
 
         Args:
@@ -179,10 +178,10 @@ class DisruptionDiagnosis:
         per_class = {}
 
         for class_label in self.DISRUPTION_CLASSES:
-            tp = sum(1 for p, r in zip(predictions, references) if p == r == class_label)
-            fp = sum(1 for p, r in zip(predictions, references) if p == class_label and r != class_label)
-            fn = sum(1 for p, r in zip(predictions, references) if p != class_label and r == class_label)
-            tn = sum(1 for p, r in zip(predictions, references) if p != class_label and r != class_label)
+            tp = sum(1 for p, r in zip(predictions, references, strict=False) if p == r == class_label)
+            fp = sum(1 for p, r in zip(predictions, references, strict=False) if p == class_label and r != class_label)
+            fn = sum(1 for p, r in zip(predictions, references, strict=False) if p != class_label and r == class_label)
+            tn = sum(1 for p, r in zip(predictions, references, strict=False) if p != class_label and r != class_label)
 
             precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
             recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
@@ -200,7 +199,7 @@ class DisruptionDiagnosis:
         return per_class
 
     def evaluate_confusion_matrix(
-        self, predictions: List[str], references: List[str]
+        self, predictions: list[str], references: list[str]
     ) -> np.ndarray:
         """Compute confusion matrix.
 
@@ -220,7 +219,7 @@ class DisruptionDiagnosis:
         n_classes = len(self.DISRUPTION_CLASSES)
         cm = np.zeros((n_classes, n_classes), dtype=int)
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             if pred in self.DISRUPTION_CLASSES and ref in self.DISRUPTION_CLASSES:
                 pred_idx = self.DISRUPTION_CLASSES.index(pred)
                 ref_idx = self.DISRUPTION_CLASSES.index(ref)
@@ -228,7 +227,7 @@ class DisruptionDiagnosis:
 
         return cm
 
-    def run(self, classify_fn=None) -> Dict[str, float]:
+    def run(self, classify_fn=None) -> dict[str, float]:
         """Execute benchmark.
 
         Args:
@@ -241,7 +240,8 @@ class DisruptionDiagnosis:
             RuntimeError: If benchmark execution fails
         """
         if not classify_fn:
-            classify_fn = lambda x: "unknown"  # Dummy classifier
+            def classify_fn(x):
+                return "unknown"  # Dummy classifier
 
         predictions = []
         references = []
@@ -266,7 +266,7 @@ class DisruptionDiagnosis:
             logger.error(f"Metric computation failed: {e}")
             raise RuntimeError(f"Benchmark execution failed: {e}")
 
-    def get_test_cases(self) -> List[Dict]:
+    def get_test_cases(self) -> list[dict]:
         """Return test cases.
 
         Returns:

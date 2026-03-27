@@ -8,7 +8,6 @@ temporal coherence for transit incident reports.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -37,11 +36,11 @@ class OCCTSummarization:
         """
         self.model_name = model_name
         self.dataset_path = Path(dataset_path)
-        self.test_cases: List[Dict] = []
-        self.metrics_cache: Dict[str, List[float]] = {}
+        self.test_cases: list[dict] = []
+        self.metrics_cache: dict[str, list[float]] = {}
         self.load_test_cases()
 
-    def load_test_cases(self) -> List[Dict]:
+    def load_test_cases(self) -> list[dict]:
         """Load test cases from dataset.
 
         Returns:
@@ -62,7 +61,7 @@ class OCCTSummarization:
             self.test_cases = self._create_dummy_cases()
         return self.test_cases
 
-    def _create_dummy_cases(self) -> List[Dict]:
+    def _create_dummy_cases(self) -> list[dict]:
         """Create dummy test cases for testing.
 
         Returns:
@@ -81,7 +80,7 @@ class OCCTSummarization:
             for i in range(100)
         ]
 
-    def evaluate_rouge(self, predictions: List[str], references: List[str]) -> Dict[str, float]:
+    def evaluate_rouge(self, predictions: list[str], references: list[str]) -> dict[str, float]:
         """Compute ROUGE metrics (1, 2, L).
 
         Args:
@@ -103,7 +102,7 @@ class OCCTSummarization:
             scorer = rouge_scorer.RougeScorer(["rouge1", "rouge2", "rougeL"], use_stemmer=True)
             scores = {"rouge1_f": [], "rouge2_f": [], "rougeL_f": []}
 
-            for pred, ref in zip(predictions, references):
+            for pred, ref in zip(predictions, references, strict=False):
                 if pred and ref:
                     result = scorer.score(ref, pred)
                     scores["rouge1_f"].append(result["rouge1"].fmeasure)
@@ -116,7 +115,7 @@ class OCCTSummarization:
             logger.warning("rouge_score not installed, using stub scores")
             return {"rouge1_f": 0.5, "rouge2_f": 0.4, "rougeL_f": 0.45}
 
-    def evaluate_similarity(self, predictions: List[str], references: List[str]) -> Dict[str, float]:
+    def evaluate_similarity(self, predictions: list[str], references: list[str]) -> dict[str, float]:
         """Compute semantic similarity using BERTScore.
 
         Args:
@@ -146,7 +145,7 @@ class OCCTSummarization:
             logger.warning("bert_score not installed, using stub scores")
             return {"bert_precision": 0.75, "bert_recall": 0.72, "bert_f1": 0.73}
 
-    def evaluate_consistency(self, predictions: List[str]) -> Dict[str, float]:
+    def evaluate_consistency(self, predictions: list[str]) -> dict[str, float]:
         """Check factual consistency of summaries.
 
         Args:
@@ -171,8 +170,8 @@ class OCCTSummarization:
         return {"consistency_score": float(consistent / len(predictions)) if predictions else 0.0}
 
     def evaluate_length_appropriateness(
-        self, predictions: List[str], references: List[str]
-    ) -> Dict[str, float]:
+        self, predictions: list[str], references: list[str]
+    ) -> dict[str, float]:
         """Evaluate if summary length is appropriate.
 
         Args:
@@ -183,7 +182,7 @@ class OCCTSummarization:
             Dict with length_ratio metrics
         """
         ratios = []
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             if ref:
                 ratio = len(pred.split()) / max(len(ref.split()), 1)
                 ratios.append(min(ratio, 2.0))  # Cap at 2.0
@@ -193,7 +192,7 @@ class OCCTSummarization:
             "length_ratio_std": float(np.std(ratios)) if len(ratios) > 1 else 0.0,
         }
 
-    def evaluate_temporal_coherence(self, predictions: List[str]) -> Dict[str, float]:
+    def evaluate_temporal_coherence(self, predictions: list[str]) -> dict[str, float]:
         """Evaluate temporal coherence in summaries.
 
         Args:
@@ -212,7 +211,7 @@ class OCCTSummarization:
 
         return {"temporal_coherence": float(np.mean(temporal_scores)) if temporal_scores else 0.5}
 
-    def run(self, generate_fn=None) -> Dict[str, float]:
+    def run(self, generate_fn=None) -> dict[str, float]:
         """Execute benchmark.
 
         Args:
@@ -225,7 +224,8 @@ class OCCTSummarization:
             RuntimeError: If benchmark execution fails
         """
         if not generate_fn:
-            generate_fn = lambda x: x[:50]  # Dummy: first 50 chars
+            def generate_fn(x):
+                return x[:50]  # Dummy: first 50 chars
 
         predictions = []
         references = []
@@ -253,7 +253,7 @@ class OCCTSummarization:
 
         return metrics
 
-    def get_test_cases(self) -> List[Dict]:
+    def get_test_cases(self) -> list[dict]:
         """Return test cases.
 
         Returns:

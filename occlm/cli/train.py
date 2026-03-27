@@ -7,7 +7,6 @@ Provides the `occlm train` command for fine-tuning OCC models.
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 import typer
 
@@ -17,8 +16,8 @@ from occlm.training.config import (
     save_config,
 )
 from occlm.training.data_loader import OCCDataLoader
-from occlm.training.sft_trainer import OCCTrainer
 from occlm.training.lora_trainer import LoRATrainer
+from occlm.training.sft_trainer import OCCTrainer
 from occlm.training.tracking import ExperimentTracker
 
 logger = logging.getLogger(__name__)
@@ -34,25 +33,25 @@ def train(
         help="YAML training configuration file",
         exists=True,
     ),
-    train_data: Optional[Path] = typer.Option(
+    train_data: Path | None = typer.Option(
         None,
         "--train-data",
         help="Override train data path",
         exists=True,
     ),
-    val_data: Optional[Path] = typer.Option(
+    val_data: Path | None = typer.Option(
         None,
         "--val-data",
         help="Override validation data path",
         exists=True,
     ),
-    output_dir: Optional[Path] = typer.Option(
+    output_dir: Path | None = typer.Option(
         None,
         "--output-dir",
         "-o",
         help="Override output directory",
     ),
-    resume_from: Optional[Path] = typer.Option(
+    resume_from: Path | None = typer.Option(
         None,
         "--resume-from",
         help="Resume from checkpoint",
@@ -68,12 +67,12 @@ def train(
         "--validate-only",
         help="Validate config and exit",
     ),
-    wandb_entity: Optional[str] = typer.Option(
+    wandb_entity: str | None = typer.Option(
         None,
         "--wandb-entity",
         help="W&B entity for tracking",
     ),
-    seed: Optional[int] = typer.Option(
+    seed: int | None = typer.Option(
         None,
         "--seed",
         help="Random seed",

@@ -7,9 +7,7 @@ Provides unified interface for experiment tracking using W&B and MLflow.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-
-from pydantic import BaseModel, Field
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +19,10 @@ class ExperimentTracker:
         self,
         backend: str = "auto",
         project: str = "taktkrone-i",
-        entity: Optional[str] = None,
-        run_name: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        notes: Optional[str] = None,
+        entity: str | None = None,
+        run_name: str | None = None,
+        tags: list[str] | None = None,
+        notes: str | None = None,
     ):
         """
         Initialize experiment tracker.
@@ -146,7 +144,7 @@ class ExperimentTracker:
     def start_run(
         self,
         run_name: str,
-        tags: Optional[List[str]] = None,
+        tags: list[str] | None = None,
     ) -> None:
         """
         Start a new tracking run.
@@ -184,7 +182,7 @@ class ExperimentTracker:
         self.run_id = None
         self.run_url = None
 
-    def log_config(self, config: Dict[str, Any]) -> None:
+    def log_config(self, config: dict[str, Any]) -> None:
         """
         Log configuration.
 
@@ -207,8 +205,8 @@ class ExperimentTracker:
 
     def log_metrics(
         self,
-        metrics: Dict[str, float],
-        step: Optional[int] = None,
+        metrics: dict[str, float],
+        step: int | None = None,
     ) -> None:
         """
         Log metrics.
@@ -241,8 +239,8 @@ class ExperimentTracker:
 
     def log_artifact(
         self,
-        artifact_path: Union[str, Path],
-        artifact_type: Optional[str] = None,
+        artifact_path: str | Path,
+        artifact_type: str | None = None,
     ) -> None:
         """
         Log artifact file.
@@ -276,7 +274,7 @@ class ExperimentTracker:
 
     def log_model(
         self,
-        model_path: Union[str, Path],
+        model_path: str | Path,
         model_name: str = "model",
     ) -> None:
         """
@@ -308,7 +306,7 @@ class ExperimentTracker:
             # Log model using MLflow's log_artifacts
             self.tracker.log_artifacts(str(model_path))
 
-    def get_run_url(self) -> Optional[str]:
+    def get_run_url(self) -> str | None:
         """
         Get URL for current run.
 
@@ -317,7 +315,7 @@ class ExperimentTracker:
         """
         return self.run_url
 
-    def get_run_id(self) -> Optional[str]:
+    def get_run_id(self) -> str | None:
         """
         Get ID for current run.
 
@@ -341,7 +339,7 @@ class MultiTracker:
 
     def __init__(
         self,
-        backends: Optional[List[str]] = None,
+        backends: list[str] | None = None,
         project: str = "taktkrone-i",
     ):
         """
@@ -353,7 +351,7 @@ class MultiTracker:
         """
         self.backends = backends or ["wandb", "mlflow"]
         self.project = project
-        self.trackers: List[ExperimentTracker] = []
+        self.trackers: list[ExperimentTracker] = []
 
         self._initialize_backends()
 
@@ -377,15 +375,15 @@ class MultiTracker:
                 "No tracking backends initialized"
             )
 
-    def log_config(self, config: Dict[str, Any]) -> None:
+    def log_config(self, config: dict[str, Any]) -> None:
         """Log config to all trackers."""
         for tracker in self.trackers:
             tracker.log_config(config)
 
     def log_metrics(
         self,
-        metrics: Dict[str, float],
-        step: Optional[int] = None,
+        metrics: dict[str, float],
+        step: int | None = None,
     ) -> None:
         """Log metrics to all trackers."""
         for tracker in self.trackers:
@@ -393,8 +391,8 @@ class MultiTracker:
 
     def log_artifact(
         self,
-        artifact_path: Union[str, Path],
-        artifact_type: Optional[str] = None,
+        artifact_path: str | Path,
+        artifact_type: str | None = None,
     ) -> None:
         """Log artifact to all trackers."""
         for tracker in self.trackers:

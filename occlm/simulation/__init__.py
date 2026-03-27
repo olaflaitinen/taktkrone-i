@@ -10,11 +10,11 @@ Provides simulation capabilities including:
 - What-if analysis
 """
 
-from typing import Dict, List, Any, Optional, Tuple
+import uuid
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from dataclasses import dataclass
-import uuid
+from typing import Any, Optional, Tuple
 
 __version__ = "0.1.0"
 
@@ -42,8 +42,8 @@ class SimulationConfig:
     simulation_type: SimulationType
     start_time: datetime
     duration_minutes: int
-    parameters: Dict[str, Any]
-    network_state: Dict[str, Any]
+    parameters: dict[str, Any]
+    network_state: dict[str, Any]
 
 @dataclass
 class SimulationResult:
@@ -51,9 +51,9 @@ class SimulationResult:
     simulation_id: str
     status: SimulationStatus
     start_time: datetime
-    end_time: Optional[datetime]
-    metrics: Dict[str, float]
-    events: List[Dict[str, Any]]
+    end_time: datetime | None
+    metrics: dict[str, float]
+    events: list[dict[str, Any]]
     summary: str
 
 # Simulation capabilities
@@ -74,8 +74,8 @@ class SimulationEngine:
     """Core simulation execution engine."""
 
     def __init__(self):
-        self.active_simulations: Dict[str, SimulationConfig] = {}
-        self.simulation_history: List[SimulationResult] = []
+        self.active_simulations: dict[str, SimulationConfig] = {}
+        self.simulation_history: list[SimulationResult] = []
 
     def run_simulation(self, config: SimulationConfig) -> SimulationResult:
         """Execute a simulation scenario."""
@@ -118,7 +118,7 @@ class SimulationEngine:
             if sim_id in self.active_simulations:
                 del self.active_simulations[sim_id]
 
-    def get_simulation_status(self, simulation_id: str) -> Optional[SimulationStatus]:
+    def get_simulation_status(self, simulation_id: str) -> SimulationStatus | None:
         """Get status of a simulation."""
         if simulation_id in self.active_simulations:
             return SimulationStatus.RUNNING
@@ -139,7 +139,7 @@ class DisruptionSimulator:
         self,
         location: str,
         duration_minutes: int,
-        affected_lines: List[str]
+        affected_lines: list[str]
     ) -> SimulationResult:
         """Simulate a signal failure scenario."""
         config = SimulationConfig(
@@ -159,7 +159,7 @@ class DisruptionSimulator:
 
     def simulate_power_outage(
         self,
-        affected_stations: List[str],
+        affected_stations: list[str],
         duration_minutes: int
     ) -> SimulationResult:
         """Simulate a power outage scenario."""
@@ -211,7 +211,7 @@ class NetworkAnalyzer:
 
     def analyze_capacity(
         self,
-        lines: List[str],
+        lines: list[str],
         time_period_hours: int = 24
     ) -> SimulationResult:
         """Analyze network capacity utilization."""
@@ -238,7 +238,7 @@ class ScenarioTester:
     def test_recovery_procedure(
         self,
         incident_type: str,
-        recovery_actions: List[str]
+        recovery_actions: list[str]
     ) -> SimulationResult:
         """Test effectiveness of recovery procedure."""
         config = SimulationConfig(
@@ -264,7 +264,7 @@ class PerformanceForecaster:
     def forecast_performance(
         self,
         forecast_horizon_days: int = 7,
-        scenarios: Optional[List[Dict[str, Any]]] = None
+        scenarios: list[dict[str, Any]] | None = None
     ) -> SimulationResult:
         """Forecast system performance."""
         config = SimulationConfig(
@@ -302,7 +302,7 @@ def create_disruption_scenario(
         network_state={}
     )
 
-def analyze_simulation_batch(results: List[SimulationResult]) -> Dict[str, Any]:
+def analyze_simulation_batch(results: list[SimulationResult]) -> dict[str, Any]:
     """Analyze a batch of simulation results."""
     if not results:
         return {"message": "No simulation results to analyze"}

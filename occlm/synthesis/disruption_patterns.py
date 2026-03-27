@@ -6,7 +6,6 @@ disruptions with realistic parameters for synthetic data generation.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
 
 __all__ = [
     "DisruptionTemplate",
@@ -47,7 +46,7 @@ class DisruptionTemplate:
     duration_minutes: tuple[int, int]
     severity: str
     affected_lines: list[str]
-    affected_stops: Optional[list[str]]
+    affected_stops: list[str] | None
     passenger_impact: str
     probability: float
     description: str = ""
@@ -89,7 +88,7 @@ class DisruptionTemplate:
 # DISRUPTION TEMPLATES REGISTRY
 # =============================================================================
 
-DISRUPTION_TEMPLATES: Dict[str, DisruptionTemplate] = {
+DISRUPTION_TEMPLATES: dict[str, DisruptionTemplate] = {
     "signal_failure": DisruptionTemplate(
         name="Signal Failure",
         incident_type="signal_failure",

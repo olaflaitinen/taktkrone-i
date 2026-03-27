@@ -7,7 +7,7 @@ and other fields for efficient querying.
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from occlm.schemas import IncidentRecord, NetworkSnapshot, RealtimeEvent
 
@@ -24,8 +24,8 @@ class ParquetStore:
 
     def __init__(
         self,
-        base_path: Union[str, Path],
-        partition_by: Optional[List[str]] = None,
+        base_path: str | Path,
+        partition_by: list[str] | None = None,
         compression: str = "snappy",
         coerce_timestamps: str = "us",
     ):
@@ -81,9 +81,9 @@ class ParquetStore:
 
     def save_events(
         self,
-        events: List[RealtimeEvent],
+        events: list[RealtimeEvent],
         operator: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Save RealtimeEvent objects to Parquet.
 
@@ -111,9 +111,9 @@ class ParquetStore:
 
     def save_incidents(
         self,
-        incidents: List[IncidentRecord],
+        incidents: list[IncidentRecord],
         operator: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Save IncidentRecord objects to Parquet.
 
@@ -140,9 +140,9 @@ class ParquetStore:
 
     def save_snapshots(
         self,
-        snapshots: List[NetworkSnapshot],
+        snapshots: list[NetworkSnapshot],
         operator: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Save NetworkSnapshot objects to Parquet.
 
@@ -169,12 +169,12 @@ class ParquetStore:
 
     def query_events(
         self,
-        operator: Optional[str] = None,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
-        event_type: Optional[str] = None,
-        route_id: Optional[str] = None,
-    ) -> List[RealtimeEvent]:
+        operator: str | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+        event_type: str | None = None,
+        route_id: str | None = None,
+    ) -> list[RealtimeEvent]:
         """
         Query stored RealtimeEvent objects with filtering.
 
@@ -205,13 +205,13 @@ class ParquetStore:
 
     def query_incidents(
         self,
-        operator: Optional[str] = None,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
-        incident_type: Optional[str] = None,
-        severity: Optional[str] = None,
-        status: Optional[str] = None,
-    ) -> List[IncidentRecord]:
+        operator: str | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+        incident_type: str | None = None,
+        severity: str | None = None,
+        status: str | None = None,
+    ) -> list[IncidentRecord]:
         """
         Query stored IncidentRecord objects with filtering.
 
@@ -239,10 +239,10 @@ class ParquetStore:
 
     def query_snapshots(
         self,
-        operator: Optional[str] = None,
-        start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None,
-    ) -> List[NetworkSnapshot]:
+        operator: str | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+    ) -> list[NetworkSnapshot]:
         """
         Query stored NetworkSnapshot objects with filtering.
 
@@ -265,8 +265,8 @@ class ParquetStore:
         raise NotImplementedError("Snapshot querying to be implemented")
 
     def get_statistics(
-        self, operator: Optional[str] = None, data_type: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, operator: str | None = None, data_type: str | None = None
+    ) -> dict[str, Any]:
         """
         Get storage statistics.
 
@@ -290,7 +290,7 @@ class ParquetStore:
 
     def cleanup_old_data(
         self, days_to_keep: int = 30
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Remove data older than specified days.
 

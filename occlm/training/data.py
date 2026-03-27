@@ -7,9 +7,9 @@ Handles loading, preprocessing, and formatting of training data.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterator, List, Optional, Union
+from typing import Any
 
-from datasets import Dataset, DatasetDict, load_dataset
+from datasets import Dataset, DatasetDict
 from transformers import PreTrainedTokenizer
 
 from .config import DatasetConfig
@@ -44,7 +44,7 @@ CHAT_TEMPLATES = {
 
 def load_occ_dataset(
     config: DatasetConfig,
-    tokenizer: Optional[PreTrainedTokenizer] = None,
+    tokenizer: PreTrainedTokenizer | None = None,
 ) -> DatasetDict:
     """
     Load OCC training dataset.
@@ -103,8 +103,8 @@ def load_occ_dataset(
 
 
 def load_jsonl_dataset(
-    path: Union[str, Path],
-    max_samples: Optional[int] = None,
+    path: str | Path,
+    max_samples: int | None = None,
     shuffle: bool = False,
     seed: int = 42,
 ) -> Dataset:
@@ -146,9 +146,9 @@ def load_jsonl_dataset(
 
 
 def format_occ_messages(
-    sample: Dict[str, Any],
-    system_prompt: Optional[str] = None,
-) -> List[Dict[str, str]]:
+    sample: dict[str, Any],
+    system_prompt: str | None = None,
+) -> list[dict[str, str]]:
     """
     Format OCC sample into chat messages.
 
@@ -243,7 +243,7 @@ def preprocess_for_training(
         if template:
             tokenizer.chat_template = template
 
-    def process_sample(sample: Dict) -> Dict:
+    def process_sample(sample: dict) -> dict:
         """Process single sample"""
         messages = format_occ_messages(sample)
 
@@ -308,7 +308,7 @@ class DataCollatorForOCC:
         self.padding = padding
         self.return_tensors = return_tensors
 
-    def __call__(self, features: List[Dict]) -> Dict:
+    def __call__(self, features: list[dict]) -> dict:
         """Collate batch of features"""
         # Extract texts
         texts = [f["text"] for f in features]
@@ -331,7 +331,7 @@ class DataCollatorForOCC:
         return batch
 
 
-def get_dataset_statistics(dataset: Dataset) -> Dict[str, Any]:
+def get_dataset_statistics(dataset: Dataset) -> dict[str, Any]:
     """
     Compute statistics about dataset.
 

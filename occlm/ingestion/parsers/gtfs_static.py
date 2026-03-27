@@ -2,11 +2,10 @@
 
 import csv
 import io
-import json
 import zipfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 from urllib.parse import urlparse
 
 import requests
@@ -22,9 +21,9 @@ class GTFSStop(BaseModel):
     stop_name: str
     stop_lat: float
     stop_lon: float
-    stop_code: Optional[str] = None
-    location_type: Optional[int] = 0  # 0=stop, 1=station
-    parent_station: Optional[str] = None
+    stop_code: str | None = None
+    location_type: int | None = 0  # 0=stop, 1=station
+    parent_station: str | None = None
 
 
 class GTFSRoute(BaseModel):
@@ -34,8 +33,8 @@ class GTFSRoute(BaseModel):
     route_short_name: str
     route_long_name: str
     route_type: int  # 0=tram, 1=subway, 2=rail, 3=bus, etc.
-    route_color: Optional[str] = None
-    agency_id: Optional[str] = None
+    route_color: str | None = None
+    agency_id: str | None = None
 
 
 class GTFSTrip(BaseModel):
@@ -44,9 +43,9 @@ class GTFSTrip(BaseModel):
     trip_id: str
     route_id: str
     service_id: str
-    direction_id: Optional[int] = None
-    block_id: Optional[str] = None
-    shape_id: Optional[str] = None
+    direction_id: int | None = None
+    block_id: str | None = None
+    shape_id: str | None = None
 
 
 class GTFSStaticParser:
@@ -56,7 +55,7 @@ class GTFSStaticParser:
     Supports both local ZIP files and remote URLs.
     """
 
-    def __init__(self, cache_dir: Optional[str] = None) -> None:
+    def __init__(self, cache_dir: str | None = None) -> None:
         """
         Initialize GTFS parser.
 
@@ -66,10 +65,10 @@ class GTFSStaticParser:
         self.cache_dir = Path(cache_dir) if cache_dir else Path("./gtfs_cache")
         self.cache_dir.mkdir(exist_ok=True)
 
-        self.stops: Dict[str, GTFSStop] = {}
-        self.routes: Dict[str, GTFSRoute] = {}
-        self.trips: Dict[str, GTFSTrip] = {}
-        self.stop_times: List[Dict[str, Any]] = []
+        self.stops: dict[str, GTFSStop] = {}
+        self.routes: dict[str, GTFSRoute] = {}
+        self.trips: dict[str, GTFSTrip] = {}
+        self.stop_times: list[dict[str, Any]] = []
 
     def load_feed(self, feed_source: str) -> None:
         """
@@ -194,7 +193,7 @@ class GTFSStaticParser:
         # Completed: Implement shape parsing for route geometry
         pass
 
-    def get_network_topology(self) -> Dict[str, Any]:
+    def get_network_topology(self) -> dict[str, Any]:
         """
         Build network topology graph.
 
@@ -218,7 +217,7 @@ class GTFSStaticParser:
 
         # Connect stops within each route
         for route_id, stop_ids in route_stops.items():
-            stop_list = sorted(list(stop_ids))
+            stop_list = sorted(stop_ids)
             for i in range(len(stop_list) - 1):
                 stop1, stop2 = stop_list[i], stop_list[i + 1]
                 if stop2 not in stop_connections[stop1]:
@@ -239,7 +238,7 @@ class GTFSStaticParser:
             }
         }
 
-    def validate_topology(self) -> List[str]:
+    def validate_topology(self) -> list[str]:
         """
         Validate GTFS data for consistency.
 

@@ -11,9 +11,9 @@ import logging
 import re
 import time
 from collections import OrderedDict
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -33,15 +33,15 @@ class OCCResponse(BaseModel):
     """Structured response from OCC inference."""
 
     summary: str = Field(description="Brief situation summary")
-    observed_facts: List[str] = Field(
+    observed_facts: list[str] = Field(
         default_factory=list,
         description="Facts directly from provided data"
     )
-    inferred_hypotheses: List[Dict[str, Any]] = Field(
+    inferred_hypotheses: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Hypotheses with confidence levels"
     )
-    recommended_actions: List[Dict[str, Any]] = Field(
+    recommended_actions: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Prioritized action recommendations"
     )
@@ -50,19 +50,19 @@ class OCCResponse(BaseModel):
         default=False,
         description="Whether human review is required"
     )
-    uncertainties: List[str] = Field(
+    uncertainties: list[str] = Field(
         default_factory=list,
         description="Key uncertainties affecting recommendation"
     )
-    safety_notes: List[str] = Field(
+    safety_notes: list[str] = Field(
         default_factory=list,
         description="Safety considerations"
     )
-    citations: List[Dict[str, str]] = Field(
+    citations: list[dict[str, str]] = Field(
         default_factory=list,
         description="References to source data"
     )
-    error: Optional[str] = Field(
+    error: str | None = Field(
         default=None,
         description="Error message if request could not be processed"
     )
@@ -73,11 +73,11 @@ class InferenceRequest(BaseModel):
 
     query: str = Field(description="User query")
     operator: str = Field(default="generic", description="Operator code")
-    context: Optional[Dict[str, Any]] = Field(
+    context: dict[str, Any] | None = Field(
         default=None,
         description="Additional context data"
     )
-    system_prompt: Optional[str] = Field(
+    system_prompt: str | None = Field(
         default=None,
         description="Optional system prompt override"
     )
@@ -93,17 +93,17 @@ class InferenceResult(BaseModel):
     response: OCCResponse
     latency_ms: float
     model_version: str
-    guardrails_triggered: List[str] = Field(default_factory=list)
+    guardrails_triggered: list[str] = Field(default_factory=list)
 
 
 @dataclass
 class GuardrailResult:
     """Result from guardrail check."""
     passed: bool
-    code: Optional[str] = None
-    message: Optional[str] = None
+    code: str | None = None
+    message: str | None = None
     flagged: bool = False
-    details: Optional[Dict] = None
+    details: dict | None = None
 
 
 class LRUCache:
@@ -120,7 +120,7 @@ class LRUCache:
         self.ttl_seconds = ttl_seconds
         self.cache: OrderedDict[str, tuple] = OrderedDict()
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Any | None:
         """Get value from cache if present and not expired."""
         if key not in self.cache:
             return None
@@ -147,7 +147,7 @@ class LRUCache:
         """Clear all cache entries."""
         self.cache.clear()
 
-    def get_stats(self) -> Dict[str, int]:
+    def get_stats(self) -> dict[str, int]:
         """Get cache statistics."""
         return {
             "size": len(self.cache),
@@ -167,7 +167,7 @@ class AsyncOCCInferenceEngine:
     def __init__(
         self,
         model_path: str,
-        retriever_path: Optional[str] = None,
+        retriever_path: str | None = None,
         device: str = "cuda",
         precision: str = "fp16",
         enable_guardrails: bool = True,
@@ -291,7 +291,7 @@ class AsyncOCCInferenceEngine:
         self.cache.clear()
         logger.info("Inference cache cleared")
 
-    def get_cache_stats(self) -> Dict[str, Any]:
+    def get_cache_stats(self) -> dict[str, Any]:
         """Get cache statistics."""
         return {
             **self.cache.get_stats(),
@@ -300,7 +300,7 @@ class AsyncOCCInferenceEngine:
             "hit_rate": self.cache_hits / max(1, self.cache_hits + self.cache_misses),
         }
 
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> dict[str, Any]:
         """Get model information."""
         return {
             "model_path": self.model_path,
@@ -320,8 +320,8 @@ class AsyncOCCInferenceEngine:
         max_tokens: int = 512,
         temperature: float = 0.7,
         operator: str = "generic",
-        context: Optional[Dict[str, Any]] = None,
-        system_prompt: Optional[str] = None,
+        context: dict[str, Any] | None = None,
+        system_prompt: str | None = None,
     ) -> str:
         """Single inference call (simplified).
 
@@ -348,10 +348,10 @@ class AsyncOCCInferenceEngine:
 
     async def infer_batch(
         self,
-        queries: List[str],
+        queries: list[str],
         max_tokens: int = 512,
         temperature: float = 0.7,
-    ) -> List[str]:
+    ) -> list[str]:
         """Batch inference call.
 
         Args:
@@ -377,8 +377,8 @@ class AsyncOCCInferenceEngine:
         self,
         query: str,
         operator: str = "generic",
-        context: Optional[Dict[str, Any]] = None,
-        system_prompt: Optional[str] = None,
+        context: dict[str, Any] | None = None,
+        system_prompt: str | None = None,
         max_tokens: int = 512,
         temperature: float = 0.7,
     ) -> InferenceResult:
@@ -446,8 +446,8 @@ class AsyncOCCInferenceEngine:
 
     async def batch_query_async(
         self,
-        requests: List[InferenceRequest],
-    ) -> List[InferenceResult]:
+        requests: list[InferenceRequest],
+    ) -> list[InferenceResult]:
         """Process batch of requests asynchronously."""
         tasks = [
             self.query_async(
@@ -503,9 +503,9 @@ class AsyncOCCInferenceEngine:
         self,
         query: str,
         operator: str,
-        context: Optional[Dict],
-        system_prompt: Optional[str],
-    ) -> List[Dict[str, str]]:
+        context: dict | None,
+        system_prompt: str | None,
+    ) -> list[dict[str, str]]:
         """Build chat messages."""
         messages = []
 
@@ -545,7 +545,7 @@ Respond in JSON structure with: summary, observed_facts, inferred_hypotheses, re
 
     async def _generate_async(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         max_tokens: int,
         temperature: float,
     ) -> str:
@@ -561,7 +561,7 @@ Respond in JSON structure with: summary, observed_facts, inferred_hypotheses, re
 
     def _generate(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         max_tokens: int,
         temperature: float,
     ) -> str:
@@ -622,7 +622,7 @@ Respond in JSON structure with: summary, observed_facts, inferred_hypotheses, re
         request_id: str,
         start_time: float,
         guardrail_result: GuardrailResult,
-        triggered: List[str],
+        triggered: list[str],
     ) -> InferenceResult:
         """Create error result for blocked input."""
         latency_ms = (time.time() - start_time) * 1000
@@ -645,7 +645,7 @@ Respond in JSON structure with: summary, observed_facts, inferred_hypotheses, re
         request_id: str,
         start_time: float,
         guardrail_result: GuardrailResult,
-        triggered: List[str],
+        triggered: list[str],
     ) -> InferenceResult:
         """Create filtered result when output is blocked."""
         latency_ms = (time.time() - start_time) * 1000

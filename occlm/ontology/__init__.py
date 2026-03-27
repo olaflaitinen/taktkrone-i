@@ -10,9 +10,9 @@ Provides structured knowledge about transit operations including:
 - Recovery strategies
 """
 
-from typing import Dict, List, Set, Optional, Any
-from enum import Enum
 from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Optional, Set
 
 __version__ = "0.1.0"
 
@@ -52,10 +52,10 @@ class ActionType(str, Enum):
 class OperationalProcedure:
     """Standard operating procedure definition."""
     name: str
-    incident_types: List[IncidentType]
-    required_actions: List[ActionType]
-    optional_actions: List[ActionType]
-    safety_requirements: List[str]
+    incident_types: list[IncidentType]
+    required_actions: list[ActionType]
+    optional_actions: list[ActionType]
+    safety_requirements: list[str]
     estimated_duration_minutes: int
 
 @dataclass
@@ -63,9 +63,9 @@ class ResourceHierarchy:
     """Transit system resource hierarchy."""
     resource_id: str
     resource_type: str
-    parent_id: Optional[str]
-    children: List[str]
-    capabilities: List[str]
+    parent_id: str | None
+    children: list[str]
+    capabilities: list[str]
 
 # Ontology capabilities
 __all__ = [
@@ -138,11 +138,11 @@ class OntologyManager:
         self.action_taxonomy = ACTION_TAXONOMY
         self.procedures = STANDARD_PROCEDURES
 
-    def get_incident_info(self, incident_type: IncidentType) -> Dict[str, Any]:
+    def get_incident_info(self, incident_type: IncidentType) -> dict[str, Any]:
         """Get comprehensive incident information."""
         return self.incident_taxonomy.get(incident_type, {})
 
-    def get_recommended_actions(self, incident_type: IncidentType) -> List[ActionType]:
+    def get_recommended_actions(self, incident_type: IncidentType) -> list[ActionType]:
         """Get recommended actions for incident type."""
         # Completed: Implement action recommendation logic
         return []
@@ -153,7 +153,7 @@ class TaxonomyValidator:
     def __init__(self, ontology_manager: OntologyManager):
         self.ontology = ontology_manager
 
-    def validate_taxonomy(self) -> List[str]:
+    def validate_taxonomy(self) -> list[str]:
         """Validate taxonomy for consistency."""
         # Completed: Implement taxonomy validation
         return []
@@ -164,7 +164,7 @@ class ProcedureLibrary:
     def __init__(self):
         self.procedures = {p.name: p for p in STANDARD_PROCEDURES}
 
-    def get_procedure(self, incident_type: IncidentType) -> Optional[OperationalProcedure]:
+    def get_procedure(self, incident_type: IncidentType) -> OperationalProcedure | None:
         """Get procedure for incident type."""
         for procedure in self.procedures.values():
             if incident_type in procedure.incident_types:

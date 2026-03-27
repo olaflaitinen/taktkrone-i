@@ -3,8 +3,9 @@ Base adapter interface for transit data ingestion.
 """
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Optional
 
 from occlm.schemas import IncidentRecord, NetworkSnapshot, RealtimeEvent
 
@@ -20,8 +21,8 @@ class IngestionAdapter(ABC):
     def __init__(
         self,
         operator_code: str,
-        api_key: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
+        api_key: str | None = None,
+        config: dict[str, Any] | None = None,
     ):
         """
         Initialize adapter.
@@ -37,7 +38,7 @@ class IngestionAdapter(ABC):
 
     @abstractmethod
     def fetch_realtime_events(
-        self, start_time: Optional[datetime] = None, end_time: Optional[datetime] = None
+        self, start_time: datetime | None = None, end_time: datetime | None = None
     ) -> Iterator[RealtimeEvent]:
         """
         Fetch realtime operational events.
@@ -52,7 +53,7 @@ class IngestionAdapter(ABC):
         pass
 
     @abstractmethod
-    def fetch_network_snapshot(self, timestamp: Optional[datetime] = None) -> NetworkSnapshot:
+    def fetch_network_snapshot(self, timestamp: datetime | None = None) -> NetworkSnapshot:
         """
         Fetch current network state snapshot.
 
@@ -68,9 +69,9 @@ class IngestionAdapter(ABC):
     def fetch_incidents(
         self,
         active_only: bool = True,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
-    ) -> List[IncidentRecord]:
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
+    ) -> list[IncidentRecord]:
         """
         Fetch disruption and incident records.
 
@@ -85,7 +86,7 @@ class IngestionAdapter(ABC):
         pass
 
     @abstractmethod
-    def fetch_static_network(self) -> Dict[str, Any]:
+    def fetch_static_network(self) -> dict[str, Any]:
         """
         Fetch static network topology (GTFS or equivalent).
 
@@ -104,7 +105,7 @@ class IngestionAdapter(ABC):
         """
         pass
 
-    def get_supported_lines(self) -> List[str]:
+    def get_supported_lines(self) -> list[str]:
         """
         Get list of supported lines/routes for this operator.
 
@@ -113,7 +114,7 @@ class IngestionAdapter(ABC):
         """
         return []
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """
         Get adapter metadata.
 

@@ -7,7 +7,7 @@ incident context with slot filling, variation, and action annotation.
 
 import random
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 import string
 
 from occlm.synthesis.templates.occ_conversations import (
@@ -41,10 +41,10 @@ class DialogueGenerator:
 
     def generate_occ_dialogue(
         self,
-        scenario: Dict[str, Any],
+        scenario: dict[str, Any],
         difficulty: Optional[str] = None,
         template_name: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[Dict[str, Any]]:
         """
         Generate complete OCC dialogue from scenario.
 
@@ -140,7 +140,7 @@ class DialogueGenerator:
     def _slot_fill_template(
         self,
         template: str,
-        context: Dict[str, Any],
+        context: dict[str, Any],
     ) -> str:
         """
         Fill template slots with context values.
@@ -271,7 +271,7 @@ class DialogueGenerator:
         self,
         base_message: str,
         num: int = 3,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generate alternative phrasings of message.
 
@@ -316,8 +316,8 @@ class DialogueGenerator:
 
     def annotate_dialogue_with_actions(
         self,
-        dialogue: List[Dict[str, Any]],
-    ) -> List[Dict[str, Any]]:
+        dialogue: list[Dict[str, Any]],
+    ) -> list[Dict[str, Any]]:
         """
         Annotate dialogue messages with operational actions.
 
@@ -368,7 +368,7 @@ class DialogueGenerator:
 
         return annotated
 
-    def _infer_actions(self, message: str) -> List[str]:
+    def _infer_actions(self, message: str) -> list[str]:
         """
         Infer operational actions from message content.
 

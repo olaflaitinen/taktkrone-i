@@ -5,14 +5,13 @@ Combines topology simulation and disruption patterns to generate
 realistic multi-turn operational scenarios with incident progression.
 """
 
-from datetime import datetime, timezone, timedelta
-from typing import Any, Dict, List, Optional
 import random
 import uuid
+from datetime import datetime, timezone
+from typing import Any
 
 from occlm.synthesis.disruption_patterns import (
     get_template,
-    DISRUPTION_TEMPLATES,
 )
 from occlm.synthesis.topology_simulator import TopologySimulator
 
@@ -32,8 +31,8 @@ class ScenarioEngine:
 
     def __init__(
         self,
-        topology_simulator: Optional[TopologySimulator] = None,
-        random_seed: Optional[int] = None,
+        topology_simulator: TopologySimulator | None = None,
+        random_seed: int | None = None,
     ) -> None:
         """
         Initialize scenario engine.
@@ -46,13 +45,13 @@ class ScenarioEngine:
         if random_seed is not None:
             random.seed(random_seed)
 
-        self.generated_scenarios: List[Dict[str, Any]] = []
+        self.generated_scenarios: list[dict[str, Any]] = []
 
     def generate_delay_scenario(
         self,
         num_scenarios: int = 10,
-        difficulty: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+        difficulty: str | None = None,
+    ) -> list[dict[str, Any]]:
         """
         Generate delay disruption scenarios.
 
@@ -85,7 +84,7 @@ class ScenarioEngine:
     def generate_bunching_scenario(
         self,
         num_scenarios: int = 10,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Generate train bunching scenarios.
 
@@ -122,7 +121,7 @@ class ScenarioEngine:
     def generate_turnback_scenario(
         self,
         num_scenarios: int = 10,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Generate terminal turnback disruption scenarios.
 
@@ -161,7 +160,7 @@ class ScenarioEngine:
     def generate_conflict_scenario(
         self,
         num_scenarios: int = 10,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Generate operational conflict scenarios.
 
@@ -207,7 +206,7 @@ class ScenarioEngine:
         self,
         incident_type: str,
         scenario_type: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Generate a single complete scenario.
 
@@ -276,8 +275,8 @@ class ScenarioEngine:
 
     def _generate_incident_progression(
         self,
-        disruption: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
+        disruption: dict[str, Any],
+    ) -> list[dict[str, Any]]:
         """
         Generate timeline of incident events.
 
@@ -288,7 +287,7 @@ class ScenarioEngine:
             List of progression events with timestamps
         """
         progression = []
-        base_time = datetime.now(timezone.utc)
+        datetime.now(timezone.utc)
         duration = disruption.get("duration_minutes", 30)
 
         # Initial detection
@@ -341,7 +340,7 @@ class ScenarioEngine:
 
         return progression
 
-    def _get_affected_stops(self, routes: List[str]) -> List[str]:
+    def _get_affected_stops(self, routes: list[str]) -> list[str]:
         """
         Get list of stops affected by disruption.
 
@@ -369,10 +368,10 @@ class ScenarioEngine:
 
     def _estimate_passenger_impact(
         self,
-        incident: Dict[str, Any],
+        incident: dict[str, Any],
         duration: int,
-        affected_stops: List[str],
-    ) -> Dict[str, Any]:
+        affected_stops: list[str],
+    ) -> dict[str, Any]:
         """
         Estimate passenger impact of disruption.
 
@@ -419,7 +418,7 @@ class ScenarioEngine:
             }.get(severity, 0.3),
         }
 
-    def get_scenario_stats(self) -> Dict[str, Any]:
+    def get_scenario_stats(self) -> dict[str, Any]:
         """
         Get statistics about generated scenarios.
 
@@ -432,16 +431,16 @@ class ScenarioEngine:
         return {
             "count": len(self.generated_scenarios),
             "scenario_types": list(
-                set(
+                {
                     s.get("scenario_type") for s in
                     self.generated_scenarios
-                )
+                }
             ),
             "incident_types": list(
-                set(
+                {
                     s.get("incident_details", {}).get("type")
                     for s in self.generated_scenarios
-                )
+                }
             ),
             "avg_affected_routes": (
                 sum(

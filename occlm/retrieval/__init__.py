@@ -10,8 +10,10 @@ Provides retrieval capabilities including:
 - Semantic search optimization
 """
 
-from typing import Dict, List, Any, Optional, Tuple, Iterator
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
+from typing import Any, Optional, Tuple
+
 import numpy as np
 
 __version__ = "0.1.0"
@@ -35,7 +37,7 @@ class RetrievalResult:
         document_id: str,
         content: str,
         score: float,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: dict[str, Any] | None = None
     ):
         self.document_id = document_id
         self.content = content
@@ -61,7 +63,7 @@ class DocumentEmbedder(ABC):
     """Abstract base class for document embedding."""
 
     @abstractmethod
-    def embed_documents(self, documents: List[str]) -> np.ndarray:
+    def embed_documents(self, documents: list[str]) -> np.ndarray:
         """Embed a batch of documents."""
         pass
 
@@ -76,10 +78,10 @@ class VectorStore(ABC):
     @abstractmethod
     def add_documents(
         self,
-        documents: List[str],
+        documents: list[str],
         embeddings: np.ndarray,
-        metadata: Optional[List[Dict[str, Any]]] = None
-    ) -> List[str]:
+        metadata: list[dict[str, Any]] | None = None
+    ) -> list[str]:
         """Add documents to the vector store."""
         pass
 
@@ -88,12 +90,12 @@ class VectorStore(ABC):
         self,
         query_embedding: np.ndarray,
         config: SearchConfig
-    ) -> List[RetrievalResult]:
+    ) -> list[RetrievalResult]:
         """Search for similar documents."""
         pass
 
     @abstractmethod
-    def delete_documents(self, document_ids: List[str]) -> None:
+    def delete_documents(self, document_ids: list[str]) -> None:
         """Delete documents from the store."""
         pass
 
@@ -113,8 +115,8 @@ class RAGPipeline:
     def retrieve(
         self,
         query: str,
-        config: Optional[SearchConfig] = None
-    ) -> List[RetrievalResult]:
+        config: SearchConfig | None = None
+    ) -> list[RetrievalResult]:
         """Retrieve relevant documents for a query."""
         if config is None:
             config = SearchConfig()
@@ -134,8 +136,8 @@ class RAGPipeline:
     def _rerank_results(
         self,
         query: str,
-        results: List[RetrievalResult]
-    ) -> List[RetrievalResult]:
+        results: list[RetrievalResult]
+    ) -> list[RetrievalResult]:
         """Rerank results using cross-encoder or other methods."""
         # Completed: Implement reranking logic
         return results
@@ -143,7 +145,7 @@ class RAGPipeline:
     def assemble_context(
         self,
         query: str,
-        config: Optional[SearchConfig] = None
+        config: SearchConfig | None = None
     ) -> str:
         """Assemble context from retrieved documents."""
         results = self.retrieve(query, config)
@@ -167,12 +169,12 @@ class SemanticSearch:
     def __init__(self, rag_pipeline: RAGPipeline):
         self.rag_pipeline = rag_pipeline
 
-    def search_incidents(self, query: str) -> List[RetrievalResult]:
+    def search_incidents(self, query: str) -> list[RetrievalResult]:
         """Search for similar incident records."""
         config = SearchConfig(k=5, rerank=True)
         return self.rag_pipeline.retrieve(query, config)
 
-    def search_procedures(self, incident_type: str) -> List[RetrievalResult]:
+    def search_procedures(self, incident_type: str) -> list[RetrievalResult]:
         """Search for relevant operational procedures."""
         query = f"operational procedure for {incident_type}"
         config = SearchConfig(k=3, rerank=True)
@@ -185,21 +187,21 @@ class KnowledgeBase:
         self.rag_pipeline = rag_pipeline
         self.document_count = 0
 
-    def add_incident_records(self, incidents: List[Dict[str, Any]]) -> None:
+    def add_incident_records(self, incidents: list[dict[str, Any]]) -> None:
         """Add incident records to knowledge base."""
         # Completed: Implement incident record indexing
         pass
 
-    def add_procedure_documents(self, procedures: List[Dict[str, Any]]) -> None:
+    def add_procedure_documents(self, procedures: list[dict[str, Any]]) -> None:
         """Add procedure documents to knowledge base."""
         # Completed: Implement procedure document indexing
         pass
 
-    def query_knowledge(self, query: str) -> List[RetrievalResult]:
+    def query_knowledge(self, query: str) -> list[RetrievalResult]:
         """Query the knowledge base."""
         return self.rag_pipeline.retrieve(query)
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get knowledge base statistics."""
         return {
             "document_count": self.document_count,
@@ -214,16 +216,16 @@ class FaissVectorStore(VectorStore):
 
     def __init__(self, dimension: int = 768):
         self.dimension = dimension
-        self.documents: List[str] = []
-        self.document_ids: List[str] = []
-        self.metadata: List[Dict[str, Any]] = []
+        self.documents: list[str] = []
+        self.document_ids: list[str] = []
+        self.metadata: list[dict[str, Any]] = []
 
     def add_documents(
         self,
-        documents: List[str],
+        documents: list[str],
         embeddings: np.ndarray,
-        metadata: Optional[List[Dict[str, Any]]] = None
-    ) -> List[str]:
+        metadata: list[dict[str, Any]] | None = None
+    ) -> list[str]:
         """Add documents to FAISS index."""
         # Completed: Implement FAISS indexing
         document_ids = [f"doc_{len(self.documents) + i}" for i in range(len(documents))]
@@ -237,12 +239,12 @@ class FaissVectorStore(VectorStore):
         self,
         query_embedding: np.ndarray,
         config: SearchConfig
-    ) -> List[RetrievalResult]:
+    ) -> list[RetrievalResult]:
         """Search FAISS index."""
         # Completed: Implement FAISS search
         return []
 
-    def delete_documents(self, document_ids: List[str]) -> None:
+    def delete_documents(self, document_ids: list[str]) -> None:
         """Delete from FAISS index."""
         # Completed: Implement deletion
         pass
@@ -254,7 +256,7 @@ class SentenceTransformerEmbedder(DocumentEmbedder):
         self.model_name = model_name
         # Completed: Initialize sentence transformer model
 
-    def embed_documents(self, documents: List[str]) -> np.ndarray:
+    def embed_documents(self, documents: list[str]) -> np.ndarray:
         """Embed documents using sentence transformer."""
         # Completed: Implement document embedding
         return np.random.rand(len(documents), 384)  # Placeholder

@@ -5,24 +5,18 @@ Provides the `occlm ingest` command for fetching and normalizing
 transit data from various operators.
 """
 
-from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import typer
 
 from occlm.ingestion.adapters import (
     BARTAdapter,
-    GenericGTFSAdapter,
     MBTAAdapter,
     MTAAdapter,
     TfLAdapter,
     WMATAAdapter,
 )
-from occlm.normalization.normalizer import SchemaNormalizer
-from occlm.normalization.validator import DataValidator
 from occlm.schemas import Operator
-from occlm.storage.parquet_store import ParquetStore
 
 app = typer.Typer()
 
@@ -53,7 +47,7 @@ def ingest(
         "-o",
         help="Output directory for Parquet files",
     ),
-    config_file: Optional[Path] = typer.Option(
+    config_file: Path | None = typer.Option(
         None,
         "--config",
         "-c",
@@ -79,7 +73,7 @@ def ingest(
         "--fetch-snapshot/--no-fetch-snapshot",
         help="Fetch network snapshot",
     ),
-    max_events: Optional[int] = typer.Option(
+    max_events: int | None = typer.Option(
         None,
         "--max-events",
         "-n",

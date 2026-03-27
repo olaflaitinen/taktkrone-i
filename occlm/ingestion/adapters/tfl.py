@@ -8,11 +8,17 @@ Ingests data from:
 - TfL Incident and disruption feeds
 """
 
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any
 
 from occlm.ingestion import IngestionAdapter
-from occlm.schemas import IncidentRecord, NetworkSnapshot, Operator, Provenance, RealtimeEvent
+from occlm.schemas import (
+    IncidentRecord,
+    NetworkSnapshot,
+    Operator,
+    RealtimeEvent,
+)
 
 
 class TfLAdapter(IngestionAdapter):
@@ -45,7 +51,7 @@ class TfLAdapter(IngestionAdapter):
         "Waterloo & City",
     ]
 
-    def __init__(self, api_key: str, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, api_key: str, config: dict[str, Any] | None = None):
         """
         Initialize TfL adapter.
 
@@ -59,8 +65,8 @@ class TfLAdapter(IngestionAdapter):
 
     def fetch_realtime_events(
         self,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
     ) -> Iterator[RealtimeEvent]:
         """
         Fetch GTFS-RT and TfL Unified API real-time events.
@@ -91,7 +97,7 @@ class TfLAdapter(IngestionAdapter):
         raise NotImplementedError("TfL real-time events to be implemented")
 
     def fetch_network_snapshot(
-        self, timestamp: Optional[datetime] = None
+        self, timestamp: datetime | None = None
     ) -> NetworkSnapshot:
         """
         Fetch current system-wide snapshot of TfL network state.
@@ -121,9 +127,9 @@ class TfLAdapter(IngestionAdapter):
     def fetch_incidents(
         self,
         active_only: bool = True,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
-    ) -> List[IncidentRecord]:
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
+    ) -> list[IncidentRecord]:
         """
         Fetch service disruptions and incidents from TfL.
 
@@ -153,7 +159,7 @@ class TfLAdapter(IngestionAdapter):
         # - Handle pagination and aggregation
         raise NotImplementedError("TfL incident fetching to be implemented")
 
-    def fetch_static_network(self) -> Dict[str, Any]:
+    def fetch_static_network(self) -> dict[str, Any]:
         """
         Download and parse GTFS static data for TfL network topology.
 
@@ -192,7 +198,7 @@ class TfLAdapter(IngestionAdapter):
         # - Handle API-specific error responses
         return False
 
-    def get_supported_lines(self) -> List[str]:
+    def get_supported_lines(self) -> list[str]:
         """
         Get list of supported lines for TfL.
 

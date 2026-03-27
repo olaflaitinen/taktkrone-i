@@ -9,19 +9,19 @@ Provides model inference infrastructure including:
 - Guardrail checking and structured response generation
 """
 
+from .audit_logger import AuditLogger
 from .engine import (
     AsyncOCCInferenceEngine,
     GuardrailResult,
     InferenceRequest,
     InferenceResult,
-    OCCResponse,
     LRUCache,
+    OCCResponse,
 )
 from .guardrails import (
     GuardrailsManager,
     ValidationResult,
 )
-from .audit_logger import AuditLogger
 
 __all__ = [
     # Core engine

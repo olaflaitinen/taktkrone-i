@@ -1,7 +1,6 @@
 """RAG pipeline combining BM25 and dense retrieval with optional reranking."""
 
 import logging
-from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -38,7 +37,7 @@ class RAGPipeline:
         self.bm25_weight = bm25_weight
         self.documents = []
 
-    def add_documents(self, documents: List[Dict[str, str]]):
+    def add_documents(self, documents: list[dict[str, str]]):
         """Index documents for retrieval.
 
         Args:
@@ -72,7 +71,7 @@ class RAGPipeline:
         query: str,
         k: int = 5,
         use_reranking: bool = False,
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Retrieve documents for query using hybrid search.
 
         Args:
@@ -135,7 +134,7 @@ class RAGPipeline:
 
         return final_results
 
-    def _rerank(self, query: str, candidates: List[Dict], top_k: Optional[int] = None) -> List[Dict]:
+    def _rerank(self, query: str, candidates: list[dict], top_k: int | None = None) -> list[dict]:
         """Rerank candidates using cross-encoder.
 
         Args:
@@ -153,7 +152,7 @@ class RAGPipeline:
             docs = [c["document"].get("text", "") for c in candidates]
             scores = self.reranker.predict([[query, doc] for doc in docs])
 
-            for candidate, score in zip(candidates, scores):
+            for candidate, score in zip(candidates, scores, strict=False):
                 candidate["rerank_score"] = float(score)
 
             candidates.sort(key=lambda x: x.get("rerank_score", 0), reverse=True)
@@ -168,7 +167,7 @@ class RAGPipeline:
             logger.warning(f"Reranking failed: {e}")
             return candidates
 
-    def retrieve_with_score_breakdown(self, query: str, k: int = 5) -> List[Dict]:
+    def retrieve_with_score_breakdown(self, query: str, k: int = 5) -> list[dict]:
         """Retrieve with detailed score breakdowns for analysis.
 
         Args:

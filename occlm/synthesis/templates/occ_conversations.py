@@ -6,7 +6,6 @@ operator-dispatcher conversations for various incident types.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
 
 __all__ = [
     "DialogueTurn",
@@ -30,8 +29,8 @@ class DialogueTurn:
 
     speaker: str
     message: str
-    templates: List[str] = field(default_factory=list)
-    actions: List[str] = field(default_factory=list)
+    templates: list[str] = field(default_factory=list)
+    actions: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         """Validate speaker is valid role."""
@@ -60,10 +59,10 @@ class ConversationTemplate:
     name: str
     incident_type: str
     difficulty: str
-    turns: List[DialogueTurn] = field(default_factory=list)
+    turns: list[DialogueTurn] = field(default_factory=list)
     duration_estimate: int = 5
-    context_requirements: List[str] = field(default_factory=list)
-    expected_resolution: Optional[str] = None
+    context_requirements: list[str] = field(default_factory=list)
+    expected_resolution: str | None = None
 
     def __post_init__(self) -> None:
         """Validate template structure."""
@@ -81,7 +80,7 @@ class ConversationTemplate:
 # CONVERSATION TEMPLATES REGISTRY
 # =============================================================================
 
-CONVERSATION_TEMPLATES: Dict[str, ConversationTemplate] = {
+CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
     "signal_failure_response": ConversationTemplate(
         name="Signal Failure Response",
         incident_type="signal_failure",
@@ -862,7 +861,7 @@ def get_conversation_template(
     return CONVERSATION_TEMPLATES[template_name]
 
 
-def list_templates() -> List[str]:
+def list_templates() -> list[str]:
     """
     List all available conversation templates.
 
@@ -874,7 +873,7 @@ def list_templates() -> List[str]:
 
 def get_templates_by_incident(
     incident_type: str,
-) -> List[ConversationTemplate]:
+) -> list[ConversationTemplate]:
     """
     Get all templates for a specific incident type.
 

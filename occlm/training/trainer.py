@@ -6,11 +6,9 @@ Main training logic using TRL SFTTrainer with LoRA/QLoRA support.
 
 import json
 import logging
-import os
-import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 import torch
 from datasets import Dataset, DatasetDict
@@ -24,7 +22,6 @@ from transformers import (
 
 from .config import TrainingConfig, TrainingMethod, load_config
 from .data import (
-    DataCollatorForOCC,
     get_dataset_statistics,
     load_occ_dataset,
     preprocess_for_training,
@@ -43,8 +40,8 @@ class OCCTrainer:
 
     def __init__(
         self,
-        config: Union[TrainingConfig, str, Path],
-        resume_from_checkpoint: Optional[str] = None,
+        config: TrainingConfig | str | Path,
+        resume_from_checkpoint: str | None = None,
     ):
         """
         Initialize trainer.
@@ -60,8 +57,8 @@ class OCCTrainer:
         self.resume_from_checkpoint = resume_from_checkpoint
 
         # Initialize state
-        self.model: Optional[PreTrainedModel] = None
-        self.tokenizer: Optional[PreTrainedTokenizer] = None
+        self.model: PreTrainedModel | None = None
+        self.tokenizer: PreTrainedTokenizer | None = None
         self.trainer = None
         self.experiment_dir = config.experiment_output_dir
 
@@ -191,7 +188,7 @@ class OCCTrainer:
 
     def setup_trainer(self, datasets: DatasetDict) -> None:
         """Setup TRL SFTTrainer"""
-        from trl import SFTTrainer, SFTConfig
+        from trl import SFTConfig, SFTTrainer
 
         logger.info("Setting up trainer")
 
@@ -235,7 +232,7 @@ class OCCTrainer:
 
         return callbacks
 
-    def train(self) -> Dict[str, Any]:
+    def train(self) -> dict[str, Any]:
         """
         Run training.
 
@@ -293,13 +290,13 @@ class OCCTrainer:
         tokenizer_path = self.experiment_dir / "tokenizer"
         self.tokenizer.save_pretrained(tokenizer_path)
 
-    def _save_metrics(self, metrics: Dict[str, Any]) -> None:
+    def _save_metrics(self, metrics: dict[str, Any]) -> None:
         """Save training metrics"""
         metrics_path = self.experiment_dir / "training_metrics.json"
         with open(metrics_path, "w") as f:
             json.dump(metrics, f, indent=2, default=str)
 
-    def evaluate(self, dataset: Optional[Dataset] = None) -> Dict[str, float]:
+    def evaluate(self, dataset: Dataset | None = None) -> dict[str, float]:
         """
         Evaluate model on dataset.
 
@@ -318,7 +315,7 @@ class OCCTrainer:
         logger.info(f"Eval loss: {metrics.get('eval_loss', 'N/A')}")
         return metrics
 
-    def merge_and_save(self, output_path: Union[str, Path]) -> None:
+    def merge_and_save(self, output_path: str | Path) -> None:
         """
         Merge LoRA adapter with base model and save.
 
@@ -349,7 +346,7 @@ class ExperimentTrackingCallback(TrainerCallback):
 
     def __init__(self, config: TrainingConfig):
         self.config = config
-        self.start_time: Optional[datetime] = None
+        self.start_time: datetime | None = None
 
     def on_train_begin(self, args, state, control, **kwargs):
         """Called at start of training"""
@@ -373,9 +370,9 @@ class ExperimentTrackingCallback(TrainerCallback):
 
 
 def train_model(
-    config_path: Union[str, Path],
-    resume_from: Optional[str] = None,
-) -> Dict[str, Any]:
+    config_path: str | Path,
+    resume_from: str | None = None,
+) -> dict[str, Any]:
     """
     Convenience function to train model from config file.
 

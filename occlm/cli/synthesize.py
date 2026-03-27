@@ -5,21 +5,18 @@ Provides the `occlm synthesize` command for generating large-scale
 synthetic training data for TAKTKRONE-I.
 """
 
-from pathlib import Path
-from typing import Optional
 import json
-import sys
+from pathlib import Path
 
 import typer
 
+from occlm.synthesis.dialogue_generator import DialogueGenerator
 from occlm.synthesis.disruption_patterns import (
     DISRUPTION_TEMPLATES,
-    get_templates_by_severity,
 )
-from occlm.synthesis.topology_simulator import create_sample_network
-from occlm.synthesis.scenario_engine import ScenarioEngine
-from occlm.synthesis.dialogue_generator import DialogueGenerator
 from occlm.synthesis.quality_scorer import QualityScorer
+from occlm.synthesis.scenario_engine import ScenarioEngine
+from occlm.synthesis.topology_simulator import create_sample_network
 
 __all__ = ["app", "synthesize", "create_app"]
 
@@ -40,18 +37,18 @@ def synthesize(
         "-o",
         help="Output file path (JSONL format)",
     ),
-    config: Optional[Path] = typer.Option(
+    config: Path | None = typer.Option(
         None,
         "--config",
         "-c",
         help="Optional JSON config file",
     ),
-    incident_types: Optional[str] = typer.Option(
+    incident_types: str | None = typer.Option(
         None,
         "--incident-types",
         help="Comma-separated incident types to generate (default: all)",
     ),
-    difficulty: Optional[str] = typer.Option(
+    difficulty: str | None = typer.Option(
         None,
         "--difficulty",
         help="Difficulty level: easy, medium, hard (default: mixed)",
@@ -61,7 +58,7 @@ def synthesize(
         "--quality-threshold",
         help="Minimum quality score (0.0-1.0)",
     ),
-    seed: Optional[int] = typer.Option(
+    seed: int | None = typer.Option(
         None,
         "--seed",
         help="Random seed for reproducibility",
@@ -100,7 +97,6 @@ def synthesize(
     """
     try:
         # Load config if provided
-        scenario_config = {}
         if config:
             if not config.exists():
                 typer.echo(
@@ -110,7 +106,7 @@ def synthesize(
                 raise typer.Exit(1)
 
             with open(config) as f:
-                scenario_config = json.load(f)
+                json.load(f)
 
             if verbose:
                 typer.echo(f"Loaded config from {config}")
@@ -119,7 +115,7 @@ def synthesize(
         if verbose:
             typer.echo("Initializing synthesis engine...")
 
-        network_data = create_sample_network()
+        create_sample_network()
         scenario_engine = ScenarioEngine(random_seed=seed)
         dialogue_generator = DialogueGenerator(random_seed=seed)
         quality_scorer = QualityScorer()
@@ -306,8 +302,6 @@ def validate_config(
         with open(config_file) as f:
             config = json.load(f)
 
-        required_keys = []
-        optional_keys = ["seed", "quality_threshold", "incident_types"]
 
         typer.echo(f"Validating {config_file}...")
 

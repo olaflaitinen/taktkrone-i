@@ -6,9 +6,8 @@ Interactive web interface for OCC inference with streaming, examples, export.
 
 import json
 import logging
-import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 try:
     import gradio as gr
@@ -44,7 +43,7 @@ class OCCDemoClient:
         operator: str = "generic",
         max_tokens: int = 512,
         temperature: float = 0.7,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Send query to API.
 
         Args:
@@ -91,7 +90,7 @@ class OCCDemoClient:
                 "model_version": "unknown",
             }
 
-    async def get_model_info(self) -> Dict[str, Any]:
+    async def get_model_info(self) -> dict[str, Any]:
         """Get model information.
 
         Returns:
@@ -105,7 +104,7 @@ class OCCDemoClient:
             logger.error(f"Failed to get model info: {e}")
             return {}
 
-    async def get_operators(self) -> List[Dict[str, str]]:
+    async def get_operators(self) -> list[dict[str, str]]:
         """Get available operators.
 
         Returns:
@@ -121,7 +120,7 @@ class OCCDemoClient:
             return []
 
 
-def create_demo(api_url: str = "https://taktkrone.ai") -> Optional[gr.Blocks]:
+def create_demo(api_url: str = "https://taktkrone.ai") -> gr.Blocks | None:
     """Create Gradio demo interface.
 
     Args:
@@ -157,7 +156,7 @@ def create_demo(api_url: str = "https://taktkrone.ai") -> Optional[gr.Blocks]:
                 gr.Markdown("## Query")
                 query_input = gr.Textbox(
                     label="Query",
-                    production-value="Describe the situation...",
+                    placeholder="Describe the situation...",
                     lines=4,
                     info="Describe the operational situation or ask for assistance",
                 )
@@ -250,7 +249,7 @@ def create_demo(api_url: str = "https://taktkrone.ai") -> Optional[gr.Blocks]:
             operator: str,
             max_tokens: int,
             temperature: float,
-        ) -> Tuple[str, float, bool, float, str, str]:
+        ) -> tuple[str, float, bool, float, str, str]:
             """Process query and return results."""
             if not query.strip():
                 return "", 0.0, False, 0.0, "Please enter a query", "{}"

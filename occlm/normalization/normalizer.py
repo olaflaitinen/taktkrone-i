@@ -5,11 +5,11 @@ Converts raw operator-specific data into canonical OCCLM schemas
 (RealtimeEvent, IncidentRecord, NetworkSnapshot, etc.)
 """
 
+from collections.abc import Iterator
 from datetime import datetime, timezone
-from typing import Any, Dict, Iterator, List, Optional, Union
+from typing import Any
 
 from occlm.schemas import (
-    GeoLocation,
     IncidentRecord,
     NetworkSnapshot,
     Operator,
@@ -32,7 +32,7 @@ class SchemaNormalizer:
         operator: Operator,
         id_prefix: str,
         timezone_str: str = "UTC",
-        config: Optional[Dict[str, Any]] = None,
+        config: dict[str, Any] | None = None,
     ):
         """
         Initialize schema normalizer.
@@ -49,7 +49,7 @@ class SchemaNormalizer:
         self.config = config or {}
         self.id_counter = 0
 
-    def _generate_id(self, base_id: Optional[str] = None) -> str:
+    def _generate_id(self, base_id: str | None = None) -> str:
         """
         Generate unique normalized ID.
 
@@ -68,8 +68,8 @@ class SchemaNormalizer:
     def _create_provenance(
         self,
         ingestion_method: str,
-        source_url: Optional[str] = None,
-        source_version: Optional[str] = None,
+        source_url: str | None = None,
+        source_version: str | None = None,
     ) -> Provenance:
         """
         Create Provenance object for normalized data.
@@ -91,12 +91,12 @@ class SchemaNormalizer:
 
     def normalize_event(
         self,
-        raw_data: Dict[str, Any],
+        raw_data: dict[str, Any],
         event_type: str,
         source: str,
         ingestion_method: str,
-        timestamp: Optional[datetime] = None,
-        base_id: Optional[str] = None,
+        timestamp: datetime | None = None,
+        base_id: str | None = None,
     ) -> RealtimeEvent:
         """
         Normalize raw data to RealtimeEvent schema.
@@ -130,14 +130,14 @@ class SchemaNormalizer:
 
     def normalize_incident(
         self,
-        raw_data: Dict[str, Any],
+        raw_data: dict[str, Any],
         incident_type: str,
         severity: str,
         status: str,
         source: str,
         ingestion_method: str,
-        timestamp: Optional[datetime] = None,
-        base_id: Optional[str] = None,
+        timestamp: datetime | None = None,
+        base_id: str | None = None,
     ) -> IncidentRecord:
         """
         Normalize raw data to IncidentRecord schema.
@@ -173,11 +173,11 @@ class SchemaNormalizer:
 
     def normalize_snapshot(
         self,
-        raw_data: Dict[str, Any],
+        raw_data: dict[str, Any],
         source: str,
         ingestion_method: str,
-        timestamp: Optional[datetime] = None,
-        base_id: Optional[str] = None,
+        timestamp: datetime | None = None,
+        base_id: str | None = None,
     ) -> NetworkSnapshot:
         """
         Normalize raw data to NetworkSnapshot schema.
@@ -211,7 +211,7 @@ class SchemaNormalizer:
 
     def normalize_events_batch(
         self,
-        raw_events: List[Dict[str, Any]],
+        raw_events: list[dict[str, Any]],
         event_type: str,
         source: str,
         ingestion_method: str,
@@ -238,14 +238,14 @@ class SchemaNormalizer:
                 yield self.normalize_event(
                     raw_event, event_type, source, ingestion_method
                 )
-            except Exception as e:
+            except Exception:
                 # Completed: Add proper logging
                 # logger.warning(f"Failed to normalize event: {e}")
                 continue
 
     def normalize_incidents_batch(
         self,
-        raw_incidents: List[Dict[str, Any]],
+        raw_incidents: list[dict[str, Any]],
         source: str,
         ingestion_method: str,
     ) -> Iterator[IncidentRecord]:
@@ -281,7 +281,7 @@ class SchemaNormalizer:
                     source,
                     ingestion_method,
                 )
-            except Exception as e:
+            except Exception:
                 # Completed: Add proper logging
                 # logger.warning(f"Failed to normalize incident: {e}")
                 continue

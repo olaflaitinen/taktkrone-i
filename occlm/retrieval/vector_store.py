@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class VectorStore:
     """Vector database supporting FAISS and Chroma backends."""
 
-    def __init__(self, dimension: int, backend: str = "faiss", persist_dir: Optional[str] = None):
+    def __init__(self, dimension: int, backend: str = "faiss", persist_dir: str | None = None):
         """Initialize vector store.
 
         Args:
@@ -48,7 +48,7 @@ class VectorStore:
         else:
             raise ValueError(f"Unknown backend: {self.backend}")
 
-    def add(self, embeddings: np.ndarray, metadata: List[Dict[str, Any]], ids: Optional[List[str]] = None):
+    def add(self, embeddings: np.ndarray, metadata: list[dict[str, Any]], ids: list[str] | None = None):
         """Add embeddings and metadata to store.
 
         Args:
@@ -79,7 +79,7 @@ class VectorStore:
 
         logger.info(f"Added {len(embeddings)} vectors to {self.backend} store")
 
-    def search(self, query_embedding: np.ndarray, k: int = 5) -> List[Tuple[int, float, Dict]]:
+    def search(self, query_embedding: np.ndarray, k: int = 5) -> list[tuple[int, float, dict]]:
         """Search for top-k nearest neighbors.
 
         Args:
@@ -99,7 +99,7 @@ class VectorStore:
             distances, indices = self.index.search(query_embedding.astype(np.float32), min(k, self.index.ntotal))
             results = [
                 (int(idx), float(dist), self.metadata[idx] if idx < len(self.metadata) else {})
-                for idx, dist in zip(indices[0], distances[0])
+                for idx, dist in zip(indices[0], distances[0], strict=False)
             ]
             return results
 
@@ -115,7 +115,7 @@ class VectorStore:
                 output.append((int(doc_id) if doc_id.isdigit() else doc_id, float(dist), metadata))
             return output
 
-    def delete(self, ids: List[int]):
+    def delete(self, ids: list[int]):
         """Delete vectors by ID."""
         if self.backend == "faiss":
             # FAISS doesn't support deletion; reconstruct index
@@ -154,7 +154,7 @@ class VectorStore:
         if self.backend == "faiss":
             import faiss
             self.index = faiss.read_index(str(path / "index.faiss"))
-            with open(path / "metadata.json", "r") as f:
+            with open(path / "metadata.json") as f:
                 self.metadata = json.load(f)
 
         elif self.backend == "chroma":

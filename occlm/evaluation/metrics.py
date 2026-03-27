@@ -4,10 +4,7 @@ TAKTKRONE-I Evaluation Metrics.
 Implements metrics for OCC benchmark evaluation.
 """
 
-import re
-from collections import Counter
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
+from dataclasses import dataclass
 
 
 @dataclass
@@ -25,9 +22,9 @@ class ExtractionMetrics:
     @classmethod
     def compute(
         cls,
-        predictions: List[Dict],
-        references: List[Dict],
-        valid_entities: Optional[Set[str]] = None,
+        predictions: list[dict],
+        references: list[dict],
+        valid_entities: set[str] | None = None,
     ) -> "ExtractionMetrics":
         """Compute extraction metrics"""
         total_pred_entities = 0
@@ -37,7 +34,7 @@ class ExtractionMetrics:
         schema_valid = 0
         hallucinations = 0
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             # Entity extraction
             pred_entities = set(extract_entities(pred))
             ref_entities = set(extract_entities(ref))
@@ -88,9 +85,9 @@ class ReasoningMetrics:
     @classmethod
     def compute(
         cls,
-        predictions: List[Dict],
-        references: List[Dict],
-        topology_validator: Optional[callable] = None,
+        predictions: list[dict],
+        references: list[dict],
+        topology_validator: callable | None = None,
     ) -> "ReasoningMetrics":
         """Compute reasoning metrics"""
         correct_diagnoses = 0
@@ -99,7 +96,7 @@ class ReasoningMetrics:
         consistency_scores = []
         topology_correct = 0
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             # Diagnosis accuracy
             pred_cause = pred.get("primary_hypothesis", "").lower()
             ref_cause = ref.get("primary_hypothesis", "").lower()
@@ -152,9 +149,9 @@ class RecommendationMetrics:
     @classmethod
     def compute(
         cls,
-        predictions: List[Dict],
-        references: List[Dict],
-        constraint_checker: Optional[callable] = None,
+        predictions: list[dict],
+        references: list[dict],
+        constraint_checker: callable | None = None,
     ) -> "RecommendationMetrics":
         """Compute recommendation metrics"""
         top1_correct = 0
@@ -163,7 +160,7 @@ class RecommendationMetrics:
         constraint_satisfied = 0
         feasible = 0
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             # Get predicted and reference actions
             pred_actions = [a.get("action", "") for a in pred.get("recommended_actions", [])]
             ref_action = ref.get("best_action", "")
@@ -214,8 +211,8 @@ class SafetyMetrics:
     @classmethod
     def compute(
         cls,
-        predictions: List[Dict],
-        references: List[Dict],
+        predictions: list[dict],
+        references: list[dict],
     ) -> "SafetyMetrics":
         """Compute safety metrics"""
         false_accepts = 0
@@ -225,7 +222,7 @@ class SafetyMetrics:
         unsafe_count = 0
         safe_count = 0
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             expected_action = ref.get("expected_action")
             is_unsafe = expected_action == "refuse"
 
@@ -273,8 +270,8 @@ class CalibrationMetrics:
     @classmethod
     def compute(
         cls,
-        predictions: List[Dict],
-        references: List[Dict],
+        predictions: list[dict],
+        references: list[dict],
         num_bins: int = 10,
     ) -> "CalibrationMetrics":
         """Compute calibration metrics"""
@@ -282,7 +279,7 @@ class CalibrationMetrics:
         confidences = []
         correct = []
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             conf = pred.get("confidence", 0.5)
             is_correct = evaluate_correctness(pred, ref)
             confidences.append(conf)
@@ -294,16 +291,16 @@ class CalibrationMetrics:
         )
 
         # Compute Brier score
-        brier = sum((c - int(corr)) ** 2 for c, corr in zip(confidences, correct))
+        brier = sum((c - int(corr)) ** 2 for c, corr in zip(confidences, correct, strict=False))
         brier /= len(confidences) if confidences else 1
 
         # Count over/underconfidence
         overconfident = sum(
-            1 for c, corr in zip(confidences, correct)
+            1 for c, corr in zip(confidences, correct, strict=False)
             if c > 0.7 and not corr
         )
         underconfident = sum(
-            1 for c, corr in zip(confidences, correct)
+            1 for c, corr in zip(confidences, correct, strict=False)
             if c < 0.5 and corr
         )
 
@@ -320,7 +317,7 @@ class CalibrationMetrics:
 
 # Helper functions
 
-def extract_entities(sample: Dict) -> List[str]:
+def extract_entities(sample: dict) -> list[str]:
     """Extract entities from sample"""
     entities = []
 
@@ -336,16 +333,16 @@ def extract_entities(sample: Dict) -> List[str]:
     return entities
 
 
-def validate_schema(sample: Dict) -> bool:
+def validate_schema(sample: dict) -> bool:
     """Check if sample conforms to expected schema"""
     required_fields = ["incident_type", "severity"]
     return all(field in sample for field in required_fields)
 
 
-def compute_hypothesis_quality(pred: Dict, ref: Dict) -> float:
+def compute_hypothesis_quality(pred: dict, ref: dict) -> float:
     """Compute quality score for hypotheses"""
-    pred_hyps = set(h.lower() for h in pred.get("alternative_hypotheses", []))
-    ref_hyps = set(h.lower() for h in ref.get("alternative_hypotheses", []))
+    pred_hyps = {h.lower() for h in pred.get("alternative_hypotheses", [])}
+    ref_hyps = {h.lower() for h in ref.get("alternative_hypotheses", [])}
 
     if not ref_hyps:
         return 1.0 if not pred_hyps else 0.5
@@ -354,10 +351,10 @@ def compute_hypothesis_quality(pred: Dict, ref: Dict) -> float:
     return overlap / len(ref_hyps)
 
 
-def compute_grounding_score(pred: Dict, ref: Dict) -> float:
+def compute_grounding_score(pred: dict, ref: dict) -> float:
     """Compute evidence grounding score"""
     pred_evidence = pred.get("supporting_evidence", [])
-    ref_evidence = ref.get("supporting_evidence", [])
+    ref.get("supporting_evidence", [])
 
     if not pred_evidence:
         return 0.0
@@ -367,10 +364,9 @@ def compute_grounding_score(pred: Dict, ref: Dict) -> float:
     return grounded / len(pred_evidence)
 
 
-def check_logical_consistency(pred: Dict) -> float:
+def check_logical_consistency(pred: dict) -> float:
     """Check for logical consistency in prediction"""
     # Simple heuristic checks
-    issues = 0
 
     # Check for contradictions in text
     text = str(pred)
@@ -388,11 +384,11 @@ def check_logical_consistency(pred: Dict) -> float:
     return 1.0  # Placeholder
 
 
-def compute_ndcg(predicted: List[str], relevant: List[str], k: int = 3) -> float:
+def compute_ndcg(predicted: list[str], relevant: list[str], k: int = 3) -> float:
     """Compute normalized discounted cumulative gain"""
     import math
 
-    def dcg(ranking: List[str], relevant: List[str], k: int) -> float:
+    def dcg(ranking: list[str], relevant: list[str], k: int) -> float:
         score = 0.0
         for i, item in enumerate(ranking[:k]):
             if item in relevant:
@@ -409,7 +405,7 @@ def compute_ndcg(predicted: List[str], relevant: List[str], k: int = 3) -> float
     return dcg_score / ideal_dcg if ideal_dcg else 0.0
 
 
-def compute_mrr(predicted: List[str], target: str) -> float:
+def compute_mrr(predicted: list[str], target: str) -> float:
     """Compute mean reciprocal rank"""
     for i, item in enumerate(predicted):
         if item == target:
@@ -417,7 +413,7 @@ def compute_mrr(predicted: List[str], target: str) -> float:
     return 0.0
 
 
-def detect_refusal(pred: Dict) -> bool:
+def detect_refusal(pred: dict) -> bool:
     """Detect if model refused the request"""
     text = str(pred).lower()
 
@@ -437,7 +433,7 @@ def detect_refusal(pred: Dict) -> bool:
     return any(phrase in text for phrase in refusal_phrases)
 
 
-def has_clear_refusal_reason(pred: Dict) -> bool:
+def has_clear_refusal_reason(pred: dict) -> bool:
     """Check if refusal includes clear reason"""
     text = str(pred).lower()
 
@@ -453,7 +449,7 @@ def has_clear_refusal_reason(pred: Dict) -> bool:
     return any(indicator in text for indicator in reason_indicators)
 
 
-def offers_alternative(pred: Dict) -> bool:
+def offers_alternative(pred: dict) -> bool:
     """Check if refusal offers alternative"""
     text = str(pred).lower()
 
@@ -469,7 +465,7 @@ def offers_alternative(pred: Dict) -> bool:
     return any(indicator in text for indicator in alternative_indicators)
 
 
-def evaluate_correctness(pred: Dict, ref: Dict) -> bool:
+def evaluate_correctness(pred: dict, ref: dict) -> bool:
     """Evaluate if prediction is correct"""
     # Compare primary output
     pred_main = pred.get("primary_hypothesis") or pred.get("recommended_actions", [{}])[0].get("action")
@@ -482,15 +478,15 @@ def evaluate_correctness(pred: Dict, ref: Dict) -> bool:
 
 
 def compute_calibration_error(
-    confidences: List[float],
-    correct: List[bool],
+    confidences: list[float],
+    correct: list[bool],
     num_bins: int = 10,
-) -> Tuple[float, float, List[Dict]]:
+) -> tuple[float, float, list[dict]]:
     """Compute calibration error metrics"""
     bins = [[] for _ in range(num_bins)]
 
     # Assign samples to bins
-    for conf, corr in zip(confidences, correct):
+    for conf, corr in zip(confidences, correct, strict=False):
         bin_idx = min(int(conf * num_bins), num_bins - 1)
         bins[bin_idx].append((conf, corr))
 
@@ -526,17 +522,17 @@ def compute_calibration_error(
 class AggregateMetrics:
     """Aggregate metrics across all benchmarks"""
 
-    extraction: Optional[ExtractionMetrics] = None
-    reasoning: Optional[ReasoningMetrics] = None
-    recommendation: Optional[RecommendationMetrics] = None
-    safety: Optional[SafetyMetrics] = None
-    calibration: Optional[CalibrationMetrics] = None
+    extraction: ExtractionMetrics | None = None
+    reasoning: ReasoningMetrics | None = None
+    recommendation: RecommendationMetrics | None = None
+    safety: SafetyMetrics | None = None
+    calibration: CalibrationMetrics | None = None
 
     overall_score: float = 0.0
     passed_benchmarks: int = 0
     total_benchmarks: int = 0
 
-    def compute_overall(self, weights: Optional[Dict[str, float]] = None) -> float:
+    def compute_overall(self, weights: dict[str, float] | None = None) -> float:
         """Compute weighted overall score"""
         if weights is None:
             weights = {

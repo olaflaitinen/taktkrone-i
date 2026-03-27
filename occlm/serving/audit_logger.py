@@ -10,7 +10,7 @@ import logging
 import logging.handlers
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 __all__ = [
     "AuditLogger",
@@ -88,7 +88,7 @@ class AuditLogger:
         operator: str,
         max_tokens: int,
         temperature: float,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Log inference request.
 
@@ -122,8 +122,8 @@ class AuditLogger:
         response: str,
         latency_ms: float,
         model_version: str,
-        guardrails_triggered: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        guardrails_triggered: list[str] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Log inference response.
 
@@ -157,7 +157,7 @@ class AuditLogger:
         code: str,
         message: str,
         severity: str = "warning",
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Log guardrail event.
 
@@ -190,8 +190,8 @@ class AuditLogger:
         request_id: str,
         error_type: str,
         error_message: str,
-        traceback: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        traceback: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Log error event.
 
@@ -225,7 +225,7 @@ class AuditLogger:
         event: str,
         cache_key: str,
         hit: bool = False,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Log cache-related event.
 
@@ -250,7 +250,7 @@ class AuditLogger:
 
         self._write_jsonl(log_entry)
 
-    def _write_jsonl(self, entry: Dict[str, Any]) -> None:
+    def _write_jsonl(self, entry: dict[str, Any]) -> None:
         """Write entry as JSONL.
 
         Args:
@@ -264,8 +264,8 @@ class AuditLogger:
     def get_recent_logs(
         self,
         last_n: int = 100,
-        event_type: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+        event_type: str | None = None,
+    ) -> list[dict[str, Any]]:
         """Get recent log entries.
 
         Args:
@@ -279,7 +279,7 @@ class AuditLogger:
 
         try:
             if self.log_path.exists():
-                with open(self.log_path, 'r') as f:
+                with open(self.log_path) as f:
                     lines = f.readlines()
 
                 # Read last N lines
@@ -297,7 +297,7 @@ class AuditLogger:
             logger.error(f"Failed to read logs: {e}")
             return []
 
-    def get_logs_by_request_id(self, request_id: str) -> List[Dict[str, Any]]:
+    def get_logs_by_request_id(self, request_id: str) -> list[dict[str, Any]]:
         """Get all logs for a specific request.
 
         Args:
@@ -310,7 +310,7 @@ class AuditLogger:
 
         try:
             if self.log_path.exists():
-                with open(self.log_path, 'r') as f:
+                with open(self.log_path) as f:
                     for line in f:
                         try:
                             entry = json.loads(line)
@@ -324,7 +324,7 @@ class AuditLogger:
             logger.error(f"Failed to read logs: {e}")
             return []
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get audit logging statistics.
 
         Returns:

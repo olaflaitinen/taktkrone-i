@@ -6,17 +6,15 @@ and topology consistency.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
-from pydantic import ValidationError
-
-from occlm.schemas import IncidentRecord, NetworkSnapshot, Operator, RealtimeEvent
+from occlm.schemas import IncidentRecord, NetworkSnapshot, RealtimeEvent
 
 
 class ValidationResult:
     """Result of a validation check."""
 
-    def __init__(self, is_valid: bool, errors: Optional[List[str]] = None):
+    def __init__(self, is_valid: bool, errors: list[str] | None = None):
         """
         Initialize validation result.
 
@@ -46,7 +44,7 @@ class DataValidator:
     and enforces business rules and topology constraints.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """
         Initialize data validator.
 
@@ -61,7 +59,7 @@ class DataValidator:
 
     def validate_realtime_event(
         self, event: RealtimeEvent
-    ) -> Tuple[bool, List[str]]:
+    ) -> tuple[bool, list[str]]:
         """
         Validate RealtimeEvent object.
 
@@ -92,7 +90,7 @@ class DataValidator:
 
     def validate_incident_record(
         self, incident: IncidentRecord
-    ) -> Tuple[bool, List[str]]:
+    ) -> tuple[bool, list[str]]:
         """
         Validate IncidentRecord object.
 
@@ -123,7 +121,7 @@ class DataValidator:
 
     def validate_network_snapshot(
         self, snapshot: NetworkSnapshot
-    ) -> Tuple[bool, List[str]]:
+    ) -> tuple[bool, list[str]]:
         """
         Validate NetworkSnapshot object.
 
@@ -153,8 +151,8 @@ class DataValidator:
         return False, errors
 
     def validate_completeness(
-        self, data: Dict[str, Any], required_fields: List[str]
-    ) -> Tuple[bool, List[str]]:
+        self, data: dict[str, Any], required_fields: list[str]
+    ) -> tuple[bool, list[str]]:
         """
         Validate that required fields are present and non-empty.
 
@@ -183,9 +181,9 @@ class DataValidator:
 
     def validate_topology_consistency(
         self,
-        events: List[RealtimeEvent],
-        network_topology: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[bool, List[str]]:
+        events: list[RealtimeEvent],
+        network_topology: dict[str, Any] | None = None,
+    ) -> tuple[bool, list[str]]:
         """
         Validate consistency of events against network topology.
 
@@ -214,8 +212,8 @@ class DataValidator:
         return len(errors) == 0, errors
 
     def validate_time_ordering(
-        self, events: List[RealtimeEvent]
-    ) -> Tuple[bool, List[str]]:
+        self, events: list[RealtimeEvent]
+    ) -> tuple[bool, list[str]]:
         """
         Validate that events have reasonable time ordering.
 
@@ -247,8 +245,8 @@ class DataValidator:
         return len(errors) == 0, errors
 
     def validate_batch(
-        self, events: List[RealtimeEvent]
-    ) -> Tuple[bool, List[str], List[str]]:
+        self, events: list[RealtimeEvent]
+    ) -> tuple[bool, list[str], list[str]]:
         """
         Validate batch of events with comprehensive checks.
 

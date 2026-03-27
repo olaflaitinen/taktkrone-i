@@ -3,7 +3,6 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -25,7 +24,7 @@ class RetrievalQA:
         self.test_cases = []
         self.load_test_cases()
 
-    def load_test_cases(self) -> List[Dict]:
+    def load_test_cases(self) -> list[dict]:
         """Load test cases (query, relevant_documents)."""
         if self.dataset_path.exists():
             with open(self.dataset_path) as f:
@@ -35,7 +34,7 @@ class RetrievalQA:
         logger.info(f"Loaded {len(self.test_cases)} retrieval test cases")
         return self.test_cases
 
-    def _create_dummy_cases(self) -> List[Dict]:
+    def _create_dummy_cases(self) -> list[dict]:
         """Create dummy test cases."""
         corpus = {
             "doc_001": "Line 1 service disruption due to signal failure at Station A",
@@ -52,7 +51,7 @@ class RetrievalQA:
             ("signal issues", ["doc_001", "doc_003"]),
         ]
 
-        for i in range(100 // len(queries)):
+        for _i in range(100 // len(queries)):
             for query, relevant_docs in queries:
                 cases.append(
                     {
@@ -65,7 +64,7 @@ class RetrievalQA:
 
         return cases[:100]
 
-    def compute_mrr(self, ranked_docs: List[str], relevant: List[str]) -> float:
+    def compute_mrr(self, ranked_docs: list[str], relevant: list[str]) -> float:
         """Compute Mean Reciprocal Rank.
 
         Args:
@@ -80,7 +79,7 @@ class RetrievalQA:
                 return 1.0 / (i + 1)
         return 0.0
 
-    def compute_recall_at_k(self, ranked_docs: List[str], relevant: List[str], k: int = 5) -> float:
+    def compute_recall_at_k(self, ranked_docs: list[str], relevant: list[str], k: int = 5) -> float:
         """Compute Recall@K.
 
         Args:
@@ -98,7 +97,7 @@ class RetrievalQA:
         retrieved_relevant = len(set(top_k) & set(relevant))
         return retrieved_relevant / len(relevant)
 
-    def compute_ndcg_at_k(self, ranked_docs: List[str], relevant: List[str], k: int = 10) -> float:
+    def compute_ndcg_at_k(self, ranked_docs: list[str], relevant: list[str], k: int = 10) -> float:
         """Compute normalized DCG@K.
 
         Args:
@@ -109,7 +108,7 @@ class RetrievalQA:
         Returns:
             nDCG@k score
         """
-        def dcg(ranking: List[str], rel_set: set, k: int) -> float:
+        def dcg(ranking: list[str], rel_set: set, k: int) -> float:
             score = 0.0
             for i, doc in enumerate(ranking[:k]):
                 if doc in rel_set:
@@ -126,8 +125,8 @@ class RetrievalQA:
         return dcg_score / ideal_dcg if ideal_dcg > 0 else 0.0
 
     def evaluate_retrieval(
-        self, predictions: List[List[str]], references: List[List[str]]
-    ) -> Dict[str, float]:
+        self, predictions: list[list[str]], references: list[list[str]]
+    ) -> dict[str, float]:
         """Compute retrieval metrics.
 
         Args:
@@ -144,7 +143,7 @@ class RetrievalQA:
         recall5_scores = []
         ndcg10_scores = []
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             mrr_scores.append(self.compute_mrr(pred, ref))
             recall5_scores.append(self.compute_recall_at_k(pred, ref, k=5))
             ndcg10_scores.append(self.compute_ndcg_at_k(pred, ref, k=10))
@@ -155,7 +154,7 @@ class RetrievalQA:
             "ndcg_at_10": float(np.mean(ndcg10_scores)),
         }
 
-    def run(self, retrieve_fn=None) -> Dict[str, float]:
+    def run(self, retrieve_fn=None) -> dict[str, float]:
         """Execute benchmark.
 
         Args:
@@ -165,7 +164,8 @@ class RetrievalQA:
             Dict of computed metrics
         """
         if not retrieve_fn:
-            retrieve_fn = lambda q, c: list(c.keys())[:3]  # Dummy: first 3 docs
+            def retrieve_fn(q, c):
+                return list(c.keys())[:3]  # Dummy: first 3 docs
 
         predictions = []
         references = []
@@ -185,6 +185,6 @@ class RetrievalQA:
         metrics = self.evaluate_retrieval(predictions, references)
         return metrics
 
-    def get_test_cases(self) -> List[Dict]:
+    def get_test_cases(self) -> list[dict]:
         """Return test cases."""
         return self.test_cases

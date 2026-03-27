@@ -7,7 +7,6 @@ nDCG@10, MRR, and MAP metrics for transit incident recovery scenarios.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -31,10 +30,10 @@ class RecoveryRanking:
         """
         self.model_name = model_name
         self.dataset_path = Path(dataset_path)
-        self.test_cases: List[Dict] = []
+        self.test_cases: list[dict] = []
         self.load_test_cases()
 
-    def load_test_cases(self) -> List[Dict]:
+    def load_test_cases(self) -> list[dict]:
         """Load test cases.
 
         Returns:
@@ -55,7 +54,7 @@ class RecoveryRanking:
             self.test_cases = self._create_dummy_cases()
         return self.test_cases
 
-    def _create_dummy_cases(self) -> List[Dict]:
+    def _create_dummy_cases(self) -> list[dict]:
         """Create dummy test cases.
 
         Returns:
@@ -85,7 +84,7 @@ class RecoveryRanking:
             )
         return cases
 
-    def compute_ndcg(self, predicted: List[str], ideal: List[str], k: int = 5) -> float:
+    def compute_ndcg(self, predicted: list[str], ideal: list[str], k: int = 5) -> float:
         """Compute normalized discounted cumulative gain.
 
         Args:
@@ -102,7 +101,7 @@ class RecoveryRanking:
         if k < 0:
             raise ValueError("k must be non-negative")
 
-        def dcg(ranking: List[str], relevant: List[str], k: int) -> float:
+        def dcg(ranking: list[str], relevant: list[str], k: int) -> float:
             score = 0.0
             for i, item in enumerate(ranking[:k]):
                 if item in relevant:
@@ -118,7 +117,7 @@ class RecoveryRanking:
 
         return float(dcg_score / ideal_dcg) if ideal_dcg > 0 else 0.0
 
-    def compute_mrr(self, predicted: List[str], ideal: List[str]) -> float:
+    def compute_mrr(self, predicted: list[str], ideal: list[str]) -> float:
         """Compute mean reciprocal rank.
 
         Args:
@@ -137,7 +136,7 @@ class RecoveryRanking:
                 return float(1.0 / (i + 1))
         return 0.0
 
-    def compute_map(self, predicted: List[str], ideal: List[str], k: int = 10) -> float:
+    def compute_map(self, predicted: list[str], ideal: list[str], k: int = 10) -> float:
         """Compute mean average precision@k.
 
         Args:
@@ -168,8 +167,8 @@ class RecoveryRanking:
         return float(precision_sum / len(ideal))
 
     def evaluate_ranking(
-        self, predictions: List[List[str]], references: List[List[str]]
-    ) -> Dict[str, float]:
+        self, predictions: list[list[str]], references: list[list[str]]
+    ) -> dict[str, float]:
         """Compute ranking metrics: nDCG@5, nDCG@10, MRR, MAP.
 
         Args:
@@ -190,7 +189,7 @@ class RecoveryRanking:
         mrr_scores = []
         map_scores = []
 
-        for pred, ref in zip(predictions, references):
+        for pred, ref in zip(predictions, references, strict=False):
             ndcg5_scores.append(self.compute_ndcg(pred, ref, k=5))
             ndcg10_scores.append(self.compute_ndcg(pred, ref, k=10))
             mrr_scores.append(self.compute_mrr(pred, ref))
@@ -204,8 +203,8 @@ class RecoveryRanking:
         }
 
     def evaluate_ranking_diversity(
-        self, predictions: List[List[str]], references: List[List[str]]
-    ) -> Dict[str, float]:
+        self, predictions: list[list[str]], references: list[list[str]]
+    ) -> dict[str, float]:
         """Evaluate diversity of predicted rankings.
 
         Args:
@@ -226,7 +225,7 @@ class RecoveryRanking:
             "ranking_diversity": float(np.mean(diversity_scores)) if diversity_scores else 0.0,
         }
 
-    def run(self, rank_fn=None) -> Dict[str, float]:
+    def run(self, rank_fn=None) -> dict[str, float]:
         """Execute benchmark.
 
         Args:
@@ -239,7 +238,8 @@ class RecoveryRanking:
             RuntimeError: If benchmark execution fails
         """
         if not rank_fn:
-            rank_fn = lambda x: ["restart_service", "increase_frequency", "divert_traffic"]
+            def rank_fn(x):
+                return ["restart_service", "increase_frequency", "divert_traffic"]
 
         predictions = []
         references = []
@@ -262,7 +262,7 @@ class RecoveryRanking:
             logger.error(f"Metric computation failed: {e}")
             raise RuntimeError(f"Benchmark execution failed: {e}")
 
-    def get_test_cases(self) -> List[Dict]:
+    def get_test_cases(self) -> list[dict]:
         """Return test cases.
 
         Returns:

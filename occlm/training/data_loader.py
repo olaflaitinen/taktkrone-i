@@ -6,11 +6,12 @@ Handles loading, processing, and batching of OCC dialogue samples for training.
 
 import json
 import logging
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any
 
 try:
-    from datasets import Dataset, DatasetDict, load_dataset
+    from datasets import Dataset, Datasetload_dataset
 except ImportError:
     Dataset = None
     DatasetDict = None
@@ -32,18 +33,18 @@ class OCCDialogueSample(BaseModel):
         description="Difficulty level"
     )
     timestamp: str = Field(description="Dialogue timestamp")
-    messages: List[Dict[str, str]] = Field(
+    messages: list[dict[str, str]] = Field(
         description="List of message dicts with role and content"
     )
-    metadata: Optional[Dict[str, Any]] = Field(
+    metadata: dict[str, Any] | None = Field(
         default=None,
         description="Additional metadata"
     )
 
     @field_validator("messages")
     @classmethod
-    def validate_messages(cls, v: List[Dict[str, str]]) -> List[
-        Dict[str, str]
+    def validate_messages(cls, v: list[dict[str, str]]) -> list[
+        dict[str, str]
     ]:
         """Validate message structure."""
         if not v:
@@ -62,7 +63,7 @@ class OCCDataLoader:
     def __init__(
         self,
         max_seq_length: int = 4096,
-        tokenizer: Optional[Any] = None,
+        tokenizer: Any | None = None,
     ):
         """
         Initialize data loader.
@@ -73,14 +74,14 @@ class OCCDataLoader:
         """
         self.max_seq_length = max_seq_length
         self.tokenizer = tokenizer
-        self.statistics: Dict[str, Any] = {}
+        self.statistics: dict[str, Any] = {}
 
     def load_datasets(
         self,
-        train_path: Union[str, Path],
-        val_path: Optional[Union[str, Path]] = None,
-        test_path: Optional[Union[str, Path]] = None,
-    ) -> Tuple[Optional[Dataset], Optional[Dataset], Optional[Dataset]]:
+        train_path: str | Path,
+        val_path: str | Path | None = None,
+        test_path: str | Path | None = None,
+    ) -> tuple[Dataset | None, Dataset | None, Dataset | None]:
         """
         Load training, validation, and test datasets from JSONL files.
 
@@ -150,8 +151,8 @@ class OCCDataLoader:
 
     def create_prompt_response_pairs(
         self,
-        dialogue: Dict[str, Any],
-    ) -> List[Dict[str, str]]:
+        dialogue: dict[str, Any],
+    ) -> list[dict[str, str]]:
         """
         Create prompt-response pairs for supervised fine-tuning.
 
@@ -184,7 +185,7 @@ class OCCDataLoader:
 
     def apply_chat_template(
         self,
-        dialogue: Dict[str, Any],
+        dialogue: dict[str, Any],
         template: str = "chatml",
     ) -> str:
         """
@@ -215,7 +216,7 @@ class OCCDataLoader:
         formatter = templates[template]
         return formatter(dialogue)
 
-    def _format_chatml(self, dialogue: Dict[str, Any]) -> str:
+    def _format_chatml(self, dialogue: dict[str, Any]) -> str:
         """Format dialogue using ChatML template."""
         text = ""
         for message in dialogue.get("messages", []):
@@ -224,7 +225,7 @@ class OCCDataLoader:
             text += f"<|im_start|>{role}\n{content}<|im_end|>\n"
         return text
 
-    def _format_llama3(self, dialogue: Dict[str, Any]) -> str:
+    def _format_llama3(self, dialogue: dict[str, Any]) -> str:
         """Format dialogue using Llama3 template."""
         text = "<|begin_of_text|>"
         for message in dialogue.get("messages", []):
@@ -236,7 +237,7 @@ class OCCDataLoader:
             )
         return text
 
-    def _format_mistral(self, dialogue: Dict[str, Any]) -> str:
+    def _format_mistral(self, dialogue: dict[str, Any]) -> str:
         """Format dialogue using Mistral template."""
         text = ""
         for message in dialogue.get("messages", []):
@@ -252,7 +253,7 @@ class OCCDataLoader:
         batch_size: int = 32,
         shuffle: bool = True,
         template: str = "chatml",
-    ) -> Iterator[Dict[str, Any]]:
+    ) -> Iterator[dict[str, Any]]:
         """
         Create batch iterator for dataset.
 
@@ -289,8 +290,8 @@ class OCCDataLoader:
 
     def _tokenize_batch(
         self,
-        batch_samples: List[Dict[str, str]],
-    ) -> Dict[str, Any]:
+        batch_samples: list[dict[str, str]],
+    ) -> dict[str, Any]:
         """Tokenize batch with padding and truncation."""
         texts = [s["text"] for s in batch_samples]
 
@@ -313,8 +314,8 @@ class OCCDataLoader:
 
     def get_statistics(
         self,
-        dataset: Optional[Dataset] = None,
-    ) -> Dict[str, Any]:
+        dataset: Dataset | None = None,
+    ) -> dict[str, Any]:
         """
         Compute dataset statistics.
 
@@ -375,9 +376,9 @@ class OCCDataLoader:
     def filter_dataset(
         self,
         dataset: Dataset,
-        difficulty: Optional[List[str]] = None,
-        incident_type: Optional[List[str]] = None,
-        operator: Optional[List[str]] = None,
+        difficulty: list[str] | None = None,
+        incident_type: list[str] | None = None,
+        operator: list[str] | None = None,
     ) -> Dataset:
         """
         Filter dataset by specified criteria.
@@ -391,7 +392,7 @@ class OCCDataLoader:
         Returns:
             Filtered dataset
         """
-        def filter_fn(sample: Dict[str, Any]) -> bool:
+        def filter_fn(sample: dict[str, Any]) -> bool:
             if (
                 difficulty
                 and sample.get("difficulty") not in difficulty

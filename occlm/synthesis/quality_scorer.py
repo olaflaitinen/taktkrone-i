@@ -5,8 +5,8 @@ Provides metrics for evaluating coherence, realism, diversity, and
 temporal consistency of synthetic dialogue and scenarios.
 """
 
-from typing import Any, Dict, List, Optional
 import statistics
+from typing import Any
 
 __all__ = [
     "QualityScorer",
@@ -28,7 +28,7 @@ class QualityScorer:
 
     def score_coherence(
         self,
-        dialogue: List[Dict[str, Any]],
+        dialogue: list[dict[str, Any]],
     ) -> float:
         """
         Score coherence of dialogue.
@@ -100,7 +100,7 @@ class QualityScorer:
 
     def score_realism(
         self,
-        scenario: Dict[str, Any],
+        scenario: dict[str, Any],
     ) -> float:
         """
         Score realism of scenario.
@@ -195,8 +195,8 @@ class QualityScorer:
 
     def score_diversity(
         self,
-        scenarios: List[Dict[str, Any]],
-    ) -> Dict[str, float]:
+        scenarios: list[dict[str, Any]],
+    ) -> dict[str, float]:
         """
         Score diversity of scenario collection.
 
@@ -218,24 +218,24 @@ class QualityScorer:
             }
 
         # Count unique incident types
-        incident_types = set(
+        incident_types = {
             s.get("incident_details", {}).get("type")
             for s in scenarios
-        )
+        }
         incident_diversity = len(incident_types) / 15  # 15 possible types
         incident_diversity = min(1.0, incident_diversity)
 
         # Count unique severities
-        severities = set(
+        severities = {
             s.get("incident_details", {}).get("severity")
             for s in scenarios
-        )
+        }
         severity_diversity = len(severities) / 4  # 4 levels
 
         # Count unique scenario types
-        scenario_types = set(
+        scenario_types = {
             s.get("scenario_type") for s in scenarios
-        )
+        }
         scenario_diversity = len(scenario_types) / 5  # 5 types
         scenario_diversity = min(1.0, scenario_diversity)
 
@@ -262,7 +262,7 @@ class QualityScorer:
 
     def score_temporal_consistency(
         self,
-        scenario: Dict[str, Any],
+        scenario: dict[str, Any],
     ) -> float:
         """
         Score temporal consistency of scenario.
@@ -330,8 +330,8 @@ class QualityScorer:
 
     def overall_score(
         self,
-        dialogue: Optional[List[Dict[str, Any]]] = None,
-        scenario: Optional[Dict[str, Any]] = None,
+        dialogue: list[dict[str, Any]] | None = None,
+        scenario: dict[str, Any] | None = None,
     ) -> float:
         """
         Calculate overall quality score.
@@ -361,8 +361,8 @@ class QualityScorer:
 
     def score_batch(
         self,
-        scenarios: List[Dict[str, Any]],
-    ) -> Dict[str, Any]:
+        scenarios: list[dict[str, Any]],
+    ) -> dict[str, Any]:
         """
         Score a batch of scenarios.
 
