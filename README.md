@@ -1,5 +1,7 @@
 # TAKTKRONE-I: Metro Operations Control Center Language Model
 
+[![arXiv](https://img.shields.io/badge/arXiv-2503.XXXXX-b31b1b?logo=arxiv)](https://arxiv.org/abs/2503.XXXXX)
+[![Paper DOI](https://img.shields.io/badge/DOI-10.1109%2FOJITS.2026.XXXXXXX-blue?logo=ieee)](https://doi.org/10.1109/OJITS.2026.XXXXXXX)
 [![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange?logo=huggingface)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
 [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-blue?logo=huggingface)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
 [![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19258193-blue?logo=zenodo)](https://doi.org/10.5281/zenodo.19258193)
@@ -39,6 +41,30 @@ TAKTKRONE-I is a domain-adapted language model designed to provide **decision su
 
 **TAKTKRONE-I is NOT an autonomous control system.** It operates strictly as a decision-support tool. All recommendations require human review and approval. The model does not and must not directly control signaling, train movement, or safety-critical systems.
 
+## Academic Paper
+
+This work is described in detail in our IEEE Open Journal of Intelligent Transportation Systems paper:
+
+> **occLM and TAKTKRONE-I: Taxonomy-Grounded Language Models for Metro Operations Control Center Decision Support**
+>
+> Gustav Olaf Yunus Laitinen-Fredriksson Lundstrom-Imanov
+>
+> *IEEE Open Journal of Intelligent Transportation Systems, 2026*
+
+**Key Results:**
+| Metric | TAKTKRONE-I | Generic LLM Baseline | Improvement |
+|--------|-------------|---------------------|-------------|
+| ROUGE-L | 0.678 | 0.412 | +64.6% |
+| nDCG@5 | 0.812 | 0.534 | +52.1% |
+| ECE (Calibration) | 0.067 | 0.183 | -63.4% |
+| Topology Consistency | 96.7% | 78.4% | +18.3pp |
+| Unsafe Request Refusal | 94.3% | 71.2% | +23.1pp |
+
+**Paper Resources:**
+- arXiv Preprint: [arXiv:2503.XXXXX](https://arxiv.org/abs/2503.XXXXX) *(pending)*
+- IEEE OJ-ITS: [DOI:10.1109/OJITS.2026.XXXXXXX](https://doi.org/10.1109/OJITS.2026.XXXXXXX) *(pending)*
+- LaTeX Source: [`paper/`](paper/)
+
 
 ## Performance Metrics
 
@@ -59,6 +85,7 @@ TAKTKRONE-I is a domain-adapted language model designed to provide **decision su
 
 ## Table of Contents
 
+- [Academic Paper](#academic-paper)
 - [Features](#features)
 - [Architecture](#architecture)
 - [Installation](#installation)
@@ -765,6 +792,20 @@ limitations under the License.
 ## Citation
 
 If you use TAKTKRONE-I in your research or applications, please cite:
+
+### Paper
+```bibtex
+@article{laitinen2026occlm,
+  author    = {Laitinen-Fredriksson Lundstr{\"o}m-Imanov, Gustav Olaf Yunus},
+  title     = {{occLM} and {TAKTKRONE-I}: Taxonomy-Grounded Language Models for Metro Operations Control Center Decision Support},
+  journal   = {IEEE Open Journal of Intelligent Transportation Systems},
+  year      = {2026},
+  volume    = {X},
+  pages     = {1--10},
+  doi       = {10.1109/OJITS.2026.XXXXXXX},
+  note      = {arXiv preprint arXiv:2503.XXXXX}
+}
+```
 
 ### Dataset
 ```bibtex

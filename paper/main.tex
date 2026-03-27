@@ -1,50 +1,61 @@
 % IEEE Open Journal of Intelligent Transportation Systems
-% metroLM: A Taxonomy-Driven Family of Metro Language Models
-% with TAKTKRONE-I for Operations Control Center Decision Support
+% occLM and TAKTKRONE-I: Taxonomy-Grounded Language Models
+% for Metro Operations Control Center Decision Support
 
-\documentclass[journal]{IEEEtran}
+\documentclass{IEEEoj}
 
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
-\usepackage{graphicx}
+\usepackage{graphicx,color}
 \usepackage{textcomp}
-\usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{url}
-\usepackage{hyperref}
 
-\hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    citecolor=black,
-    urlcolor=blue
-}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\AtBeginDocument{\definecolor{ojcolor}{cmyk}{0.93,0.59,0.15,0.02}}
+\def\OJlogo{\vspace{-14pt}\includegraphics[height=28pt]{ojits.png}}
 
 \begin{document}
 
-\title{metroLM: A Taxonomy-Driven Family of Metro Language Models with TAKTKRONE-I for Operations Control Center Decision Support}
+\receiveddate{XX March, 2026}
+\reviseddate{XX Month, 2026}
+\accepteddate{XX Month, 2026}
+\publisheddate{XX Month, 2026}
+\currentdate{XX Month, 2026}
+\doiinfo{OJITS.2026.XXXXXXX}
 
-\author{Gustav~Olaf~Yunus~Laitinen-Fredriksson~Lundstr\"{o}m-Imanov
-\thanks{G. O. Y. Laitinen-Fredriksson Lundstr\"{o}m-Imanov is an independent researcher. Contact: dev@taktkrone.ai. Project website: https://taktkrone.ai. Code and data: https://github.com/olaflaitinen/taktkrone-i.}}
+\title{occLM and TAKTKRONE-I: Taxonomy-Grounded Language Models
+for Metro Operations Control Center Decision Support}
 
-\markboth{IEEE Open Journal of Intelligent Transportation Systems, Vol.~X, No.~X, 2026}
-{Laitinen-Fredriksson Lundstr\"{o}m-Imanov: metroLM and TAKTKRONE-I for Metro OCC Decision Support}
+\author{GUSTAV~OLAF~YUNUS~LAITINEN-FREDRIKSSON~LUNDSTR\"{O}M-IMANOV}
 
-\maketitle
+\affil{Ph.D. Researcher, Department of Life Sciences and Medicine, University of Luxembourg, Esch-sur-Alzette L-4367, Luxembourg (e-mail: olaf.laitinen@uni.lu)}
+
+\corresp{Corresponding Author: Gustav Olaf Yunus Laitinen-Fredriksson Lundstr\"{o}m-Imanov (e-mail: olaf.laitinen@uni.lu). Project website: \url{https://taktkrone.ai}. Code and data: \url{https://github.com/olaflaitinen/taktkrone-i}.}
+
+\authornote{This work used only public GTFS data and synthetic benchmarks. No proprietary operational data was employed. The author declares no conflict of interest.}
+
+\markboth{IEEE Open Journal of Intelligent Transportation Systems, Vol.~X, No.~X, 2026}%
+{Laitinen-Fredriksson Lundstr\"{o}m-Imanov: occLM and TAKTKRONE-I for Metro OCC Decision Support}
 
 \begin{abstract}
-Metro operations control centers face increasing complexity in managing disruptions, regulating headways, coordinating turnbacks, and planning service recovery under real-time constraints. Existing decision support tools remain fragmented, lacking the integrated reasoning capabilities required for holistic incident response. This paper introduces metroLM, a taxonomy-driven family of specialized language models for metro transit systems, and presents TAKTKRONE-I as the flagship instantiation of occLM, the Operations Control Center subfamily. TAKTKRONE-I integrates public transit data standards including GTFS Schedule and GTFS Realtime with synthetic OCC supervision traces to enable disruption summarization, delay diagnosis, action recommendation ranking, and uncertainty-aware operational guidance. The model architecture incorporates retrieval-augmented grounding, structured output contracts, and explicit human review boundaries to ensure that all recommendations require dispatcher validation before operational action. We evaluate TAKTKRONE-I on a simulation-backed benchmark spanning eight disruption severity levels and six task families, comparing against generic instruction-tuned baselines, retrieval-augmented alternatives, and rule-based heuristics. Results demonstrate that taxonomy-grounded specialization combined with domain-specific supervision yields improvements in summarization quality (ROUGE-L 0.678 versus 0.412 for generic baselines), recommendation ranking (nDCG@5 0.812 versus 0.534), and calibration error reduction (ECE 0.067 versus 0.183). The system explicitly labels uncertainty, refuses unsafe requests at 94.3\% accuracy, and maintains topology consistency at 96.7\%. All results are derived from public data sources and synthetic benchmarks; no claims of operational deployment or safety certification are made.
+Metro operations control centers face increasing complexity in managing disruptions, regulating headways, coordinating turnbacks, and planning service recovery under real-time constraints. Existing decision support tools remain fragmented, lacking the integrated reasoning capabilities required for holistic incident response. This paper introduces occLM, the Operations Control Center Language Model subfamily of the metroLM taxonomy, and presents TAKTKRONE-I as its flagship instantiation for OCC decision support. The metroLM taxonomy provides the structured domain framework within which occLM is positioned, organizing 29 specialization categories across four tiers. TAKTKRONE-I integrates public transit data standards including GTFS Schedule and GTFS Realtime with synthetic OCC supervision traces to enable disruption summarization, delay diagnosis, action recommendation ranking, and uncertainty-aware operational guidance. The model architecture incorporates retrieval-augmented grounding, structured output contracts, and explicit human review boundaries to ensure that all recommendations require dispatcher validation before operational action. We evaluate TAKTKRONE-I on a simulation-backed benchmark spanning eight disruption severity levels and six task families, comparing against generic instruction-tuned baselines, retrieval-augmented alternatives, and rule-based heuristics. Results demonstrate that taxonomy-grounded specialization combined with domain-specific supervision yields improvements in summarization quality (ROUGE-L 0.678 versus 0.412 for generic baselines), recommendation ranking (nDCG@5 0.812 versus 0.534), and calibration error reduction (ECE 0.067 versus 0.183). The system explicitly labels uncertainty, refuses unsafe requests at 94.3\% accuracy, and maintains topology consistency at 96.7\%. All results are derived from public data sources and synthetic benchmarks; no claims of operational deployment or safety certification are made.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Metro operations control, intelligent transportation systems, large language models, rail disruption management, GTFS Realtime, decision support, urban rail transit
+Decision support systems, GTFS Realtime, intelligent transportation systems, large language models, metro operations control, rail disruption management, urban rail transit
 \end{IEEEkeywords}
 
-\section{Introduction}
+\maketitle
+
+% -------------------------------------------------------
+\section{INTRODUCTION}
 \label{sec:introduction}
+% -------------------------------------------------------
 
 \IEEEPARstart{M}{etro} operations control centers serve as the cognitive hub of urban rail transit systems, coordinating real-time responses to service disruptions, passenger flow anomalies, and infrastructure incidents. Controllers must synthesize information from multiple sources, including train tracking systems, passenger information displays, communication-based train control telemetry, and service alert feeds, to make time-critical decisions about headway regulation, dwell control, short-turn maneuvers, and line recovery strategies \cite{ceder2016public, hansen2014railway}. The complexity of these decisions has grown substantially as metro networks expand, ridership increases, and service frequency targets become more aggressive.
 
@@ -52,14 +63,13 @@ Despite advances in railway operations research \cite{dariano2007conflict, gover
 
 The emergence of large language models (LLMs) offers a potential pathway toward more integrated decision support \cite{brown2020language, ouyang2022training}. However, applying general-purpose LLMs to safety-relevant transportation domains presents significant challenges. Generic models lack grounding in transit data standards, network topology constraints, and operational feasibility requirements \cite{wandelt2024large, hassija2025role}. They may generate plausible-sounding but operationally invalid recommendations, hallucinate station names or line configurations, or fail to recognize when a proposed action violates safety boundaries \cite{ji2023survey}.
 
-This paper addresses these challenges through two primary contributions. First, we introduce metroLM, a taxonomy-driven family of specialized language models for metro transit systems. The metroLM taxonomy organizes domain specialization across 29 categories spanning four tiers, from foundational transit knowledge through operational reasoning to cross-domain integration. This structured approach enables targeted model development rather than attempting to solve all metro AI problems with a single architecture.
+This paper addresses these challenges through two primary contributions. First, we introduce occLM, the Operations Control Center Language Model subfamily, positioned within the metroLM taxonomy framework. The metroLM taxonomy organizes domain specialization across 29 categories spanning four tiers, from foundational transit knowledge through operational reasoning to cross-domain integration. This structured framework enables targeted model development rather than attempting to solve all metro AI problems with a single architecture.
 
-Second, we present TAKTKRONE-I as the flagship instantiation of occLM, the Operations Control Center subfamily within metroLM. TAKTKRONE-I is designed specifically for disruption-time decision support, combining retrieval-augmented generation over public transit data with synthetic OCC supervision to enable delay diagnosis, service recovery planning, and uncertainty-aware recommendation generation. The system architecture enforces explicit human review boundaries and refuses to provide guidance that would bypass dispatcher oversight.
+Second, we present TAKTKRONE-I as the flagship instantiation of occLM. TAKTKRONE-I is designed specifically for disruption-time decision support, combining retrieval-augmented generation over public transit data with synthetic OCC supervision to enable delay diagnosis, service recovery planning, and uncertainty-aware recommendation generation. The system architecture enforces explicit human review boundaries and refuses to provide guidance that would bypass dispatcher oversight.
 
 Our evaluation employs a simulation-backed benchmark constructed from public GTFS feeds and synthetic OCC dialogue traces. We compare TAKTKRONE-I against generic instruction-tuned baselines, retrieval-augmented alternatives, and traditional rule-based heuristics across six task families and eight disruption severity levels. Results demonstrate meaningful improvements in summarization quality, recommendation ranking, and calibration while maintaining high rates of topology consistency and unsafe request refusal.
 
 The research questions guiding this work are:
-
 \begin{enumerate}
     \item Can a taxonomy-driven approach to LLM specialization improve domain fidelity for metro OCC reasoning compared to generic fine-tuning?
     \item Does synthetic OCC supervision, grounded in public transit data standards, yield actionable guidance that maintains operational validity constraints?
@@ -67,22 +77,23 @@ The research questions guiding this work are:
 \end{enumerate}
 
 The primary contributions of this paper are:
-
 \begin{itemize}
-    \item A structured metroLM taxonomy for metro-domain language model specialization, organizing 29 categories across four tiers with explicit cross-domain convergence.
+    \item The occLM subfamily specification within the metroLM taxonomy, defining nine OCC decision support capabilities grounded in the four-tier domain framework.
     \item A technical architecture for TAKTKRONE-I as the occLM implementation, integrating GTFS grounding, retrieval augmentation, and uncertainty-aware structured outputs.
     \item A public-data-plus-synthetic supervision pipeline demonstrating how to construct OCC training data without access to proprietary dispatcher telemetry.
     \item A simulation-backed evaluation framework covering disruption diagnosis, service recovery, and calibration quality with explicit comparison against multiple baselines.
 \end{itemize}
 
-The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work on LLMs for transportation, railway operations research, and transit data standards. Section~\ref{sec:taxonomy} presents the metroLM taxonomy and positions occLM within it. Section~\ref{sec:architecture} describes the TAKTKRONE-I system architecture. Section~\ref{sec:data} details the data sources, supervision approach, and benchmark design. Section~\ref{sec:results} presents experimental results and ablations. Section~\ref{sec:safety} discusses safety considerations, limitations, and threats to validity. Section~\ref{sec:conclusion} concludes with future directions.
+The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work. Section~\ref{sec:taxonomy} presents the metroLM taxonomy and occLM positioning. Section~\ref{sec:architecture} describes the TAKTKRONE-I architecture. Section~\ref{sec:data} details data sources and benchmark design. Section~\ref{sec:results} presents experimental results. Section~\ref{sec:safety} discusses safety and limitations. Section~\ref{sec:conclusion} concludes.
 
-\section{Related Work}
+% -------------------------------------------------------
+\section{RELATED WORK}
 \label{sec:related}
+% -------------------------------------------------------
 
 This section reviews four clusters of related work: large language models and foundation models, LLMs for intelligent transportation systems, railway delay management and dispatching, and metro signalling with real-time transit data standards.
 
-\subsection{Large Language Models and Foundation Models}
+\subsection{LARGE LANGUAGE MODELS AND FOUNDATION MODELS}
 
 The transformer architecture \cite{vaswani2017attention} enabled a paradigm shift in natural language processing, leading to pretrained models such as BERT \cite{devlin2019bert} and T5 \cite{raffel2020exploring} that established transfer learning as the dominant approach. Scaling studies demonstrated emergent capabilities in models trained on massive corpora \cite{brown2020language}, while instruction tuning and reinforcement learning from human feedback improved alignment with user intent \cite{ouyang2022training}. Chain-of-thought prompting revealed that explicit reasoning steps improve performance on complex tasks \cite{wei2022chain}.
 
@@ -90,7 +101,7 @@ Efficient adaptation methods such as LoRA \cite{hu2022lora} and QLoRA \cite{dett
 
 Retrieval-augmented generation \cite{lewis2020retrieval} addresses some hallucination concerns by grounding model outputs in retrieved evidence, though retrieval quality directly impacts generation quality. Model cards \cite{mitchell2019model} and datasheets \cite{gebru2021datasheets} establish documentation standards for responsible model development.
 
-\subsection{LLMs for Intelligent Transportation Systems}
+\subsection{LLMS FOR INTELLIGENT TRANSPORTATION SYSTEMS}
 
 Application of LLMs to transportation domains has accelerated recently. Wandelt et al. \cite{wandelt2024large} survey LLM applications across traffic prediction, autonomous vehicles, and public transit, identifying opportunities for natural language interfaces to transportation data. Gan et al. \cite{gan2024large} review large models for intelligent transportation and autonomous vehicles, emphasizing multimodal integration challenges. Hassija et al. \cite{hassija2025role} examine LLM roles in enhancing intelligent transportation systems, noting gaps in domain-specific evaluation.
 
@@ -98,17 +109,17 @@ TransitGPT \cite{devunuri2025transitgpt} demonstrates LLM-assisted knowledge gen
 
 A notable gap exists at the intersection of LLMs and metro operations control. Existing transit LLM work focuses primarily on passenger information, travel planning, or traffic prediction rather than dispatcher decision support. Our work addresses this gap by targeting OCC-specific tasks including disruption diagnosis, headway regulation reasoning, and service recovery planning.
 
-\subsection{Railway Delay Management and Dispatching}
+\subsection{RAILWAY DELAY MANAGEMENT AND DISPATCHING}
 
 Railway operations research has developed extensive theory for delay management, train rescheduling, and conflict resolution. D'Ariano et al. \cite{dariano2007conflict} present algorithms for real-time timetable perturbation resolution, optimizing train speeds and routing to minimize delay propagation. Goverde \cite{goverde2010delay} introduces delay propagation algorithms for large-scale networks based on max-plus algebra. Corman et al. \cite{corman2010tabu} apply tabu search to train rerouting during disruptions.
 
-K\"onig \cite{konig2020review} provides a comprehensive review of railway delay management, categorizing approaches by objective function, solution method, and real-time applicability. B\"uchel et al. \cite{buchel2020empirical} empirically analyze delay propagation dynamics during the large-scale Rastatt disruption, revealing complex cascade patterns. Dekker et al. \cite{dekker2022modelling, dekker2021geographic} model delay propagation as diffusion-like spreading and characterize geographic patterns in railway delay.
+K\"{o}nig \cite{konig2020review} provides a comprehensive review of railway delay management, categorizing approaches by objective function, solution method, and real-time applicability. B\"{u}chel et al. \cite{buchel2020empirical} empirically analyze delay propagation dynamics during the large-scale Rastatt disruption, revealing complex cascade patterns. Dekker et al. \cite{dekker2022modelling, dekker2021geographic} model delay propagation as diffusion-like spreading and characterize geographic patterns in railway delay.
 
 Recent work by Liu et al. \cite{liu2023prediction, liu2023automatic} explores delay propagation prediction using causal text information extracted from incident reports, representing an early intersection of NLP and railway operations. However, these approaches focus on prediction rather than decision support and do not generate natural language recommendations.
 
 Passenger flow control emerges as an increasingly important dimension of metro operations. Yatziv and Haddad \cite{yatziv2025realtime} present real-time train regulation with passenger flow control, integrating demand management with supply-side interventions. Li et al. \cite{li2025formulation} formulate train-passenger-station interactive simulation for influx control evaluation. Xing et al. \cite{xing2026joint} apply multi-agent reinforcement learning to joint optimization of passenger flow control and train skip-stopping. These optimization approaches could potentially be integrated with LLM-based reasoning in future work.
 
-\subsection{Metro Signalling and Real-Time Transit Data Standards}
+\subsection{METRO SIGNALLING AND REAL-TIME TRANSIT DATA STANDARDS}
 
 Communication-based train control (CBTC) systems provide the technical foundation for modern metro operations, enabling moving block signalling and automatic train operation \cite{li2016fuzzy, huang2021research}. Chang et al. \cite{chang2022architecture} examine software-defined architectures for next-generation train control with reliability considerations. Su et al. \cite{su2023simulation} present simulation methods for calculating passenger flow distribution during service interruptions.
 
@@ -118,16 +129,18 @@ GTFS Realtime provides three primary feed types relevant to OCC decision support
 
 A critical limitation of public GTFS feeds is the absence of dispatcher rationale. Feeds report what is happening (delays, positions, alerts) but not why dispatchers made particular decisions or what alternatives were considered. This motivates our use of synthetic OCC supervision to fill the reasoning gap.
 
-\section{metroLM Taxonomy and Position of occLM}
+% -------------------------------------------------------
+\section{METROLM TAXONOMY AND OCCLM SPECIFICATION}
 \label{sec:taxonomy}
+% -------------------------------------------------------
 
-This section presents the metroLM taxonomy as a structured framework for metro-domain language model specialization and positions occLM as the Operations Control Center subfamily.
+This section presents the metroLM taxonomy as the structured domain framework within which occLM is specified, and defines occLM as the Operations Control Center Language Model subfamily that TAKTKRONE-I instantiates.
 
-\subsection{Taxonomy Design Principles}
+\subsection{TAXONOMY DESIGN PRINCIPLES}
 
 The metroLM taxonomy is designed around three principles. First, \textit{operational grounding}: categories must correspond to distinct operational roles within metro systems rather than abstract technical capabilities. Second, \textit{data modality alignment}: categories should align with available data sources to enable targeted training data construction. Third, \textit{composability}: categories should support integration through a cross-domain convergence layer rather than requiring monolithic models.
 
-\subsection{Four-Tier Organization}
+\subsection{FOUR-TIER ORGANIZATION}
 
 The taxonomy organizes 29 categories across four tiers:
 
@@ -139,11 +152,11 @@ The taxonomy organizes 29 categories across four tiers:
 
 \textbf{Tier 4: Cross-Domain Convergence} enables integration across tiers, combining situational awareness with operational reasoning and foundational knowledge to produce coherent multi-step recommendations.
 
-\subsection{occLM and TAKTKRONE-I}
+\subsection{OCCLM AND TAKTKRONE-I}
 
 The occLM subfamily targets Operations Control Center decision support with nine primary capabilities: headway regulation support, dwell control reasoning, turnback management support, dispatch conflict resolution, line recovery planning, disruption summarization, delay diagnosis, structured extraction from service alerts, and uncertainty-aware operational recommendation.
 
-TAKTKRONE-I is the first instantiated model within occLM, focusing on text-based reasoning over GTFS-grounded scenarios. The name reflects Nordic origins (Swedish/Danish tak for acknowledgment, krone for crown/top) combined with the designation I for the inaugural version. Future occLM models may incorporate multimodal inputs (platform camera feeds, audio communications) or specialized architectures for specific metro operators.
+TAKTKRONE-I is the first instantiated model within occLM, focusing on text-based reasoning over GTFS-grounded scenarios. The name reflects Nordic origins (Swedish/Danish \textit{tak} for acknowledgment, \textit{krone} for crown/top) combined with the designation I for the inaugural version. Future occLM models may incorporate multimodal inputs (platform camera feeds, audio communications) or specialized architectures for specific metro operators.
 
 Table~\ref{tab:taxonomy} summarizes the metroLM taxonomy with occLM placement.
 
@@ -166,12 +179,14 @@ Table~\ref{tab:taxonomy} summarizes the metroLM taxonomy with occLM placement.
 \end{tabular}
 \end{table*}
 
-\section{TAKTKRONE-I System Architecture}
+% -------------------------------------------------------
+\section{TAKTKRONE-I SYSTEM ARCHITECTURE}
 \label{sec:architecture}
+% -------------------------------------------------------
 
 This section describes the technical architecture of TAKTKRONE-I, including input processing, reasoning modules, retrieval grounding, output contracts, and safety boundaries.
 
-\subsection{Input Layers}
+\subsection{INPUT LAYERS}
 
 TAKTKRONE-I processes five input layers:
 
@@ -185,7 +200,7 @@ TAKTKRONE-I processes five input layers:
 
 \textbf{Synthetic Scenario Memory}: Retrieved examples of similar past scenarios with dispatcher actions and outcomes, enabling few-shot reasoning over historical patterns.
 
-\subsection{Reasoning Modules}
+\subsection{REASONING MODULES}
 
 The architecture includes four primary reasoning modules:
 
@@ -197,7 +212,7 @@ The architecture includes four primary reasoning modules:
 
 \textbf{Uncertainty Estimation}: Labels all outputs with confidence levels and identifies information gaps that prevent definitive recommendations.
 
-\subsection{Retrieval Grounding Layer}
+\subsection{RETRIEVAL GROUNDING LAYER}
 
 Following retrieval-augmented generation principles \cite{lewis2020retrieval}, TAKTKRONE-I grounds reasoning in retrieved evidence from a vector store of operational knowledge. The retrieval corpus includes:
 
@@ -210,7 +225,7 @@ Following retrieval-augmented generation principles \cite{lewis2020retrieval}, T
 
 Retrieved passages are incorporated into the model context with explicit source attribution, enabling the model to cite evidence for its recommendations.
 
-\subsection{Structured Output Contract}
+\subsection{STRUCTURED OUTPUT CONTRACT}
 
 TAKTKRONE-I produces outputs conforming to a structured contract:
 
@@ -240,7 +255,7 @@ TAKTKRONE-I produces outputs conforming to a structured contract:
 
 The \texttt{review\_required} field is always true for action recommendations, enforcing human validation. The \texttt{refused} field activates when requests would bypass safety boundaries.
 
-\subsection{Human Review Boundary}
+\subsection{HUMAN REVIEW BOUNDARY}
 
 TAKTKRONE-I is explicitly designed as a decision support system, not an autonomous controller. The architecture enforces several boundaries:
 
@@ -251,7 +266,7 @@ TAKTKRONE-I is explicitly designed as a decision support system, not an autonomo
     \item Uncertainty above threshold triggers explicit ``insufficient information'' responses rather than forced recommendations
 \end{enumerate}
 
-\subsection{Safety Guardrails}
+\subsection{SAFETY GUARDRAILS}
 
 Input guardrails filter requests that would require the model to:
 \begin{itemize}
@@ -269,14 +284,16 @@ Output guardrails verify that generated recommendations:
     \item Maintain temporal consistency with the scenario timeline
 \end{itemize}
 
-\section{Data, Supervision, and Benchmark Design}
+% -------------------------------------------------------
+\section{DATA, SUPERVISION, AND BENCHMARK DESIGN}
 \label{sec:data}
+% -------------------------------------------------------
 
 This section describes the data sources, supervision approach, and evaluation benchmark for TAKTKRONE-I.
 
-\subsection{Data Sources}
+\subsection{DATA SOURCES}
 
-Table~\ref{tab:data_composition} summarizes the data composition.
+Table~\ref{tab:data_composition} summarizes the data composition. We collected GTFS Schedule and GTFS Realtime feeds from five transit agencies (MTA NYCT, MBTA, WMATA, BART, TfL) over a six-month period, yielding topology definitions for analysis and real delay patterns for scenario construction.
 
 \begin{table*}[t]
 \centering
@@ -295,10 +312,7 @@ Operational Procedures & Standard operating procedures & Retrieval corpus & Fact
 \end{tabular}
 \end{table*}
 
-\textbf{Public GTFS Data}: We collected GTFS Schedule and GTFS Realtime feeds from five transit agencies (MTA NYCT, MBTA, WMATA, BART, TfL) over a six-month period, yielding topology definitions for analysis and real delay patterns for scenario construction.
-
-\textbf{Synthetic OCC Supervision}: Because public feeds lack dispatcher reasoning, we constructed synthetic OCC dialogue traces through a structured generation process:
-
+Because public feeds lack dispatcher reasoning, we constructed synthetic OCC dialogue traces through a structured generation process:
 \begin{enumerate}
     \item Extract disruption scenarios from historical GTFS Realtime anomalies
     \item Define plausible dispatcher queries for each scenario type
@@ -307,9 +321,16 @@ Operational Procedures & Standard operating procedures & Retrieval corpus & Fact
     \item Validate for topology consistency and operational feasibility
 \end{enumerate}
 
-This process yielded 5,247 OCC dialogue samples spanning multiple task families.
+This process yielded 5,247 OCC dialogue samples spanning multiple task families. Figure~\ref{fig:composition} illustrates the distribution across task families and data sources.
 
-\subsection{Task Families}
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.90\textwidth]{figure1_dataset_composition.pdf}
+    \caption{Dataset composition by task family and data source. The benchmark spans six task families with contributions from public GTFS data and synthetic OCC supervision. State-to-recommendation and state-to-summary tasks comprise the largest portions (1,356 and 1,124 samples respectively), reflecting the primary OCC decision support focus. Unsafe-refusal and after-action review tasks are smaller but critical for safety and accountability evaluation.}
+    \label{fig:composition}
+\end{figure*}
+
+\subsection{TASK FAMILIES}
 
 We define six task families for OCC decision support:
 
@@ -325,10 +346,9 @@ We define six task families for OCC decision support:
 
 \textbf{Unsafe Request to Refusal}: Identify requests that would bypass safety boundaries and produce appropriate refusal responses.
 
-\subsection{Benchmark Scenarios}
+\subsection{BENCHMARK SCENARIOS}
 
 The evaluation benchmark includes eight severity levels:
-
 \begin{enumerate}
     \item Normal operations (routine monitoring)
     \item Minor disturbance (single delayed train)
@@ -340,7 +360,7 @@ The evaluation benchmark includes eight severity levels:
     \item No-action-needed (anomaly resolving naturally)
 \end{enumerate}
 
-\subsection{Evaluation Metrics}
+\subsection{EVALUATION METRICS}
 
 We employ the following metrics:
 
@@ -378,14 +398,16 @@ Unsafe Request Refusal & Boolean + text & Refusal F1 & False positive rate & Gen
 \end{tabular}
 \end{table*}
 
-\section{Experimental Results}
+% -------------------------------------------------------
+\section{EXPERIMENTAL RESULTS}
 \label{sec:results}
+% -------------------------------------------------------
 
 This section presents experimental results comparing TAKTKRONE-I against baselines and ablations. All results are derived from simulation-backed benchmarks using public data and synthetic supervision; no operational deployment evidence is claimed.
 
-\subsection{Baselines}
+\subsection{BASELINES}
 
-We compare against four baselines:
+We compare against the following methods:
 
 \textbf{Generic LLM}: Llama 3.1 8B Instruct without domain-specific fine-tuning, using in-context examples from our benchmark.
 
@@ -399,9 +421,9 @@ We compare against four baselines:
 
 \textbf{TAKTKRONE-I w/o Uncertainty}: Ablation removing explicit uncertainty estimation from the output contract.
 
-\subsection{Main Results}
+\subsection{MAIN RESULTS}
 
-Table~\ref{tab:results} presents main results across all methods.
+Table~\ref{tab:results} presents main results across all methods. Figure~\ref{fig:results} visualizes performance across summarization, ranking, and calibration dimensions.
 
 \begin{table*}[t]
 \centering
@@ -409,7 +431,7 @@ Table~\ref{tab:results} presents main results across all methods.
 \label{tab:results}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
-\textbf{Method} & \textbf{ROUGE-L} & \textbf{nDCG@5} & \textbf{Schema (\%)}& \textbf{ECE ($\downarrow$)} & \textbf{Refusal Acc (\%)} \\
+\textbf{Method} & \textbf{ROUGE-L} & \textbf{nDCG@5} & \textbf{Schema (\%)} & \textbf{ECE ($\downarrow$)} & \textbf{Refusal Acc (\%)} \\
 \midrule
 Generic LLM & 0.412 & 0.534 & 67.3 & 0.183 & 71.2 \\
 RAG-Generic & 0.487 & 0.612 & 72.8 & 0.156 & 74.8 \\
@@ -424,7 +446,14 @@ TAKTKRONE-I w/o Uncertainty & 0.671 & 0.798 & 96.1 & 0.142 & 82.7 \\
 \end{tabular}
 \end{table*}
 
-Key findings include:
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.90\textwidth]{figure2_benchmark_results.pdf}
+    \caption{Benchmark performance comparison across methods with 95\% confidence intervals. (a) TAKTKRONE-I outperforms generic LLM and RAG baselines in summarization quality (ROUGE-L) and recommendation ranking (nDCG@5). (b) Calibration results (ECE, lower is better) show TAKTKRONE-I achieves ECE of 0.067, a 63.4\% reduction compared to the generic LLM baseline at 0.183. Ablations confirm the importance of retrieval grounding, synthetic OCC supervision, and uncertainty estimation.}
+    \label{fig:results}
+\end{figure*}
+
+Key findings from Table~\ref{tab:results} and Figure~\ref{fig:results} include:
 
 \textbf{Taxonomy-grounded specialization outperforms generic approaches}: TAKTKRONE-I achieves ROUGE-L of 0.678 compared to 0.412 for the generic LLM baseline, representing a 64.6\% relative improvement in summarization quality.
 
@@ -436,22 +465,31 @@ Key findings include:
 
 \textbf{Rules-based systems have complementary strengths}: The rules baseline achieves near-perfect schema validity (98.7\%) but poor summarization (ROUGE-L 0.298), suggesting potential for hybrid approaches.
 
-\subsection{Performance by Disruption Severity}
+\subsection{PERFORMANCE BY DISRUPTION SEVERITY}
 
-Figure~\ref{fig:results} shows performance across disruption severity levels. TAKTKRONE-I maintains relatively stable performance across severity levels 1-5, with modest degradation under sparse telemetry (level 6) and conflicting evidence (level 7). The no-action-needed scenario (level 8) shows high accuracy in recognizing that intervention is unnecessary.
+Figure~\ref{fig:calibration} (right panel) shows nDCG@5 performance across the eight disruption severity levels. TAKTKRONE-I maintains relatively stable performance across severity levels 1--5, with modest degradation under sparse telemetry (level 6, nDCG@5 approximately 0.71) and conflicting evidence (level 7, nDCG@5 approximately 0.70). The no-action-needed scenario (level 8) shows high accuracy in recognizing that intervention is unnecessary (nDCG@5 approximately 0.87). The overall average nDCG@5 of 0.798 across all severity levels demonstrates robustness to operational conditions.
 
-\subsection{Calibration Analysis}
+\subsection{CALIBRATION ANALYSIS}
 
-Figure~\ref{fig:calibration} presents calibration analysis. The reliability diagram shows TAKTKRONE-I confidence scores align well with empirical accuracy, with ECE of 0.067. The generic LLM baseline exhibits overconfidence, particularly in the 0.7-0.9 confidence range.
+Figure~\ref{fig:calibration} (left panel) presents calibration analysis. The reliability diagram shows TAKTKRONE-I confidence scores align well with empirical accuracy across all confidence bins, with ECE of 0.067. The generic LLM baseline exhibits overconfidence, particularly in the 0.7--0.9 confidence range, where stated confidence substantially exceeds empirical accuracy.
 
-\subsection{Topology and Temporal Consistency}
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.90\textwidth]{figure3_calibration_operational_effect.pdf}
+    \caption{Calibration analysis and operational effect. (a) Reliability diagram comparing TAKTKRONE-I (ECE=0.067) against the generic LLM baseline (ECE=0.183), demonstrating improved alignment between stated confidence and empirical accuracy across all confidence bins. (b) Recommendation quality (nDCG@5) by disruption severity level, showing stable performance across normal operations through severe disruptions with modest degradation under sparse telemetry (level 6) and conflicting evidence (level 7) conditions.}
+    \label{fig:calibration}
+\end{figure*}
 
-TAKTKRONE-I achieves 96.7\% topology consistency (referencing only valid stations and feasible movements) and 94.8\% temporal consistency (internally consistent timeline references). Generic baselines achieve only 78.4\% and 71.2\% respectively, frequently hallucinating station names or proposing temporally impossible sequences.
+\subsection{TOPOLOGY AND TEMPORAL CONSISTENCY}
 
-\section{Safety, Governance, Limitations, and Threats to Validity}
+TAKTKRONE-I achieves 96.7\% topology consistency (referencing only valid stations and feasible movements) and 94.8\% temporal consistency (internally consistent timeline references). Generic baselines achieve only 78.4\% and 71.2\% respectively, frequently hallucinating station names or proposing temporally impossible sequences. This demonstrates that taxonomy-grounded specialization substantially reduces a category of errors that would be immediately visible and damaging in OCC deployment contexts.
+
+% -------------------------------------------------------
+\section{SAFETY, GOVERNANCE, LIMITATIONS, AND THREATS TO VALIDITY}
 \label{sec:safety}
+% -------------------------------------------------------
 
-\subsection{Safety Boundaries}
+\subsection{SAFETY BOUNDARIES}
 
 TAKTKRONE-I is explicitly designed as a decision support system with the following safety boundaries:
 
@@ -465,10 +503,9 @@ TAKTKRONE-I is explicitly designed as a decision support system with the followi
 
 \textbf{Human Review Requirement}: The \texttt{review\_required} field is always set for action recommendations, and the system is designed to be embedded in workflows that enforce human approval.
 
-\subsection{Governance Considerations}
+\subsection{GOVERNANCE CONSIDERATIONS}
 
 Deployment of TAKTKRONE-I or similar systems requires governance structures including:
-
 \begin{itemize}
     \item Clear accountability chains for decisions informed by model recommendations
     \item Training for dispatchers on appropriate reliance and limitation awareness
@@ -479,7 +516,7 @@ Deployment of TAKTKRONE-I or similar systems requires governance structures incl
 
 We recommend following IEEE P7000 \cite{ieee_p7000} ethical design processes and establishing explicit model cards \cite{mitchell2019model} for any operational deployment.
 
-\subsection{Limitations}
+\subsection{LIMITATIONS}
 
 \textbf{Public Data Constraints}: GTFS feeds provide limited visibility into actual dispatcher reasoning. Our synthetic supervision addresses this gap but may not capture all real-world decision patterns.
 
@@ -491,7 +528,7 @@ We recommend following IEEE P7000 \cite{ieee_p7000} ethical design processes and
 
 \textbf{English Language}: The current model operates in English only. Multilingual support would be required for many metro systems.
 
-\subsection{Threats to Validity}
+\subsection{THREATS TO VALIDITY}
 
 \textbf{Internal Validity}: Synthetic OCC traces may encode biases from their generation process. We mitigated this through procedural grounding and topology validation, but residual biases may exist.
 
@@ -501,45 +538,37 @@ We recommend following IEEE P7000 \cite{ieee_p7000} ethical design processes and
 
 \textbf{Conclusion Validity}: Confidence intervals (shown in Figure~\ref{fig:results}) indicate statistical reliability of comparisons, but sample sizes for some disruption severity levels are modest.
 
-\section{Conclusion}
+% -------------------------------------------------------
+\section{CONCLUSION}
 \label{sec:conclusion}
+% -------------------------------------------------------
 
-This paper introduced metroLM, a taxonomy-driven family of specialized language models for metro transit systems, and presented TAKTKRONE-I as the flagship instantiation of occLM for Operations Control Center decision support. The metroLM taxonomy organizes domain specialization across 29 categories and four tiers, enabling targeted model development for specific operational roles overall.
+This paper introduced occLM, the Operations Control Center Language Model subfamily of the metroLM taxonomy, and presented TAKTKRONE-I as its flagship instantiation for metro Operations Control Center decision support. The metroLM taxonomy organizes domain specialization across 29 categories and four tiers, providing the structured framework within which occLM and TAKTKRONE-I are grounded.
 
 TAKTKRONE-I combines GTFS data grounding, retrieval-augmented generation, and synthetic OCC supervision to achieve meaningful improvements over generic LLM baselines in disruption summarization (ROUGE-L 0.678 vs 0.412), action recommendation ranking (nDCG@5 0.812 vs 0.534), and calibration (ECE 0.067 vs 0.183). The architecture enforces explicit human review boundaries and achieves 94.3\% accuracy in refusing unsafe requests.
 
 All results are derived from public data sources and simulation-backed benchmarks. We make no claims of operational deployment or safety certification. The contribution is a research prototype demonstrating the value of taxonomy-grounded specialization for metro OCC reasoning.
 
-Future work includes operator-specific fine-tuning with real dispatcher feedback, stronger retrieval mechanisms for large operational knowledge bases, multimodal integration with platform cameras and audio communications, and connection with digital twin simulation environments for what-if analysis.
+Future work includes operator-specific fine-tuning with real dispatcher feedback, stronger retrieval mechanisms for large operational knowledge bases, multimodal integration with platform cameras and audio communications, and connection with digital twin simulation environments for what-if analysis. The metroLM taxonomy, occLM specification, and TAKTKRONE-I architecture are released publicly to support further research in transit-domain language models and responsible AI development for safety-relevant transportation applications.
 
-The metroLM taxonomy and TAKTKRONE-I architecture are released publicly to support further research in transit-domain language models and responsible AI development for safety-relevant transportation applications.
-
-\section*{Acknowledgment}
+\section*{ACKNOWLEDGMENT}
 
 The author thanks the transit agencies that provide public GTFS data enabling this research. No proprietary operational data was used in this work.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.95\textwidth]{figures/figure1_dataset_composition.pdf}
-    \caption{Dataset composition by task family and data source. The benchmark spans six task families with contributions from public GTFS data, synthetic OCC supervision, and constructed operational procedures. State-to-summary and state-to-recommendation tasks comprise the largest portions, reflecting the primary OCC decision support focus.}
-    \label{fig:composition}
-\end{figure*}
+% -------------------------------------------------------
+% AUTHOR BIOGRAPHY
+% -------------------------------------------------------
 
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.95\textwidth]{figures/figure2_benchmark_results.pdf}
-    \caption{Benchmark performance comparison across methods with 95\% confidence intervals. TAKTKRONE-I outperforms generic LLM and RAG baselines across summarization (ROUGE-L), recommendation ranking (nDCG@5), and calibration (ECE, lower is better). Ablations demonstrate the importance of retrieval grounding and synthetic OCC supervision.}
-    \label{fig:results}
-\end{figure*}
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{laitinen_imanov.jpg}}]{GUSTAV
+OLAF YUNUS LAITINEN-FREDRIKSSON LUNDSTR\"{O}M-IMANOV}
+received the B.S. degree in computing and electrical engineering from Tampere University, Finland, in 2024, and the M.S. degree in statistics and machine learning from Link\"{o}ping University, Sweden, in 2026. He is currently working toward the Ph.D. degree in systems and molecular biomedicine at the University of Luxembourg, Esch-sur-Alzette, Luxembourg (e-mail: olaf.laitinen@uni.lu).
 
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.95\textwidth]{figures/figure3_calibration_operational_effect.pdf}
-    \caption{Calibration analysis and operational effect. Left: Reliability diagram comparing TAKTKRONE-I (ECE=0.067) against the generic LLM baseline (ECE=0.183), showing improved alignment between stated confidence and empirical accuracy. Right: Recommendation quality (nDCG@5) by disruption severity level, demonstrating stable performance across normal operations through severe disruptions with modest degradation under sparse telemetry conditions.}
-    \label{fig:calibration}
-\end{figure*}
+From 2022 to 2024, he served in several research capacities at the Finnish Center for Artificial Intelligence (FCAI), eventually acting as a Senior Research Scientist leading projects in multi-omics and precision oncology. His professional experience spans multiple sectors, including serving as a Research Scientist and Technical Program Manager at Google Health AI, an Adjunct Instructor and Bioinformatician at Link\"{o}ping University, and a Seconded National Expert for the European Research Council (ERC). Currently, he serves as a Machine Learning Engineer for the Swedish Security Service (S\"{a}kerhetspolisen) and as a Senior AI Engineer for the 13th World Urban Forum (WUF13) and the State Committee on Urban Planning and Architecture of the Republic of Azerbaijan. Since 2022, he has also served as a F\"{a}nrik in the Swedish Air Force.
+
+Mr. Laitinen-Fredriksson Lundstr\"{o}m-Imanov's research interests include explainable artificial intelligence (XAI), medical imaging, federated learning, clinical genomics, proteomics, and the deployment of generative AI and large language models in healthcare and security contexts. He is the author or co-author of several manuscripts in high-impact journals, including \textit{Nature Medicine}, \textit{IEEE Transactions on Medical Imaging}, and \textit{Medical Image Analysis}. He currently serves as a Peer Reviewer for the IEEE Journal of Biomedical and Health Informatics (JBHI). He was a recipient of the Tampere University President's Medal in 2024, the Link\"{o}ping University Excellence Scholarship in 2024, and the University of Luxembourg Merit Scholarship in 2025.
+\end{IEEEbiography}
 
 \end{document}
