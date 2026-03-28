@@ -19,17 +19,19 @@ from occlm.guardrails import (
     OutputFilter,
     PIIDetector,
     SafetyLevel,
+)
+from occlm.guardrails import (
     ValidationResult as SafetyValidationResult,
 )
 from occlm.ontology import (
     ACTION_TAXONOMY,
     INCIDENT_TAXONOMY,
+    STANDARD_PROCEDURES,
     ActionType,
     IncidentType,
     OntologyManager,
     ProcedureLibrary,
     ResourceHierarchy,
-    STANDARD_PROCEDURES,
     TaxonomyValidator,
 )
 from occlm.simulation import (
@@ -122,7 +124,9 @@ def test_ontology_module_behaviour() -> None:
     assert signal_info["safety_impact"] == "medium"
     assert manager.get_recommended_actions(IncidentType.SIGNAL_FAILURE) == []
     assert validator.validate_taxonomy() == []
-    assert procedures.get_procedure(IncidentType.SIGNAL_FAILURE) == STANDARD_PROCEDURES[0]
+    assert (
+        procedures.get_procedure(IncidentType.SIGNAL_FAILURE) == STANDARD_PROCEDURES[0]
+    )
     assert procedures.get_procedure(IncidentType.UNKNOWN) is None
 
     hierarchy = ResourceHierarchy(

@@ -1,9 +1,9 @@
 """Integration tests for ingestion pipeline."""
+
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -24,7 +24,9 @@ class TestIngestionPipeline:
     @pytest.fixture
     def normalizer(self) -> SchemaNormalizer:
         """Create normalizer."""
-        return SchemaNormalizer(operator=Operator.MTA_NYCT, id_prefix="mta", timezone_str="UTC")
+        return SchemaNormalizer(
+            operator=Operator.MTA_NYCT, id_prefix="mta", timezone_str="UTC"
+        )
 
     @pytest.fixture
     def storage(self, temp_storage_path: Path) -> ParquetStore:
@@ -41,7 +43,7 @@ class TestIngestionPipeline:
     def test_normalizer_can_create_valid_events(
         self,
         normalizer: SchemaNormalizer,
-        sample_realtime_event: Dict[str, Any],
+        sample_realtime_event: dict[str, Any],
     ) -> None:
         """Test normalizer produces valid events."""
         event = normalizer.normalize_event(sample_realtime_event)
@@ -49,7 +51,9 @@ class TestIngestionPipeline:
         assert event.id is not None
         assert event.timestamp is not None
 
-    def test_storage_path_creation(self, storage: ParquetStore, temp_storage_path: Path) -> None:
+    def test_storage_path_creation(
+        self, storage: ParquetStore, temp_storage_path: Path
+    ) -> None:
         """Test storage creates proper partitioned paths."""
         # Storage should be able to create paths
         assert Path(storage.base_path) == temp_storage_path
@@ -59,7 +63,7 @@ class TestIngestionPipeline:
         adapter: MTAAdapter,
         normalizer: SchemaNormalizer,
         storage: ParquetStore,
-        sample_realtime_event: Dict[str, Any],
+        sample_realtime_event: dict[str, Any],
     ) -> None:
         """Test end-to-end pipeline from adapter to storage."""
         # Normalize event

@@ -25,10 +25,12 @@ def test_normalizer_helper_methods(normalizer: SchemaNormalizer) -> None:
     assert normalizer._generate_id("base") == "mta_base"
     assert generated_id.startswith("mta_")
     assert normalizer._normalize_timestamp(None).tzinfo == timezone.utc
-    assert normalizer._normalize_timestamp(datetime(2026, 3, 27, 17, 30, 0)).tzinfo == timezone.utc
     assert (
-        normalizer._normalize_timestamp("2026-03-27T17:30:00Z").tzinfo
+        normalizer._normalize_timestamp(datetime(2026, 3, 27, 17, 30, 0)).tzinfo
         == timezone.utc
+    )
+    assert (
+        normalizer._normalize_timestamp("2026-03-27T17:30:00Z").tzinfo == timezone.utc
     )
     assert normalizer._resolve_operator(Operator.MBTA) == Operator.MBTA
     assert normalizer._resolve_operator("wmata") == Operator.WMATA
@@ -219,7 +221,10 @@ def test_data_validator_support_methods(
     assert validator.validate_realtime_event(event) == (True, [])
     assert validator.validate_incident_record(incident) == (True, [])
     assert validator.validate_network_snapshot(snapshot) == (True, [])
-    assert validator.validate_topology_consistency([event], {"routes": {}}) == (True, [])
+    assert validator.validate_topology_consistency([event], {"routes": {}}) == (
+        True,
+        [],
+    )
 
     is_complete, errors = validator.validate_completeness(
         {"id": "1", "source": ""},

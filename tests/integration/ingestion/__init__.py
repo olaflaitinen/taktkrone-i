@@ -43,8 +43,8 @@ Usage:
 from __future__ import annotations
 
 import os
-from typing import Optional, Dict, Any
 from pathlib import Path
+from typing import Any
 
 # Test configuration
 INGESTION_TEST_TIMEOUT = 120  # seconds
@@ -73,7 +73,7 @@ def use_cached_responses() -> bool:
     return os.getenv("USE_CACHED_RESPONSES", "true").lower() in ("true", "1", "yes")
 
 
-def get_api_key(operator: str) -> Optional[str]:
+def get_api_key(operator: str) -> str | None:
     """Get API key for a specific transit operator."""
     return API_KEYS.get(operator.lower())
 
@@ -84,15 +84,14 @@ def has_api_key(operator: str) -> bool:
     return key is not None and len(key.strip()) > 0
 
 
-def get_test_config() -> Dict[str, Any]:
+def get_test_config() -> dict[str, Any]:
     """Get ingestion test configuration."""
     return {
         "use_cached": use_cached_responses(),
         "timeout": API_REQUEST_TIMEOUT,
         "cache_dir": str(CACHE_DIR),
         "api_keys_available": {
-            operator: has_api_key(operator)
-            for operator in API_KEYS.keys()
+            operator: has_api_key(operator) for operator in API_KEYS.keys()
         },
         "test_data_paths": TEST_DATA_PATHS,
     }

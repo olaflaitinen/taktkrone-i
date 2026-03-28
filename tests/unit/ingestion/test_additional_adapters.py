@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import zipfile
 from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
-import zipfile
 
 import pytest
 
@@ -192,7 +192,9 @@ def test_gtfs_static_parser_loads_local_feed_and_validates(tmp_path: Path) -> No
     assert topology["stop_connections"]["S1"] == ["S2"]
     assert parser.validate_topology() == []
 
-    parser.stop_times.append({"trip_id": "UNKNOWN", "stop_id": "S9", "stop_sequence": 3})
+    parser.stop_times.append(
+        {"trip_id": "UNKNOWN", "stop_id": "S9", "stop_sequence": 3}
+    )
     parser.trips["BAD"] = parser.trips["T1"].model_copy(update={"route_id": "MISSING"})
     errors = parser.validate_topology()
     assert any("unknown route" in error for error in errors)
@@ -200,7 +202,9 @@ def test_gtfs_static_parser_loads_local_feed_and_validates(tmp_path: Path) -> No
     assert any("unknown stop" in error for error in errors)
 
 
-def test_gtfs_static_parser_handles_missing_files_and_missing_feed(tmp_path: Path) -> None:
+def test_gtfs_static_parser_handles_missing_files_and_missing_feed(
+    tmp_path: Path,
+) -> None:
     parser = GTFSStaticParser(cache_dir=str(tmp_path / "cache"))
 
     with pytest.raises(FileNotFoundError):
@@ -208,7 +212,9 @@ def test_gtfs_static_parser_handles_missing_files_and_missing_feed(tmp_path: Pat
 
     broken_feed = tmp_path / "broken.zip"
     with zipfile.ZipFile(broken_feed, "w") as archive:
-        archive.writestr("routes.txt", "route_id,route_short_name,route_long_name,route_type\n")
+        archive.writestr(
+            "routes.txt", "route_id,route_short_name,route_long_name,route_type\n"
+        )
         archive.writestr("trips.txt", "route_id,service_id,trip_id\n")
         archive.writestr("stop_times.txt", "trip_id,stop_id,stop_sequence\n")
 

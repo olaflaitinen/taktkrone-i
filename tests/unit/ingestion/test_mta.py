@@ -3,7 +3,6 @@
 import pytest
 
 from occlm.ingestion.adapters import MTAAdapter
-from occlm.schemas import Operator
 
 
 class TestMTAAdapter:
@@ -34,16 +33,12 @@ class TestMTAAdapter:
         assert "operator_code" in metadata
         assert metadata["operator_code"] == "mta_nyct"
 
-    def test_fetch_realtime_events_not_implemented(
-        self, adapter: MTAAdapter
-    ) -> None:
+    def test_fetch_realtime_events_not_implemented(self, adapter: MTAAdapter) -> None:
         """Test fetch_realtime_events raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
             list(adapter.fetch_realtime_events())
 
-    def test_fetch_network_snapshot_not_implemented(
-        self, adapter: MTAAdapter
-    ) -> None:
+    def test_fetch_network_snapshot_not_implemented(self, adapter: MTAAdapter) -> None:
         """Test fetch_network_snapshot raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
             adapter.fetch_network_snapshot()
@@ -53,16 +48,12 @@ class TestMTAAdapter:
         with pytest.raises(NotImplementedError):
             list(adapter.fetch_incidents())
 
-    def test_fetch_static_network_not_implemented(
-        self, adapter: MTAAdapter
-    ) -> None:
+    def test_fetch_static_network_not_implemented(self, adapter: MTAAdapter) -> None:
         """Test fetch_static_network raises NotImplementedError."""
         with pytest.raises(NotImplementedError):
             adapter.fetch_static_network()
 
-    def test_validate_connection_not_implemented(
-        self, adapter: MTAAdapter
-    ) -> None:
+    def test_validate_connection_not_implemented(self, adapter: MTAAdapter) -> None:
         """Test validate_connection returns bool."""
         result = adapter.validate_connection()
         assert isinstance(result, bool)

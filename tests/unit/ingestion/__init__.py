@@ -52,9 +52,9 @@ Test Organization:
 
 from __future__ import annotations
 
-from typing import Dict, Any
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 # Test configuration
 UNIT_TEST_TIMEOUT = 30  # seconds
@@ -150,9 +150,10 @@ class MockResponseHelper:
             raise ValueError(f"No mock data for {operator}.{data_type}")
         return self.config.mock_data_dir / operator / filename
 
-    def load_mock_json(self, operator: str, data_type: str) -> Dict[str, Any]:
+    def load_mock_json(self, operator: str, data_type: str) -> dict[str, Any]:
         """Load mock JSON data."""
         import json
+
         path = self.get_mock_data_path(operator, data_type)
         with open(path) as f:
             return json.load(f)
@@ -160,11 +161,11 @@ class MockResponseHelper:
     def load_mock_protobuf(self, operator: str, data_type: str) -> bytes:
         """Load mock protobuf data."""
         path = self.get_mock_data_path(operator, data_type)
-        with open(path, 'rb') as f:
+        with open(path, "rb") as f:
             return f.read()
 
 
-def create_mock_incident(operator: str = "test", **overrides) -> Dict[str, Any]:
+def create_mock_incident(operator: str = "test", **overrides) -> dict[str, Any]:
     """Create a mock incident for testing."""
     incident = {
         "incident_id": "test_incident_001",
@@ -185,7 +186,7 @@ def create_mock_incident(operator: str = "test", **overrides) -> Dict[str, Any]:
     return incident
 
 
-def create_mock_vehicle(operator: str = "test", **overrides) -> Dict[str, Any]:
+def create_mock_vehicle(operator: str = "test", **overrides) -> dict[str, Any]:
     """Create a mock vehicle position for testing."""
     vehicle = {
         "vehicle_id": "test_vehicle_001",

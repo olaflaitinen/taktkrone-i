@@ -1,7 +1,7 @@
 """Unit tests for data normalization."""
+
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from typing import Any
 
 import pytest
@@ -16,7 +16,9 @@ class TestSchemaNormalizer:
     @pytest.fixture
     def normalizer(self) -> SchemaNormalizer:
         """Create normalizer instance."""
-        return SchemaNormalizer(operator=Operator.MTA_NYCT, id_prefix="mta", timezone_str="UTC")
+        return SchemaNormalizer(
+            operator=Operator.MTA_NYCT, id_prefix="mta", timezone_str="UTC"
+        )
 
     def test_normalizer_initialization(self, normalizer: SchemaNormalizer) -> None:
         """Test normalizer initializes correctly."""

@@ -21,9 +21,7 @@ def sample_realtime_event() -> dict[str, Any]:
         "source": "gtfs_rt_trip_updates",
         "event_type": "trip_update",
         "provenance": {
-            "ingestion_time": datetime(
-                2026, 3, 27, 17, 30, 15, tzinfo=timezone.utc
-            ),
+            "ingestion_time": datetime(2026, 3, 27, 17, 30, 15, tzinfo=timezone.utc),
             "ingestion_method": "mta_gtfs_rt_adapter",
             "raw_source_url": None,
             "source_version": "1.0",
@@ -48,9 +46,7 @@ def sample_incident_record() -> dict[str, Any]:
         "incident_type": "signal_failure",
         "severity": "high",
         "provenance": {
-            "ingestion_time": datetime(
-                2026, 3, 27, 17, 30, 15, tzinfo=timezone.utc
-            ),
+            "ingestion_time": datetime(2026, 3, 27, 17, 30, 15, tzinfo=timezone.utc),
             "ingestion_method": "mta_gtfs_rt_adapter",
             "raw_source_url": None,
             "source_version": "1.0",

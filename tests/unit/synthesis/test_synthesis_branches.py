@@ -15,9 +15,15 @@ from occlm.synthesis.quality_scorer import QualityScorer
 from occlm.synthesis.scenario_engine import ScenarioEngine
 from occlm.synthesis.templates import (
     Difficulty,
-    get_template as get_scenario_template,
     get_templates_by_difficulty,
+)
+from occlm.synthesis.templates import (
+    get_template as get_scenario_template,
+)
+from occlm.synthesis.templates import (
     get_templates_by_type as get_scenario_templates_by_type,
+)
+from occlm.synthesis.templates import (
     list_templates as list_scenario_templates,
 )
 from occlm.synthesis.templates.occ_conversations import (
@@ -25,6 +31,8 @@ from occlm.synthesis.templates.occ_conversations import (
     DialogueTurn,
     get_conversation_template,
     get_templates_by_incident,
+)
+from occlm.synthesis.templates.occ_conversations import (
     list_templates as list_conversation_templates,
 )
 from occlm.synthesis.topology_simulator import (
@@ -52,7 +60,10 @@ def test_disruption_template_validation_and_helpers() -> None:
 
     assert template.root_causes == []
     assert get_template("signal_failure").incident_type == "signal_failure"
-    assert any(t.incident_type == "signal_failure" for t in get_templates_by_type(["signal_failure", "missing"]))
+    assert any(
+        t.incident_type == "signal_failure"
+        for t in get_templates_by_type(["signal_failure", "missing"])
+    )
     assert any(t.severity == "critical" for t in get_templates_by_severity("critical"))
 
     with pytest.raises(KeyError, match="Unknown incident type"):
@@ -104,12 +115,21 @@ def test_disruption_template_validation_and_helpers() -> None:
 
 
 def test_conversation_and_scenario_template_helpers() -> None:
-    assert get_conversation_template("signal_failure_response").incident_type == "signal_failure"
+    assert (
+        get_conversation_template("signal_failure_response").incident_type
+        == "signal_failure"
+    )
     assert "signal_failure_response" in list_conversation_templates()
-    assert any(t.incident_type == "signal_failure" for t in get_templates_by_incident("signal_failure"))
+    assert any(
+        t.incident_type == "signal_failure"
+        for t in get_templates_by_incident("signal_failure")
+    )
     assert get_scenario_template("bunching_single_line").scenario_type == "bunching"
     assert "bunching_single_line" in list_scenario_templates()
-    assert any(t.scenario_type == "bunching" for t in get_scenario_templates_by_type("bunching"))
+    assert any(
+        t.scenario_type == "bunching"
+        for t in get_scenario_templates_by_type("bunching")
+    )
     assert get_templates_by_difficulty(Difficulty.EASY, Difficulty.MEDIUM)
 
     with pytest.raises(KeyError, match="Unknown conversation template"):
@@ -123,7 +143,10 @@ def test_conversation_and_scenario_template_helpers() -> None:
             name="Bad",
             incident_type="signal_failure",
             difficulty="expert",
-            turns=[DialogueTurn(speaker="operator", message="one"), DialogueTurn(speaker="dispatcher", message="two")],
+            turns=[
+                DialogueTurn(speaker="operator", message="one"),
+                DialogueTurn(speaker="dispatcher", message="two"),
+            ],
         )
     with pytest.raises(ValueError, match=">= 2 turns"):
         ConversationTemplate(
@@ -163,7 +186,9 @@ def test_topology_simulator_branches(sample_network: dict) -> None:
 
 
 def test_scenario_engine_paths(sample_network: dict) -> None:
-    engine = ScenarioEngine(topology_simulator=TopologySimulator(sample_network), random_seed=1)
+    engine = ScenarioEngine(
+        topology_simulator=TopologySimulator(sample_network), random_seed=1
+    )
 
     assert engine.get_scenario_stats() == {"count": 0}
 
@@ -189,11 +214,14 @@ def test_scenario_engine_paths(sample_network: dict) -> None:
     assert not any(event["event"] == "recovery_initiated" for event in high_progression)
     assert any(event["event"] == "recovery_initiated" for event in low_progression)
     assert engine._get_affected_stops(["Z"]) == ["unknown_stop"]
-    assert engine._estimate_passenger_impact(
-        {"type": "signal_failure", "severity": "critical", "duration_minutes": 20},
-        20,
-        ["a", "b"],
-    )["service_level_reduction"] == 0.9
+    assert (
+        engine._estimate_passenger_impact(
+            {"type": "signal_failure", "severity": "critical", "duration_minutes": 20},
+            20,
+            ["a", "b"],
+        )["service_level_reduction"]
+        == 0.9
+    )
     assert stats["count"] == 4
     assert "delay" in stats["scenario_types"]
 
@@ -222,8 +250,12 @@ def test_dialogue_generator_branch_behaviour(
 
     assert generator._select_template("unknown").name == "Delay Escalation"
 
-    monkeypatch.setattr("occlm.synthesis.dialogue_generator.random.randint", lambda a, b: a)
-    monkeypatch.setattr("occlm.synthesis.dialogue_generator.random.choice", lambda seq: seq[0])
+    monkeypatch.setattr(
+        "occlm.synthesis.dialogue_generator.random.randint", lambda a, b: a
+    )
+    monkeypatch.setattr(
+        "occlm.synthesis.dialogue_generator.random.choice", lambda seq: seq[0]
+    )
     monkeypatch.setattr("occlm.synthesis.dialogue_generator.random.random", lambda: 0.0)
 
     filled = generator._slot_fill_template(
@@ -239,7 +271,11 @@ def test_dialogue_generator_branch_behaviour(
     annotated = generator.annotate_dialogue_with_actions(
         [
             {"speaker": "operator", "content": "Incident detected at station"},
-            {"speaker": "dispatcher", "content": "Please notify passengers", "actions": ["communication"]},
+            {
+                "speaker": "dispatcher",
+                "content": "Please notify passengers",
+                "actions": ["communication"],
+            },
             {"speaker": "supervisor", "content": "resume service"},
         ]
     )
@@ -253,11 +289,22 @@ def test_dialogue_generator_branch_behaviour(
     assert annotated[0]["has_urgency"] is True
     assert annotated[1]["speaker_context"] == "occ_dispatcher"
     assert annotated[2]["speaker_context"] == "supervisor"
-    assert generator._infer_actions("plain text with nothing special") == ["communication"]
-    assert len(generator._infer_actions("incident detected, hold service, notify passengers, resume service")) <= 3
+    assert generator._infer_actions("plain text with nothing special") == [
+        "communication"
+    ]
+    assert (
+        len(
+            generator._infer_actions(
+                "incident detected, hold service, notify passengers, resume service"
+            )
+        )
+        <= 3
+    )
 
     with pytest.raises(ValueError, match="scenario missing incident_details.type"):
-        generator.generate_occ_dialogue({"incident_details": {}}, template_name="signal_failure_response")
+        generator.generate_occ_dialogue(
+            {"incident_details": {}}, template_name="signal_failure_response"
+        )
     with pytest.raises(ValueError, match="No template found"):
         generator.generate_occ_dialogue(scenario, template_name="missing")
 
@@ -299,9 +346,16 @@ def test_quality_scorer_branch_behaviour() -> None:
 
     assert scorer.score_coherence([]) == 0.0
     assert scorer.score_coherence(poor_dialogue) < 1.0
-    assert scorer.score_realism(realistic_scenario) > scorer.score_realism(unrealistic_scenario)
+    assert scorer.score_realism(realistic_scenario) > scorer.score_realism(
+        unrealistic_scenario
+    )
     assert scorer.score_diversity([])["overall_diversity"] == 0.0
-    assert scorer.score_diversity([realistic_scenario, realistic_scenario])["route_diversity"] > 0.0
+    assert (
+        scorer.score_diversity([realistic_scenario, realistic_scenario])[
+            "route_diversity"
+        ]
+        > 0.0
+    )
     assert scorer.score_temporal_consistency(unrealistic_scenario) < 1.0
     assert scorer.overall_score() == 0.0
     assert scorer.overall_score(poor_dialogue, realistic_scenario) > 0.0

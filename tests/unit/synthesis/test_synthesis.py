@@ -7,10 +7,10 @@ from datetime import datetime
 import pytest
 
 from occlm.synthesis import (
+    DISRUPTION_TEMPLATES,
     ConversationTemplate,
     DialogueGenerator,
     DisruptionTemplate,
-    DISRUPTION_TEMPLATES,
     QualityScorer,
     ScenarioEngine,
     TopologySimulator,
