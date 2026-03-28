@@ -5,10 +5,12 @@ Generates synthetic operator-dispatcher dialogue from templates and
 incident context with slot filling, variation, and action annotation.
 """
 
+from __future__ import annotations
+
 import random
 import re
-from typing import Any, Optional
 import string
+from typing import Any, Optional
 
 from occlm.synthesis.templates.occ_conversations import (
     ConversationTemplate,
@@ -44,7 +46,7 @@ class DialogueGenerator:
         scenario: dict[str, Any],
         difficulty: Optional[str] = None,
         template_name: Optional[str] = None,
-    ) -> list[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Generate complete OCC dialogue from scenario.
 

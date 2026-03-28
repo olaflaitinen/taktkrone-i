@@ -8,7 +8,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Literal, Optional, Union
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Operator(str, Enum):
@@ -73,8 +73,8 @@ class RealtimeEvent(BaseModel):
     geo_location: GeoLocation | None = None
     tags: list[str] = Field(default_factory=list)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "evt_mta_20260327_001",
                 "schema_version": "1.0.0",
@@ -90,6 +90,7 @@ class RealtimeEvent(BaseModel):
                 "delay_seconds": 240,
             }
         }
+    )
 
 
 class NetworkSnapshot(BaseModel):
