@@ -4,6 +4,7 @@
 [![Paper DOI](https://img.shields.io/badge/DOI-10.1109%2FOJITS.2026.XXXXXXX-blue?logo=ieee)](https://doi.org/10.1109/OJITS.2026.XXXXXXX)
 [![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange?logo=huggingface)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
 [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-blue?logo=huggingface)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
+[![IEEE DataPort](https://img.shields.io/badge/IEEE-DataPort-0077B5?logo=ieee)](https://doi.org/10.21227/vwmz-ae50)
 [![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19258193-blue?logo=zenodo)](https://doi.org/10.5281/zenodo.19258193)
 [![Model DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8167-green?logo=doi)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
 [![Dataset DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8166-green?logo=doi)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
@@ -808,14 +809,29 @@ If you use TAKTKRONE-I in your research or applications, please cite:
 ```
 
 ### Dataset
+
+**IEEE DataPort:**
 ```bibtex
-@misc{gustav_olaf_yunus_laitinen-fredriksson_imanov_2026,
-	author       = { Gustav Olaf Yunus Laitinen-Fredriksson Imanov },
-	title        = { taktkrone-occ-corpus (Revision 55fff5c) },
+@misc{laitinen2026taktkrone_ieee,
+	author       = {Gustav Olaf Yunus Laitinen-Fredriksson Lundström-Imanov},
+	title        = {TAKTKRONE-occ-corpus},
 	year         = 2026,
-	url          = { https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus },
-	doi          = { 10.57967/hf/8166 },
-	publisher    = { Hugging Face }
+	month        = mar,
+	doi          = {10.21227/vwmz-ae50},
+	url          = {https://doi.org/10.21227/vwmz-ae50},
+	publisher    = {IEEE DataPort}
+}
+```
+
+**HuggingFace:**
+```bibtex
+@misc{laitinen2026taktkrone_hf,
+	author       = {Gustav Olaf Yunus Laitinen-Fredriksson Lundström-Imanov},
+	title        = {taktkrone-occ-corpus},
+	year         = 2026,
+	url          = {https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus},
+	doi          = {10.57967/hf/8166},
+	publisher    = {Hugging Face}
 }
 ```
 
@@ -833,14 +849,19 @@ If you use TAKTKRONE-I in your research or applications, please cite:
 
 ---
 
-## HuggingFace Repositories
+## Dataset Repositories
 
-- **Dataset**: [olaflaitinen/taktkrone-occ-corpus](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
+- **IEEE DataPort**: [TAKTKRONE-occ-corpus](https://doi.org/10.21227/vwmz-ae50)
+  - DOI: 10.21227/vwmz-ae50
+  - Archived: March 28, 2026
+  - Size: 5,247 OCC dialogue samples
+
+- **HuggingFace Dataset**: [olaflaitinen/taktkrone-occ-corpus](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
   - DOI: 10.57967/hf/8166
   - Size: 5,247 OCC dialogue samples
   - Splits: Train (4,197) + Test (1,050)
 
-- **Model**: [olaflaitinen/taktkrone-i](https://huggingface.co/olaflaitinen/taktkrone-i)
+- **HuggingFace Model**: [olaflaitinen/taktkrone-i](https://huggingface.co/olaflaitinen/taktkrone-i)
   - DOI: 10.57967/hf/8167
   - Base: meta-llama/Llama-3.1-8B-Instruct
   - LoRA Adapters: 67.1M parameters
