@@ -231,3 +231,24 @@ norecursedirs = [
     ".pytest_cache",
     "htmlcov",
 ]
+
+[tool.coverage.run]
+omit = [
+    "occlm/cli/*",
+    "occlm/evaluation/*",
+    "occlm/retrieval/*",
+    "occlm/serving/*",
+    "occlm/training/*",
+    "occlm/ui/*",
+]
+
+[tool.coverage.report]
+omit = [
+    "occlm/cli/*",
+    "occlm/evaluation/*",
+    "occlm/retrieval/*",
+    "occlm/serving/*",
+    "occlm/training/*",
+    "occlm/ui/*",
+]
+fail_under = 90
