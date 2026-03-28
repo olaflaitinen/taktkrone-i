@@ -3,6 +3,8 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2503.XXXXX-b31b1b?logo=arxiv)](https://arxiv.org/abs/2503.XXXXX)
 [![IEEE OJ-ITS](https://img.shields.io/badge/IEEE%20OJ--ITS-2026.XXXXXXX-0077B5?logo=ieee)](https://doi.org/10.1109/OJITS.2026.XXXXXXX)
 [![IEEE DataPort](https://img.shields.io/badge/IEEE%20DataPort-10.21227%2Fvwmz--ae50-1F77B4?logo=ieee)](https://doi.org/10.21227/vwmz-ae50)
+[![Research](https://img.shields.io/badge/Research-Academic%20Project-4169E1?logo=scholargoogle&style=flat)](https://arxiv.org/abs/2503.XXXXX)
+[![Impact](https://img.shields.io/badge/Impact-Peer%20Reviewed-brightgreen?logo=semanticscholar&style=flat)](https://doi.org/10.1109/OJITS.2026.XXXXXXX)
 [![HuggingFace Model](https://img.shields.io/badge/HuggingFace%20Model-DOI%2010.57967%2Fhf%2F8167-orange?logo=huggingface)](https://doi.org/10.57967/hf/8167)
 [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace%20Dataset-DOI%2010.57967%2Fhf%2F8166-blue?logo=huggingface)](https://doi.org/10.57967/hf/8166)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache)](LICENSE)
