@@ -3,7 +3,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2503.XXXXX-b31b1b?logo=arxiv)](https://arxiv.org/abs/2503.XXXXX)
 [![IEEE OJ-ITS](https://img.shields.io/badge/IEEE%20OJ--ITS-2026.XXXXXXX-0077B5?logo=ieee)](https://doi.org/10.1109/OJITS.2026.XXXXXXX)
 [![IEEE DataPort](https://img.shields.io/badge/IEEE%20DataPort-10.21227%2Fvwmz--ae50-1F77B4?logo=ieee)](https://doi.org/10.21227/vwmz-ae50)
-[![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange?logo=huggingface)](https://huggingface.co/olaflaitinen/taktkrone-lora-v1)
+[![HuggingFace Model](https://img.shields.io/badge/HuggingFace-Model-orange?logo=huggingface)](https://huggingface.co/olaflaitinen/taktkrone-i)
 [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-blue?logo=huggingface)](https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus)
 [![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.19258193-blue?logo=zenodo)](https://doi.org/10.5281/zenodo.19258193)
 [![Model DOI](https://img.shields.io/badge/DOI-10.57967%2Fhf%2F8167-green?logo=doi)](https://doi.org/10.57967/hf/8167)
