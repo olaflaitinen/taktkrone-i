@@ -5,7 +5,7 @@
 [![IEEE DataPort](https://img.shields.io/badge/IEEE%20DataPort-10.21227%2Fvwmz--ae50-1F77B4?logo=ieee)](https://doi.org/10.21227/vwmz-ae50)
 [![CI](https://github.com/olaflaitinen/taktkrone-i/actions/workflows/ci.yml/badge.svg)](https://github.com/olaflaitinen/taktkrone-i/actions/workflows/ci.yml)
 [![Tests](https://github.com/olaflaitinen/taktkrone-i/actions/workflows/tests.yml/badge.svg)](https://github.com/olaflaitinen/taktkrone-i/actions/workflows/tests.yml)
-[![Coverage](https://codecov.io/gh/olaflaitinen/taktkrone-i/branch/main/graph/badge.svg)](https://codecov.io/gh/olaflaitinen/taktkrone-i)
+[![codecov](https://codecov.io/gh/olaflaitinen/taktkrone-i/branch/main/graph/badge.svg?token=17WZMQPG2C)](https://codecov.io/gh/olaflaitinen/taktkrone-i)
 [![Impact](https://img.shields.io/badge/Impact-Peer%20Reviewed-brightgreen?logo=semanticscholar&style=flat)](https://doi.org/10.1109/OJITS.2026.XXXXXXX)
 [![HuggingFace Model](https://img.shields.io/badge/HuggingFace%20Model-DOI%2010.57967%2Fhf%2F8167-orange?logo=huggingface)](https://doi.org/10.57967/hf/8167)
 [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace%20Dataset-DOI%2010.57967%2Fhf%2F8166-blue?logo=huggingface)](https://doi.org/10.57967/hf/8166)
@@ -752,7 +752,7 @@ start htmlcov/index.html  # Windows
 
 We use **Codecov** to track test coverage across the codebase:
 
-- **Coverage Dashboard**: [![Coverage](https://codecov.io/gh/olaflaitinen/taktkrone-i/branch/main/graph/badge.svg)](https://codecov.io/gh/olaflaitinen/taktkrone-i)
+- **Coverage Dashboard**: [![codecov](https://codecov.io/gh/olaflaitinen/taktkrone-i/branch/main/graph/badge.svg?token=17WZMQPG2C)](https://codecov.io/gh/olaflaitinen/taktkrone-i)
 - **Latest Coverage Report**: [Codecov Metrics](https://codecov.io/gh/olaflaitinen/taktkrone-i)
 
 Coverage reports are automatically uploaded to Codecov on every push to `main` and pull request via GitHub Actions.
