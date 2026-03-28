@@ -62,7 +62,7 @@ def should_skip_integration() -> bool:
     return os.getenv("SKIP_INTEGRATION_TESTS", "false").lower() in ("true", "1", "yes")
 
 
-def get_test_config() -> Dict[str, Any]:
+def get_test_config() -> dict[str, Any]:
     """Get integration test configuration from environment."""
     return {
         key.lower(): os.getenv(env_var)

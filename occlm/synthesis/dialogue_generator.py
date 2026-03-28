@@ -189,15 +189,15 @@ class DialogueGenerator:
                 value = random.randint(10, 45)
             elif production_value == "estimated_repair_minutes" and value == "{{unknown}}":
                 value = random.randint(15, 120)
-            elif production-value == "short_turn_before" and value == "{{unknown}}":
+            elif production_value == "short_turn_before" and value == "{{unknown}}":
                 value = f"Station {random.choice(string.ascii_uppercase)}"
-            elif production-value == "short_turn_after" and value == "{{unknown}}":
+            elif production_value == "short_turn_after" and value == "{{unknown}}":
                 value = f"Station {random.choice(string.ascii_uppercase)}"
-            elif production-value == "line_id" and value == "{{unknown}}":
+            elif production_value == "line_id" and value == "{{unknown}}":
                 value = random.choice(["1", "2", "3", "A", "B"])
 
             result = result.replace(
-                f"{{{{{production-value}}}}}",
+                f"{{{{{production_value}}}}}",
                 str(value),
             )
 
