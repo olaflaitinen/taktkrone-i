@@ -1,7 +1,8 @@
 """Unit tests for data normalization."""
+from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -23,7 +24,7 @@ class TestSchemaNormalizer:
         assert normalizer.timezone_str == "UTC"
 
     def test_normalize_event(
-        self, normalizer: SchemaNormalizer, sample_realtime_event: Dict[str, Any]
+        self, normalizer: SchemaNormalizer, sample_realtime_event: dict[str, Any]
     ) -> None:
         """Test event normalization."""
         event = normalizer.normalize_event(sample_realtime_event)
@@ -45,7 +46,7 @@ class TestDataValidator:
         assert validator is not None
 
     def test_validate_realtime_event(
-        self, validator: DataValidator, sample_realtime_event: Dict[str, Any]
+        self, validator: DataValidator, sample_realtime_event: dict[str, Any]
     ) -> None:
         """Test realtime event validation."""
         event = RealtimeEvent(**sample_realtime_event)
@@ -60,12 +61,10 @@ class TestDataValidator:
         assert isinstance(result.errors, list)
 
     def test_validate_completeness(
-        self, validator: DataValidator, sample_realtime_event: Dict[str, Any]
+        self, validator: DataValidator, sample_realtime_event: dict[str, Any]
     ) -> None:
         """Test completeness validation."""
         event = RealtimeEvent(**sample_realtime_event)
         required_fields = ["id", "timestamp", "operator"]
         result = validator.validate_completeness(event, required_fields)
         assert isinstance(result, ValidationResult)
-
-from __future__ import annotations
