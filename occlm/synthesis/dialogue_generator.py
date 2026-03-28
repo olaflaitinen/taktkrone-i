@@ -10,12 +10,11 @@ from __future__ import annotations
 import random
 import re
 import string
-from typing import Any, Optional
+from typing import Any
 
 from occlm.synthesis.templates.occ_conversations import (
-    ConversationTemplate,
-    DialogueTurn,
     CONVERSATION_TEMPLATES,
+    ConversationTemplate,
 )
 
 __all__ = [
@@ -31,7 +30,7 @@ class DialogueGenerator:
     generates alternatives, and annotates with actions.
     """
 
-    def __init__(self, random_seed: Optional[int] = None) -> None:
+    def __init__(self, random_seed: int | None = None) -> None:
         """
         Initialize dialogue generator.
 
@@ -44,8 +43,8 @@ class DialogueGenerator:
     def generate_occ_dialogue(
         self,
         scenario: dict[str, Any],
-        difficulty: Optional[str] = None,
-        template_name: Optional[str] = None,
+        difficulty: str | None = None,
+        template_name: str | None = None,
     ) -> list[dict[str, Any]]:
         """
         Generate complete OCC dialogue from scenario.
@@ -58,9 +57,7 @@ class DialogueGenerator:
         Returns:
             List of dialogue messages with annotations
         """
-        incident_type = (
-            scenario.get("incident_details", {}).get("type")
-        )
+        incident_type = scenario.get("incident_details", {}).get("type")
         if not incident_type:
             raise ValueError("scenario missing incident_details.type")
 
@@ -71,12 +68,10 @@ class DialogueGenerator:
             template = self._select_template(incident_type, difficulty)
 
         if not template:
-            raise ValueError(
-                f"No template found for {incident_type}"
-            )
+            raise ValueError(f"No template found for {incident_type}")
 
         # Generate dialogue from template
-        dialogue = []
+        dialogue: list[dict[str, Any]] = []
         for turn in template.turns:
             filled_message = self._slot_fill_template(
                 turn.message,
@@ -101,17 +96,15 @@ class DialogueGenerator:
             dialogue.append(message_dict)
 
         # Add alternatives for each message
-        dialogue_with_alts = (
-            self.annotate_dialogue_with_actions(dialogue)
-        )
+        dialogue_with_alts = self.annotate_dialogue_with_actions(dialogue)
 
         return dialogue_with_alts
 
     def _select_template(
         self,
         incident_type: str,
-        difficulty: Optional[str] = None,
-    ) -> Optional[ConversationTemplate]:
+        difficulty: str | None = None,
+    ) -> ConversationTemplate | None:
         """
         Select appropriate template for incident.
 
@@ -170,7 +163,7 @@ class DialogueGenerator:
         production_values = re.findall(production_value_pattern, result)
 
         for production_value in production_values:
-            value = flat_context.get(production_value, f"{{{{unknown}}}}")
+            value = flat_context.get(production_value, "{{unknown}}")
 
             # Generate reasonable values for common slots
             if production_value == "num_trains_bunched" and value == "{{unknown}}":
@@ -187,7 +180,10 @@ class DialogueGenerator:
                 value = f"Station {random.choice(string.ascii_uppercase)}"
             elif production_value == "maintainer_eta" and value == "{{unknown}}":
                 value = random.randint(10, 45)
-            elif production_value == "estimated_repair_minutes" and value == "{{unknown}}":
+            elif (
+                production_value == "estimated_repair_minutes"
+                and value == "{{unknown}}"
+            ):
                 value = random.randint(15, 120)
             elif production_value == "short_turn_before" and value == "{{unknown}}":
                 value = f"Station {random.choice(string.ascii_uppercase)}"
@@ -314,12 +310,12 @@ class DialogueGenerator:
             if alt != base_message:
                 alternatives.append(alt)
 
-        return alternatives[:num + 1]
+        return alternatives[: num + 1]
 
     def annotate_dialogue_with_actions(
         self,
-        dialogue: list[Dict[str, Any]],
-    ) -> list[Dict[str, Any]]:
+        dialogue: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
         """
         Annotate dialogue messages with operational actions.
 
@@ -389,18 +385,10 @@ class DialogueGenerator:
             "status_update": ["update", "minutes", "status", "currently"],
             "hold_decision": ["hold", "holding", "suspend", "stop"],
             "short_turn": ["short turn", "shorten", "turn back"],
-            "communication": [
-                "notify", "announce", "inform", "communicate"
-            ],
-            "monitoring": [
-                "monitor", "watch", "continue", "maintain"
-            ],
-            "emergency_services_alert": [
-                "ems", "police", "emergency", "dispatch"
-            ],
-            "service_resume": [
-                "resume", "proceed", "clear", "go"
-            ],
+            "communication": ["notify", "announce", "inform", "communicate"],
+            "monitoring": ["monitor", "watch", "continue", "maintain"],
+            "emergency_services_alert": ["ems", "police", "emergency", "dispatch"],
+            "service_resume": ["resume", "proceed", "clear", "go"],
         }
 
         for action, keywords in action_keywords.items():

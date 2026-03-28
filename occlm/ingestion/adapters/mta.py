@@ -31,7 +31,31 @@ class MTAAdapter(IngestionAdapter):
     """
 
     BASE_GTFS_RT_URL = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds"
-    SUPPORTED_LINES = ["1", "2", "3", "4", "5", "6", "7", "A", "C", "E", "B", "D", "F", "M", "G", "J", "Z", "L", "N", "Q", "R", "W", "S"]
+    SUPPORTED_LINES = [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "A",
+        "C",
+        "E",
+        "B",
+        "D",
+        "F",
+        "M",
+        "G",
+        "J",
+        "Z",
+        "L",
+        "N",
+        "Q",
+        "R",
+        "W",
+        "S",
+    ]
 
     def __init__(self, api_key: str, config: dict[str, Any] | None = None):
         """
@@ -41,7 +65,9 @@ class MTAAdapter(IngestionAdapter):
             api_key: MTA API key (obtain from https://api.mta.info/)
             config: Optional configuration
         """
-        super().__init__(operator_code=Operator.MTA_NYCT.value, api_key=api_key, config=config)
+        super().__init__(
+            operator_code=Operator.MTA_NYCT.value, api_key=api_key, config=config
+        )
 
     def fetch_realtime_events(
         self, start_time: datetime | None = None, end_time: datetime | None = None
@@ -64,7 +90,9 @@ class MTAAdapter(IngestionAdapter):
         # - Convert to RealtimeEvent schema
         raise NotImplementedError("GTFS-RT ingestion to be implemented")
 
-    def fetch_network_snapshot(self, timestamp: datetime | None = None) -> NetworkSnapshot:
+    def fetch_network_snapshot(
+        self, timestamp: datetime | None = None
+    ) -> NetworkSnapshot:
         """
         Fetch current system-wide snapshot.
 

@@ -106,12 +106,8 @@ class ScenarioEngine:
             )
 
             num_trains = random.randint(2, 5)
-            scenario["incident_details"]["num_bunched_trains"] = (
-                num_trains
-            )
-            scenario["incident_details"]["headway_deviation"] = (
-                random.randint(50, 150)
-            )
+            scenario["incident_details"]["num_bunched_trains"] = num_trains
+            scenario["incident_details"]["headway_deviation"] = random.randint(50, 150)
 
             scenarios.append(scenario)
 
@@ -142,15 +138,11 @@ class ScenarioEngine:
                 scenario_type="turnback",
             )
 
-            scenario["incident_details"]["turnback_location"] = (
-                random.choice(["north_terminal", "south_terminal"])
+            scenario["incident_details"]["turnback_location"] = random.choice(
+                ["north_terminal", "south_terminal"]
             )
-            scenario["incident_details"]["trains_waiting"] = (
-                random.randint(1, 6)
-            )
-            scenario["incident_details"]["dwell_time_minutes"] = (
-                random.randint(5, 15)
-            )
+            scenario["incident_details"]["trains_waiting"] = random.randint(1, 6)
+            scenario["incident_details"]["dwell_time_minutes"] = random.randint(5, 15)
 
             scenarios.append(scenario)
 
@@ -186,16 +178,14 @@ class ScenarioEngine:
                 scenario_type="conflict",
             )
 
-            scenario["incident_details"]["conflict_type"] = (
-                random.choice(conflict_types)
+            scenario["incident_details"]["conflict_type"] = random.choice(
+                conflict_types
             )
             scenario["incident_details"]["involved_routes"] = [
                 random.choice(["1", "2", "3", "A", "B"])
                 for _ in range(random.randint(2, 3))
             ]
-            scenario["incident_details"]["resolution_options"] = (
-                random.randint(2, 4)
-            )
+            scenario["incident_details"]["resolution_options"] = random.randint(2, 4)
 
             scenarios.append(scenario)
 
@@ -231,6 +221,8 @@ class ScenarioEngine:
             min(random.randint(1, 2), len(template.affected_lines)),
         )
 
+        root_causes = template.root_causes or ["unknown"]
+
         incident_details = {
             "type": incident_type,
             "duration_minutes": duration,
@@ -241,7 +233,7 @@ class ScenarioEngine:
                 else ["station_1", "station_2"]
             ),
             "affected_routes": affected_routes,
-            "root_cause": random.choice(template.root_causes),
+            "root_cause": random.choice(root_causes),
         }
 
         initial_state = {
@@ -251,9 +243,7 @@ class ScenarioEngine:
             "active_incidents": 1,
         }
 
-        progression = self._generate_incident_progression(
-            incident_details
-        )
+        progression = self._generate_incident_progression(incident_details)
 
         affected_stops = self._get_affected_stops(affected_routes)
 
@@ -291,52 +281,59 @@ class ScenarioEngine:
         duration = disruption.get("duration_minutes", 30)
 
         # Initial detection
-        progression.append({
-            "time_offset_minutes": 0,
-            "event": "incident_detected",
-            "description": f"Disruption detected: {disruption['type']}",
-            "severity": disruption.get("severity", "medium"),
-        })
+        progression.append(
+            {
+                "time_offset_minutes": 0,
+                "event": "incident_detected",
+                "description": f"Disruption detected: {disruption['type']}",
+                "severity": disruption.get("severity", "medium"),
+            }
+        )
 
         # Escalation (if high severity)
         if disruption.get("severity") in ["high", "critical"]:
-            progression.append({
-                "time_offset_minutes": 2,
-                "event": "escalation",
-                "description": "Escalating to senior dispatcher",
-            })
+            progression.append(
+                {
+                    "time_offset_minutes": 2,
+                    "event": "escalation",
+                    "description": "Escalating to senior dispatcher",
+                }
+            )
 
         # Delay impact at various checkpoints
         checkpoints = [5, 10, 15, 25]
         for checkpoint in checkpoints:
             if checkpoint < duration:
-                progression.append({
-                    "time_offset_minutes": checkpoint,
-                    "event": "status_update",
-                    "description": (
-                        f"Delay impact: "
-                        f"{random.randint(5, 30)} minutes"
-                    ),
-                    "delay_minutes": random.randint(5, 30),
-                })
+                progression.append(
+                    {
+                        "time_offset_minutes": checkpoint,
+                        "event": "status_update",
+                        "description": (
+                            f"Delay impact: {random.randint(5, 30)} minutes"
+                        ),
+                        "delay_minutes": random.randint(5, 30),
+                    }
+                )
 
         # Recovery begins
         if duration > 10:
-            progression.append({
-                "time_offset_minutes": duration - 5,
-                "event": "recovery_initiated",
-                "description": "Beginning service restoration",
-            })
+            progression.append(
+                {
+                    "time_offset_minutes": duration - 5,
+                    "event": "recovery_initiated",
+                    "description": "Beginning service restoration",
+                }
+            )
 
         # Resolution
-        progression.append({
-            "time_offset_minutes": duration,
-            "event": "incident_resolved",
-            "description": "Service fully restored",
-            "final_delay": sum(
-                e.get("delay_minutes", 0) for e in progression
-            ),
-        })
+        progression.append(
+            {
+                "time_offset_minutes": duration,
+                "event": "incident_resolved",
+                "description": "Service fully restored",
+                "final_delay": sum(e.get("delay_minutes", 0) for e in progression),
+            }
+        )
 
         return progression
 
@@ -360,9 +357,7 @@ class ScenarioEngine:
 
         affected_stops = []
         for route in routes:
-            affected_stops.extend(
-                stop_mapping.get(route, ["unknown_stop"])
-            )
+            affected_stops.extend(stop_mapping.get(route, ["unknown_stop"]))
 
         return list(set(affected_stops))
 
@@ -431,10 +426,7 @@ class ScenarioEngine:
         return {
             "count": len(self.generated_scenarios),
             "scenario_types": list(
-                {
-                    s.get("scenario_type") for s in
-                    self.generated_scenarios
-                }
+                {s.get("scenario_type") for s in self.generated_scenarios}
             ),
             "incident_types": list(
                 {
@@ -443,10 +435,7 @@ class ScenarioEngine:
                 }
             ),
             "avg_affected_routes": (
-                sum(
-                    len(s.get("affected_routes", []))
-                    for s in self.generated_scenarios
-                )
+                sum(len(s.get("affected_routes", [])) for s in self.generated_scenarios)
                 / len(self.generated_scenarios)
                 if self.generated_scenarios
                 else 0

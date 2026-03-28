@@ -288,9 +288,7 @@ class ParquetStore:
         # - Return comprehensive statistics
         return {}
 
-    def cleanup_old_data(
-        self, days_to_keep: int = 30
-    ) -> dict[str, Any]:
+    def cleanup_old_data(self, days_to_keep: int = 30) -> dict[str, Any]:
         """
         Remove data older than specified days.
 

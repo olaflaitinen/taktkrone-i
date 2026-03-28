@@ -28,9 +28,7 @@ class Provenance(BaseModel):
     ingestion_time: datetime = Field(description="When data was ingested")
     ingestion_method: str = Field(description="Adapter or method used")
     raw_source_url: str | None = Field(default=None, description="Source API URL")
-    source_version: str | None = Field(
-        default=None, description="Source data version"
-    )
+    source_version: str | None = Field(default=None, description="Source data version")
 
 
 class GeoLocation(BaseModel):

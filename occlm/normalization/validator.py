@@ -5,7 +5,7 @@ Validates normalized data for schema compliance, completeness,
 and topology consistency.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from occlm.schemas import IncidentRecord, NetworkSnapshot, RealtimeEvent
@@ -52,14 +52,10 @@ class DataValidator:
             config: Optional configuration for validation behavior
         """
         self.config = config or {}
-        self.require_complete_fields = self.config.get(
-            "require_complete_fields", False
-        )
+        self.require_complete_fields = self.config.get("require_complete_fields", False)
         self.strict_mode = self.config.get("strict_mode", False)
 
-    def validate_realtime_event(
-        self, event: RealtimeEvent
-    ) -> tuple[bool, list[str]]:
+    def validate_realtime_event(self, event: RealtimeEvent) -> tuple[bool, list[str]]:
         """
         Validate RealtimeEvent object.
 
@@ -71,7 +67,7 @@ class DataValidator:
         Returns:
             Tuple of (is_valid, error_messages)
         """
-        errors = []
+        errors: list[str] = []
 
         # Completed: Implement event validation
         # - Check that required fields are populated
@@ -102,7 +98,7 @@ class DataValidator:
         Returns:
             Tuple of (is_valid, error_messages)
         """
-        errors = []
+        errors: list[str] = []
 
         # Completed: Implement incident validation
         # - Check that required fields are populated
@@ -133,7 +129,7 @@ class DataValidator:
         Returns:
             Tuple of (is_valid, error_messages)
         """
-        errors = []
+        errors: list[str] = []
 
         # Completed: Implement snapshot validation
         # - Check timestamp is recent
@@ -151,7 +147,7 @@ class DataValidator:
         return False, errors
 
     def validate_completeness(
-        self, data: dict[str, Any], required_fields: list[str]
+        self, data: dict[str, Any] | Any, required_fields: list[str]
     ) -> tuple[bool, list[str]]:
         """
         Validate that required fields are present and non-empty.
@@ -163,7 +159,7 @@ class DataValidator:
         Returns:
             Tuple of (is_valid, error_messages)
         """
-        errors = []
+        errors: list[str] = []
 
         # Completed: Implement completeness check
         # - Check all required_fields are in data
@@ -171,10 +167,19 @@ class DataValidator:
         # - Handle nested structures if present
         # - Return appropriate error messages
 
+        if isinstance(data, dict):
+            payload = data
+        elif hasattr(data, "model_dump"):
+            payload = data.model_dump()
+        elif hasattr(data, "__dict__"):
+            payload = vars(data)
+        else:
+            return False, ["Unsupported data type for completeness validation"]
+
         for field in required_fields:
-            if field not in data:
+            if field not in payload:
                 errors.append(f"Missing required field: {field}")
-            elif data[field] is None or data[field] == "":
+            elif payload[field] is None or payload[field] == "":
                 errors.append(f"Required field is empty: {field}")
 
         return len(errors) == 0, errors
@@ -197,7 +202,7 @@ class DataValidator:
         Returns:
             Tuple of (is_valid, error_messages)
         """
-        errors = []
+        errors: list[str] = []
 
         # Completed: Implement topology consistency validation
         # - Check route_ids reference valid routes in topology
@@ -235,12 +240,14 @@ class DataValidator:
         # - Allow small time inversions (clock drift)
         # - Aggregate warnings/errors
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         for event in events:
-            if event.timestamp > now:
-                errors.append(
-                    f"Event has future timestamp: {event.timestamp}"
-                )
+            event_timestamp = event.timestamp
+            if event_timestamp.tzinfo is None:
+                event_timestamp = event_timestamp.replace(tzinfo=timezone.utc)
+
+            if event_timestamp > now:
+                errors.append(f"Event has future timestamp: {event_timestamp}")
 
         return len(errors) == 0, errors
 
@@ -256,8 +263,8 @@ class DataValidator:
         Returns:
             Tuple of (all_valid, errors, warnings)
         """
-        errors = []
-        warnings = []
+        errors: list[str] = []
+        warnings: list[str] = []
 
         # Completed: Implement batch validation
         # - Validate each event individually

@@ -36,9 +36,7 @@ class DialogueTurn:
         """Validate speaker is valid role."""
         valid_speakers = {"operator", "dispatcher", "occ", "field"}
         if self.speaker not in valid_speakers:
-            raise ValueError(
-                f"speaker must be one of {valid_speakers}"
-            )
+            raise ValueError(f"speaker must be one of {valid_speakers}")
 
 
 @dataclass
@@ -68,9 +66,7 @@ class ConversationTemplate:
         """Validate template structure."""
         valid_difficulties = {"easy", "medium", "hard"}
         if self.difficulty not in valid_difficulties:
-            raise ValueError(
-                f"difficulty must be one of {valid_difficulties}"
-            )
+            raise ValueError(f"difficulty must be one of {valid_difficulties}")
 
         if len(self.turns) < 2:
             raise ValueError("ConversationTemplate must have >= 2 turns")
@@ -115,8 +111,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                 ),
                 templates=[
                     "Roger that. Current train impact?",
-                    "Acknowledged. {{signal_location}} - how many trains "
-                    "held?",
+                    "Acknowledged. {{signal_location}} - how many trains held?",
                 ],
                 actions=["status_query"],
             ),
@@ -171,8 +166,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "{{resume_time_estimate}}."
                 ),
                 templates=[
-                    "Stay on the signal repair. Resume through service "
-                    "once cleared.",
+                    "Stay on the signal repair. Resume through service once cleared.",
                     "Keep watch on repair ETA. Restore through service "
                     "immediately when ready.",
                 ],
@@ -201,8 +195,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                 templates=[
                     "We have a medical situation at {{emergency_location}}. "
                     "Passenger needs assistance.",
-                    "Medical emergency on train {{train_id}} at "
-                    "{{emergency_location}}",
+                    "Medical emergency on train {{train_id}} at {{emergency_location}}",
                 ],
                 actions=["incident_detection", "emergency_alert"],
             ),
@@ -302,8 +295,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                 ),
                 templates=[
                     "We're running {{initial_delay}} minutes behind schedule.",
-                    "About {{initial_delay}} min delay. Reason: "
-                    "{{delay_reason}}",
+                    "About {{initial_delay}} min delay. Reason: {{delay_reason}}",
                 ],
                 actions=["status_report"],
             ),
@@ -360,18 +352,15 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "{{assistance_type}} - holding for responders."
                 ),
                 templates=[
-                    "Requesting assistance at {{location}} - "
-                    "{{assistance_type}}",
-                    "Help needed at {{location}}, {{assistance_type}}. "
-                    "Train on hold.",
+                    "Requesting assistance at {{location}} - {{assistance_type}}",
+                    "Help needed at {{location}}, {{assistance_type}}. Train on hold.",
                 ],
                 actions=["assistance_request"],
             ),
             DialogueTurn(
                 speaker="dispatcher",
                 message=(
-                    "Copy. Station personnel being sent to {{location}}. "
-                    "Maintain hold."
+                    "Copy. Station personnel being sent to {{location}}. Maintain hold."
                 ),
                 templates=[
                     "Station staff dispatched to {{location}}.",
@@ -422,8 +411,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
             DialogueTurn(
                 speaker="operator",
                 message=(
-                    "{{line_id}} acknowledges. How do we proceed at "
-                    "{{transfer_point}}?"
+                    "{{line_id}} acknowledges. How do we proceed at {{transfer_point}}?"
                 ),
                 templates=[
                     "{{line_id}} ready. What's the protocol?",
@@ -453,8 +441,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                 ),
                 templates=[
                     "Roger, doing {{coordination_action}}.",
-                    "Will coordinate {{coordination_action}} with "
-                    "{{other_line}}.",
+                    "Will coordinate {{coordination_action}} with {{other_line}}.",
                 ],
                 actions=["coordination_action"],
             ),
@@ -487,10 +474,8 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "minute headways by {{target_time}}."
                 ),
                 templates=[
-                    "Starting schedule recovery to {{target_headway}} "
-                    "minute headways",
-                    "Recovery plan: restore to {{target_headway}} min "
-                    "headways",
+                    "Starting schedule recovery to {{target_headway}} minute headways",
+                    "Recovery plan: restore to {{target_headway}} min headways",
                 ],
                 actions=["recovery_plan"],
             ),
@@ -501,8 +486,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "headways now. What's our action?"
                 ),
                 templates=[
-                    "Currently {{current_headway}} min apart. What do "
-                    "we do?",
+                    "Currently {{current_headway}} min apart. What do we do?",
                     "Running {{current_headway}} minute headways now. "
                     "Awaiting recovery plan.",
                 ],
@@ -515,8 +499,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "Continue monitoring until we reach {{target_headway}}."
                 ),
                 templates=[
-                    "Execute {{recovery_strategy}}. Monitor until headway "
-                    "is normal.",
+                    "Execute {{recovery_strategy}}. Monitor until headway is normal.",
                     "Implement {{recovery_strategy}}. Watch for recovery.",
                 ],
                 actions=["recovery_action"],
@@ -562,8 +545,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "safe hold status."
                 ),
                 templates=[
-                    "Acknowledged. Shutting down {{system_type}}. "
-                    "Holding all trains.",
+                    "Acknowledged. Shutting down {{system_type}}. Holding all trains.",
                     "Roger, {{system_type}} shutdown. Safe hold all trains.",
                 ],
                 actions=["safe_hold"],
@@ -571,8 +553,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
             DialogueTurn(
                 speaker="field",
                 message=(
-                    "All trains in safe hold. {{system_type}} restart "
-                    "beginning now."
+                    "All trains in safe hold. {{system_type}} restart beginning now."
                 ),
                 templates=[
                     "Trains safe. Restarting {{system_type}}.",
@@ -587,10 +568,8 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "minutes for full recovery."
                 ),
                 templates=[
-                    "Restarting now, {{restart_duration}} min to full "
-                    "recovery",
-                    "System reboot, expect {{restart_duration}} minute "
-                    "restart window",
+                    "Restarting now, {{restart_duration}} min to full recovery",
+                    "System reboot, expect {{restart_duration}} minute restart window",
                 ],
                 actions=["monitoring"],
             ),
@@ -609,8 +588,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
             DialogueTurn(
                 speaker="dispatcher",
                 message=(
-                    "Excellent. Resuming service gradually. Monitor "
-                    "system stability."
+                    "Excellent. Resuming service gradually. Monitor system stability."
                 ),
                 templates=[
                     "Good. Resume service, watch for any issues.",
@@ -635,8 +613,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                     "capacity. Cannot accept more passengers safely."
                 ),
                 templates=[
-                    "{{crowded_location}} overcrowded, {{capacity_percent}}% "
-                    "full.",
+                    "{{crowded_location}} overcrowded, {{capacity_percent}}% full.",
                     "Extremely crowded at {{crowded_location}}, "
                     "{{capacity_percent}}% capacity.",
                 ],
@@ -705,8 +682,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
             DialogueTurn(
                 speaker="operator",
                 message=(
-                    "Copy weather protocol. Reducing speed in "
-                    "{{affected_areas}}."
+                    "Copy weather protocol. Reducing speed in {{affected_areas}}."
                 ),
                 templates=[
                     "Acknowledged, implementing {{weather_protocol}}.",
@@ -718,8 +694,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
             DialogueTurn(
                 speaker="dispatcher",
                 message=(
-                    "All trains monitor conditions. Report any issues "
-                    "immediately."
+                    "All trains monitor conditions. Report any issues immediately."
                 ),
                 templates=[
                     "Monitor conditions closely, report problems right away.",
@@ -770,8 +745,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                 templates=[
                     "Security issue at {{location}}: {{security_type}}. "
                     "Holding, doors secured.",
-                    "Suspicious activity at {{location}}. Train stopped, "
-                    "locked down.",
+                    "Suspicious activity at {{location}}. Train stopped, locked down.",
                 ],
                 actions=["security_alert", "safe_hold"],
             ),
@@ -796,8 +770,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
                 templates=[
                     "Situation developing. {{passenger_count}} passengers "
                     "aboard, safe.",
-                    "{{passenger_count}} passengers on board, maintaining "
-                    "hold.",
+                    "{{passenger_count}} passengers on board, maintaining hold.",
                 ],
                 actions=["passenger_safety"],
             ),
@@ -815,9 +788,7 @@ CONVERSATION_TEMPLATES: dict[str, ConversationTemplate] = {
             ),
             DialogueTurn(
                 speaker="operator",
-                message=(
-                    "Police arrived at {{location}}. Situation being assessed."
-                ),
+                message=("Police arrived at {{location}}. Situation being assessed."),
                 templates=[
                     "Officers on scene now.",
                     "Police arrived, situation under control.",
@@ -884,6 +855,5 @@ def get_templates_by_incident(
         List of matching ConversationTemplate objects
     """
     return [
-        t for t in CONVERSATION_TEMPLATES.values()
-        if t.incident_type == incident_type
+        t for t in CONVERSATION_TEMPLATES.values() if t.incident_type == incident_type
     ]

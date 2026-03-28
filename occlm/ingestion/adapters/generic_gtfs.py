@@ -112,9 +112,7 @@ class GenericGTFSAdapter(IngestionAdapter):
         # - Collect vehicle positions
         # - Compute system metrics
         # - Return NetworkSnapshot
-        raise NotImplementedError(
-            "Generic GTFS network snapshot to be implemented"
-        )
+        raise NotImplementedError("Generic GTFS network snapshot to be implemented")
 
     def fetch_incidents(
         self,

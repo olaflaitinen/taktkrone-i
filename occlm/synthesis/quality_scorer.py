@@ -136,16 +136,12 @@ class QualityScorer:
             "infrastructure_damage",
         }
 
-        incident_type = (
-            scenario.get("incident_details", {}).get("type")
-        )
+        incident_type = scenario.get("incident_details", {}).get("type")
         if incident_type not in valid_types:
             penalties += 0.3
 
         # Check duration plausibility
-        duration = (
-            scenario.get("incident_details", {}).get("duration_minutes")
-        )
+        duration = scenario.get("incident_details", {}).get("duration_minutes")
         if duration:
             if duration < 1 or duration > 1440:  # 1 day max
                 penalties += 0.2
@@ -157,9 +153,7 @@ class QualityScorer:
                 penalties += 0.05
 
         # Check severity validity
-        severity = (
-            scenario.get("incident_details", {}).get("severity")
-        )
+        severity = scenario.get("incident_details", {}).get("severity")
         if severity not in {"low", "medium", "high", "critical"}:
             penalties += 0.2
 
@@ -174,9 +168,7 @@ class QualityScorer:
             penalties += 0.1
         else:
             # Impact should be proportional to severity
-            service_reduction = passenger_impact.get(
-                "service_level_reduction", 0
-            )
+            service_reduction = passenger_impact.get("service_level_reduction", 0)
             if severity == "low" and service_reduction > 0.3:
                 penalties += 0.1
             elif severity == "high" and service_reduction < 0.4:
@@ -218,24 +210,16 @@ class QualityScorer:
             }
 
         # Count unique incident types
-        incident_types = {
-            s.get("incident_details", {}).get("type")
-            for s in scenarios
-        }
+        incident_types = {s.get("incident_details", {}).get("type") for s in scenarios}
         incident_diversity = len(incident_types) / 15  # 15 possible types
         incident_diversity = min(1.0, incident_diversity)
 
         # Count unique severities
-        severities = {
-            s.get("incident_details", {}).get("severity")
-            for s in scenarios
-        }
+        severities = {s.get("incident_details", {}).get("severity") for s in scenarios}
         severity_diversity = len(severities) / 4  # 4 levels
 
         # Count unique scenario types
-        scenario_types = {
-            s.get("scenario_type") for s in scenarios
-        }
+        scenario_types = {s.get("scenario_type") for s in scenarios}
         scenario_diversity = len(scenario_types) / 5  # 5 types
         scenario_diversity = min(1.0, scenario_diversity)
 
@@ -248,9 +232,11 @@ class QualityScorer:
         route_diversity = min(1.0, route_diversity)
 
         overall = (
-            (incident_diversity + severity_diversity +
-             scenario_diversity + route_diversity) / 4
-        )
+            incident_diversity
+            + severity_diversity
+            + scenario_diversity
+            + route_diversity
+        ) / 4
 
         return {
             "incident_type_diversity": round(incident_diversity, 3),
@@ -289,10 +275,7 @@ class QualityScorer:
         if not progression:
             penalties += 0.2
         else:
-            offsets = [
-                e.get("time_offset_minutes", 0)
-                for e in progression
-            ]
+            offsets = [e.get("time_offset_minutes", 0) for e in progression]
 
             # Check ordering
             for i in range(len(offsets) - 1):
@@ -301,11 +284,7 @@ class QualityScorer:
                     break
 
             # Check duration consistency
-            duration = (
-                scenario.get("incident_details", {}).get(
-                    "duration_minutes"
-                )
-            )
+            duration = scenario.get("incident_details", {}).get("duration_minutes")
             if duration and offsets:
                 max_offset = max(offsets)
                 if max_offset != duration:
@@ -374,27 +353,19 @@ class QualityScorer:
         Returns:
             Batch scoring results
         """
-        realism_scores = [
-            self.score_realism(s) for s in scenarios
-        ]
-        temporal_scores = [
-            self.score_temporal_consistency(s) for s in scenarios
-        ]
+        realism_scores = [self.score_realism(s) for s in scenarios]
+        temporal_scores = [self.score_temporal_consistency(s) for s in scenarios]
         diversity = self.score_diversity(scenarios)
 
         return {
             "total_scenarios": len(scenarios),
-            "avg_realism": round(
-                statistics.mean(realism_scores), 3
-            ) if realism_scores else 0.0,
-            "min_realism": round(
-                min(realism_scores), 3
-            ) if realism_scores else 0.0,
-            "max_realism": round(
-                max(realism_scores), 3
-            ) if realism_scores else 0.0,
-            "avg_temporal_consistency": round(
-                statistics.mean(temporal_scores), 3
-            ) if temporal_scores else 0.0,
+            "avg_realism": round(statistics.mean(realism_scores), 3)
+            if realism_scores
+            else 0.0,
+            "min_realism": round(min(realism_scores), 3) if realism_scores else 0.0,
+            "max_realism": round(max(realism_scores), 3) if realism_scores else 0.0,
+            "avg_temporal_consistency": round(statistics.mean(temporal_scores), 3)
+            if temporal_scores
+            else 0.0,
             "diversity": diversity,
         }

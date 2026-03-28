@@ -18,6 +18,9 @@ __version__ = "0.1.0-alpha"
 __author__ = "metroLM Contributors"
 __license__ = "Apache 2.0"
 
+from types import ModuleType
+from typing import Any
+
 # Core schemas
 from occlm.schemas import (
     ActionRecommendation,
@@ -29,9 +32,10 @@ from occlm.schemas import (
 
 
 # Submodule imports (lazy loading for optional dependencies)
-def _lazy_import(module_name):
+def _lazy_import(module_name: str) -> ModuleType:
     """Lazy import to avoid loading heavy dependencies at package import"""
     import importlib
+
     return importlib.import_module(f"occlm.{module_name}")
 
 
@@ -55,7 +59,7 @@ __all__ = [
 
 
 # Lazy submodule accessors
-def __getattr__(name):
+def __getattr__(name: str) -> Any:
     """Lazy load submodules on first access"""
     if name in ("training", "evaluation", "serving", "synthesis", "ingestion"):
         return _lazy_import(name)

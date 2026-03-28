@@ -14,6 +14,7 @@ on:
 
 env:
   PYTHON_VERSION: "3.10"
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
 
 jobs:
   unit-tests:
@@ -38,10 +39,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          pip install pytest pytest-cov pydantic httpx
 
       - name: Run unit tests
-        run: pytest tests/unit/ -v --cov=occlm --cov-report=xml --cov-report=html
+        run: python -m pytest -p pytest_cov tests/unit/ -v --cov=occlm --cov-report=xml --cov-report=html
 
       - name: Upload coverage report
         if: success()
@@ -65,10 +66,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          pip install pytest pytest-timeout pydantic httpx
 
       - name: Run integration tests
-        run: pytest tests/integration/ -v --timeout=300
+        run: python -m pytest -p pytest_cov -p pytest_timeout tests/integration/ -v --timeout=300
 
   schema-tests:
     name: Schema Tests
@@ -84,10 +85,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          pip install pytest pytest-cov pydantic
 
       - name: Run schema validation tests
-        run: pytest tests/unit/test_schemas.py -v
+        run: python -m pytest -p pytest_cov tests/unit/test_schemas.py -v
 
   benchmark-tests:
     name: Benchmark Performance Tests
@@ -104,17 +105,17 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-          pip install pytest-benchmark
+          pip install pytest pytest-cov pytest-benchmark pydantic httpx
 
       - name: Run benchmark tests
-        run: pytest tests/ --benchmark-only --benchmark-json=benchmark.json || true
+        run: python -m pytest -p pytest_cov -p pytest_benchmark tests/ --benchmark-only --benchmark-json=benchmark.json --ignore=tests/load --ignore=tests/regression || true
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
           path: benchmark.json
+          if-no-files-found: ignore
         if: always()
 
   test-report:

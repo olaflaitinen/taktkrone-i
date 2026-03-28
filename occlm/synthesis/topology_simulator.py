@@ -36,9 +36,7 @@ class TopologySimulator:
         """
         required_keys = {"routes", "connections"}
         if not all(k in network_data for k in required_keys):
-            raise ValueError(
-                f"network_data must contain {required_keys}"
-            )
+            raise ValueError(f"network_data must contain {required_keys}")
 
         self.network_data = network_data
         self.routes = network_data.get("routes", {})
@@ -83,9 +81,7 @@ class TopologySimulator:
             if hops >= max_hops:
                 continue
 
-            connected_routes = self.connections.get(
-                current_route, []
-            )
+            connected_routes = self.connections.get(current_route, [])
 
             for next_route in connected_routes:
                 if next_route in visited:
@@ -95,14 +91,10 @@ class TopologySimulator:
 
                 # Decay delay with each hop
                 delay_factor = max(0.5 - (hops * 0.1), 0.2)
-                propagated_delay = max(
-                    int(current_delay * delay_factor), 1
-                )
+                propagated_delay = max(int(current_delay * delay_factor), 1)
 
                 delays[next_route] = propagated_delay
-                queue.append(
-                    (next_route, hops + 1, propagated_delay)
-                )
+                queue.append((next_route, hops + 1, propagated_delay))
 
         self._delay_cache = delays
         return delays
@@ -137,6 +129,10 @@ class TopologySimulator:
                     queue.append(route)
 
         return sorted(affected)
+
+    def get_all_routes(self) -> list[str]:
+        """Return all known route identifiers in the network."""
+        return sorted(self.routes.keys())
 
     def estimate_recovery_time(
         self,
@@ -188,12 +184,8 @@ class TopologySimulator:
             Dict with keys: num_routes, num_connections, avg_connectivity
         """
         num_routes = len(self.routes)
-        num_connections = sum(
-            len(v) for v in self.connections.values()
-        )
-        avg_connectivity = (
-            num_connections / num_routes if num_routes > 0 else 0
-        )
+        num_connections = sum(len(v) for v in self.connections.values())
+        avg_connectivity = num_connections / num_routes if num_routes > 0 else 0
 
         return {
             "num_routes": num_routes,
@@ -217,9 +209,7 @@ class TopologySimulator:
         # Check for isolated routes
         for route_id in self.routes:
             if route_id not in self.connections:
-                warnings.append(
-                    f"Route {route_id} has no connections"
-                )
+                warnings.append(f"Route {route_id} has no connections")
 
         # Check for dangling connections
         all_routes = set(self.routes.keys())
@@ -227,8 +217,7 @@ class TopologySimulator:
             for conn_route in connected:
                 if conn_route not in all_routes:
                     warnings.append(
-                        f"Route {route_id} connects to non-existent "
-                        f"route {conn_route}"
+                        f"Route {route_id} connects to non-existent route {conn_route}"
                     )
 
         return warnings

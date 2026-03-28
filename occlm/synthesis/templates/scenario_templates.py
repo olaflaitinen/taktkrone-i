@@ -13,6 +13,7 @@ from typing import Any
 
 class ActionType(str, Enum):
     """Operational action types"""
+
     HOLD_TRAIN = "hold_train"
     EXPRESS_OPERATION = "express_operation"
     SHORT_TURN = "short_turn"
@@ -30,6 +31,7 @@ class ActionType(str, Enum):
 
 class Severity(str, Enum):
     """Incident severity levels"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -38,6 +40,7 @@ class Severity(str, Enum):
 
 class Difficulty(str, Enum):
     """Scenario difficulty levels"""
+
     EASY = "easy"
     MEDIUM = "medium"
     HARD = "hard"
@@ -47,6 +50,7 @@ class Difficulty(str, Enum):
 @dataclass
 class ParameterSpec:
     """Specification for a template parameter"""
+
     name: str
     param_type: str  # int, float, str, choice, range
     default: Any
@@ -59,6 +63,7 @@ class ParameterSpec:
 @dataclass
 class TopologyConstraint:
     """Topology constraint that must be satisfied"""
+
     constraint_type: str
     description: str
     check_function: Callable | None = None
@@ -67,6 +72,7 @@ class TopologyConstraint:
 @dataclass
 class ActionTemplate:
     """Template for an action candidate"""
+
     action_type: ActionType
     description_template: str
     feasibility_conditions: list[str]
@@ -126,7 +132,6 @@ BUNCHING_SINGLE_LINE = ScenarioTemplate(
     scenario_type="bunching",
     difficulty_range=(Difficulty.EASY, Difficulty.MEDIUM),
     severity_range=(Severity.LOW, Severity.MEDIUM),
-
     parameters=[
         ParameterSpec(
             name="num_trains_bunched",
@@ -134,7 +139,7 @@ BUNCHING_SINGLE_LINE = ScenarioTemplate(
             default=3,
             min_value=2,
             max_value=5,
-            description="Number of trains in the bunch"
+            description="Number of trains in the bunch",
         ),
         ParameterSpec(
             name="bunch_headway_seconds",
@@ -142,7 +147,7 @@ BUNCHING_SINGLE_LINE = ScenarioTemplate(
             default=90,
             min_value=60,
             max_value=180,
-            description="Headway between bunched trains"
+            description="Headway between bunched trains",
         ),
         ParameterSpec(
             name="scheduled_headway_seconds",
@@ -150,72 +155,76 @@ BUNCHING_SINGLE_LINE = ScenarioTemplate(
             default=360,
             min_value=240,
             max_value=600,
-            description="Normal scheduled headway"
+            description="Normal scheduled headway",
         ),
         ParameterSpec(
             name="time_of_day",
             param_type="choice",
             default="peak_pm",
             choices=["peak_am", "peak_pm", "midday", "evening"],
-            description="Time of day for scenario"
+            description="Time of day for scenario",
         ),
         ParameterSpec(
             name="initial_cause",
             param_type="choice",
             default="signal_delay",
             choices=["signal_delay", "extended_dwell", "slow_order", "upstream_delay"],
-            description="Initial cause of bunching"
+            description="Initial cause of bunching",
         ),
     ],
-
     topology_constraints=[
         TopologyConstraint(
             constraint_type="linear_segment",
-            description="Scenario location must be linear segment without branches"
+            description="Scenario location must be linear segment without branches",
         ),
         TopologyConstraint(
             constraint_type="sufficient_stations",
-            description="At least 5 stations in affected segment"
+            description="At least 5 stations in affected segment",
         ),
     ],
-
     briefing_template="""
 {num_trains_bunched} {direction} {line} trains are bunched between {start_station} and {end_station}.
 The trains are operating within {bunch_headway_seconds} seconds of each other instead of the scheduled {scheduled_headway_seconds}-second headway.
 Initial cause appears to be {initial_cause_description}.
 Current time: {current_time}. Service pattern: {time_of_day}.
 """,
-
     user_query_templates=[
         "{line} {direction} trains are bunching between {start_station} and {end_station}. {num_trains_bunched} trains are within {total_bunch_time} minutes of each other. What should we do?",
         "We have a bunching situation on {line} {direction}. Trains are running {bunch_headway_seconds} seconds apart instead of the normal {scheduled_headway_seconds} seconds. How do we restore headways?",
         "Multiple trains are bunched on {line}. Need recommendations for headway regulation.",
     ],
-
     action_templates=[
         ActionTemplate(
             action_type=ActionType.HOLD_TRAIN,
             description_template="Hold leading train at {hold_station} for {hold_duration} minutes",
-            feasibility_conditions=["Hold station has sufficient platform capacity", "Trailing trains can spread during hold"],
+            feasibility_conditions=[
+                "Hold station has sufficient platform capacity",
+                "Trailing trains can spread during hold",
+            ],
             benefit_template="Creates separation, allows trailing trains to spread naturally",
-            cost_template="Platform crowding at hold station, {delay_impact} additional passenger-minutes delay"
+            cost_template="Platform crowding at hold station, {delay_impact} additional passenger-minutes delay",
         ),
         ActionTemplate(
             action_type=ActionType.EXPRESS_OPERATION,
             description_template="Run trailing train express from {express_start} to {express_end}, skipping {skip_count} stops",
-            feasibility_conditions=["Express track available or can skip on local", "Skipped stations have alternative service"],
+            feasibility_conditions=[
+                "Express track available or can skip on local",
+                "Skipped stations have alternative service",
+            ],
             benefit_template="Faster gap closure, reduced bunch size",
-            cost_template="Passengers at skipped stops must wait, potential crowding at destination"
+            cost_template="Passengers at skipped stops must wait, potential crowding at destination",
         ),
         ActionTemplate(
             action_type=ActionType.SHORT_TURN,
             description_template="Short turn middle train at {short_turn_station}",
-            feasibility_conditions=["Crossover available at short turn location", "Service gap acceptable"],
+            feasibility_conditions=[
+                "Crossover available at short turn location",
+                "Service gap acceptable",
+            ],
             benefit_template="Reduces bunch size, adds service to opposite direction",
-            cost_template="Service gap for passengers beyond short turn point"
+            cost_template="Service gap for passengers beyond short turn point",
         ),
     ],
-
     recommended_actions=[ActionType.HOLD_TRAIN, ActionType.MONITOR],
     confidence_range=(0.75, 0.90),
 )
@@ -230,21 +239,20 @@ SIGNAL_FAILURE_SEGMENT = ScenarioTemplate(
     scenario_type="signal_failure",
     difficulty_range=(Difficulty.MEDIUM, Difficulty.HARD),
     severity_range=(Severity.MEDIUM, Severity.HIGH),
-
     parameters=[
         ParameterSpec(
             name="signal_issue_type",
             param_type="choice",
             default="track_circuit",
             choices=["track_circuit", "interlocking", "communication", "atp_failure"],
-            description="Type of signal failure"
+            description="Type of signal failure",
         ),
         ParameterSpec(
             name="affected_tracks",
             param_type="choice",
             default="both",
             choices=["northbound", "southbound", "both"],
-            description="Which tracks affected"
+            description="Which tracks affected",
         ),
         ParameterSpec(
             name="estimated_repair_minutes",
@@ -252,7 +260,7 @@ SIGNAL_FAILURE_SEGMENT = ScenarioTemplate(
             default=30,
             min_value=15,
             max_value=120,
-            description="Estimated time to repair"
+            description="Estimated time to repair",
         ),
         ParameterSpec(
             name="trains_affected",
@@ -260,55 +268,54 @@ SIGNAL_FAILURE_SEGMENT = ScenarioTemplate(
             default=5,
             min_value=2,
             max_value=15,
-            description="Number of trains currently affected"
+            description="Number of trains currently affected",
         ),
     ],
-
     topology_constraints=[
         TopologyConstraint(
             constraint_type="signal_location_valid",
-            description="Signal location must exist in topology"
+            description="Signal location must exist in topology",
         ),
     ],
-
     briefing_template="""
 Signal {signal_issue_type} at {signal_location} affecting {affected_tracks} track(s) between {start_station} and {end_station}.
 {trains_affected} trains currently delayed. Maintainer en route, ETA {maintainer_eta} minutes.
 Estimated repair time: {estimated_repair_minutes} minutes.
 Current delays averaging {average_delay} minutes {direction}.
 """,
-
     user_query_templates=[
         "Signal problem at {signal_location}. {trains_affected} trains held. What's our recovery strategy?",
         "We have a {signal_issue_type} failure between {start_station} and {end_station}. How do we manage service until repair?",
         "{signal_issue_type} issue causing {average_delay} minute delays. Repair estimated at {estimated_repair_minutes} minutes. Options?",
     ],
-
     action_templates=[
         ActionTemplate(
             action_type=ActionType.VERIFICATION,
             description_template="Verify signal status with maintainer at {signal_location}",
             feasibility_conditions=["Maintainer contactable"],
             benefit_template="Accurate information for decision making",
-            cost_template="Time to confirm"
+            cost_template="Time to confirm",
         ),
         ActionTemplate(
             action_type=ActionType.SHORT_TURN,
             description_template="Short turn trains at {short_turn_station_before} and {short_turn_station_after}",
             feasibility_conditions=["Crossovers available on both sides of failure"],
             benefit_template="Maintain service on unaffected portions of line",
-            cost_template="No through service, transfer required"
+            cost_template="No through service, transfer required",
         ),
         ActionTemplate(
             action_type=ActionType.BRIDGE_SERVICE,
             description_template="Implement bus bridge between {bridge_start} and {bridge_end}",
             feasibility_conditions=["Buses available", "Surface route feasible"],
             benefit_template="Maintains connectivity across affected segment",
-            cost_template="Slower than rail, capacity limitations"
+            cost_template="Slower than rail, capacity limitations",
         ),
     ],
-
-    recommended_actions=[ActionType.VERIFICATION, ActionType.SHORT_TURN, ActionType.COMMUNICATION],
+    recommended_actions=[
+        ActionType.VERIFICATION,
+        ActionType.SHORT_TURN,
+        ActionType.COMMUNICATION,
+    ],
     confidence_range=(0.60, 0.85),
 )
 
@@ -322,14 +329,18 @@ TERMINAL_CONGESTION = ScenarioTemplate(
     scenario_type="terminal_congestion",
     difficulty_range=(Difficulty.MEDIUM, Difficulty.HARD),
     severity_range=(Severity.MEDIUM, Severity.HIGH),
-
     parameters=[
         ParameterSpec(
             name="congestion_cause",
             param_type="choice",
             default="slow_turnback",
-            choices=["slow_turnback", "operator_availability", "platform_occupied", "switch_delay"],
-            description="Cause of terminal congestion"
+            choices=[
+                "slow_turnback",
+                "operator_availability",
+                "platform_occupied",
+                "switch_delay",
+            ],
+            description="Cause of terminal congestion",
         ),
         ParameterSpec(
             name="trains_waiting",
@@ -337,7 +348,7 @@ TERMINAL_CONGESTION = ScenarioTemplate(
             default=3,
             min_value=2,
             max_value=6,
-            description="Trains waiting at terminal"
+            description="Trains waiting at terminal",
         ),
         ParameterSpec(
             name="turnback_time_actual",
@@ -345,7 +356,7 @@ TERMINAL_CONGESTION = ScenarioTemplate(
             default=8,
             min_value=5,
             max_value=15,
-            description="Actual turnback time in minutes"
+            description="Actual turnback time in minutes",
         ),
         ParameterSpec(
             name="turnback_time_scheduled",
@@ -353,58 +364,53 @@ TERMINAL_CONGESTION = ScenarioTemplate(
             default=4,
             min_value=3,
             max_value=6,
-            description="Scheduled turnback time in minutes"
+            description="Scheduled turnback time in minutes",
         ),
     ],
-
     topology_constraints=[
         TopologyConstraint(
             constraint_type="terminal_valid",
-            description="Must be a valid terminal station"
+            description="Must be a valid terminal station",
         ),
         TopologyConstraint(
             constraint_type="turnback_infrastructure",
-            description="Terminal must have turnback capability"
+            description="Terminal must have turnback capability",
         ),
     ],
-
     briefing_template="""
 Terminal congestion at {terminal_station}. {trains_waiting} trains waiting for turnback.
 Turnback time running {turnback_time_actual} minutes vs scheduled {turnback_time_scheduled} minutes.
 Cause: {congestion_cause_description}.
 Delays propagating back {propagation_stations} stations. Average inbound delay: {inbound_delay} minutes.
 """,
-
     user_query_templates=[
         "{terminal_station} terminal is backed up. {trains_waiting} trains waiting. How do we clear this?",
         "Turnback delays at {terminal_station} causing service gaps. What are our options?",
         "Terminal congestion at {terminal_station} due to {congestion_cause}. Need recovery plan.",
     ],
-
     action_templates=[
         ActionTemplate(
             action_type=ActionType.SHORT_TURN,
             description_template="Short turn trains at {short_turn_location} before terminal",
             feasibility_conditions=["Crossover available before terminal"],
             benefit_template="Relieves terminal pressure, maintains service frequency",
-            cost_template="Reduced coverage to terminal, passenger confusion"
+            cost_template="Reduced coverage to terminal, passenger confusion",
         ),
         ActionTemplate(
             action_type=ActionType.REDUCE_FREQUENCY,
             description_template="Temporarily reduce service to {reduced_frequency} minute headways",
             feasibility_conditions=["Passenger load acceptable at reduced frequency"],
             benefit_template="Matches service to terminal capacity",
-            cost_template="Increased crowding, longer waits"
+            cost_template="Increased crowding, longer waits",
         ),
         ActionTemplate(
             action_type=ActionType.HOLD_TRAIN,
             description_template="Hold departing trains at {hold_location} until terminal clears",
             feasibility_conditions=["Mid-line station can accommodate holds"],
             benefit_template="Prevents additional congestion at terminal",
-            cost_template="Delays for passengers on held trains"
+            cost_template="Delays for passengers on held trains",
         ),
     ],
-
     recommended_actions=[ActionType.SHORT_TURN, ActionType.COMMUNICATION],
     confidence_range=(0.70, 0.88),
 )
@@ -419,28 +425,27 @@ DISABLED_TRAIN_MAINLINE = ScenarioTemplate(
     scenario_type="disabled_train",
     difficulty_range=(Difficulty.HARD, Difficulty.EXPERT),
     severity_range=(Severity.HIGH, Severity.CRITICAL),
-
     parameters=[
         ParameterSpec(
             name="failure_type",
             param_type="choice",
             default="propulsion",
             choices=["propulsion", "brake", "door", "hvac", "coupler"],
-            description="Type of vehicle failure"
+            description="Type of vehicle failure",
         ),
         ParameterSpec(
             name="can_move_under_power",
             param_type="choice",
             default=False,
             choices=[True, False],
-            description="Whether train can move under own power"
+            description="Whether train can move under own power",
         ),
         ParameterSpec(
             name="passenger_evacuation_needed",
             param_type="choice",
             default=False,
             choices=[True, False],
-            description="Whether passengers need evacuation"
+            description="Whether passengers need evacuation",
         ),
         ParameterSpec(
             name="rescue_train_eta",
@@ -448,10 +453,9 @@ DISABLED_TRAIN_MAINLINE = ScenarioTemplate(
             default=20,
             min_value=10,
             max_value=45,
-            description="ETA for rescue train in minutes"
+            description="ETA for rescue train in minutes",
         ),
     ],
-
     briefing_template="""
 Train {train_id} disabled at {location} due to {failure_type} failure.
 Train {"can" if can_move_under_power else "cannot"} move under own power.
@@ -459,14 +463,16 @@ Train {"can" if can_move_under_power else "cannot"} move under own power.
 Rescue train ETA: {rescue_train_eta} minutes.
 {following_trains} trains held behind disabled train.
 """,
-
     user_query_templates=[
         "Train disabled at {location}. Cannot move. {following_trains} trains held. What's the plan?",
         "{failure_type} failure on train at {location}. Need recovery strategy.",
         "Disabled train blocking {direction} track at {location}. How do we restore service?",
     ],
-
-    recommended_actions=[ActionType.VERIFICATION, ActionType.SHORT_TURN, ActionType.BRIDGE_SERVICE],
+    recommended_actions=[
+        ActionType.VERIFICATION,
+        ActionType.SHORT_TURN,
+        ActionType.BRIDGE_SERVICE,
+    ],
     confidence_range=(0.55, 0.80),
 )
 
@@ -498,11 +504,15 @@ def get_templates_by_type(scenario_type: str) -> list[ScenarioTemplate]:
 
 
 def get_templates_by_difficulty(
-    min_difficulty: Difficulty,
-    max_difficulty: Difficulty
+    min_difficulty: Difficulty, max_difficulty: Difficulty
 ) -> list[ScenarioTemplate]:
     """Get templates within difficulty range"""
-    difficulty_order = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD, Difficulty.EXPERT]
+    difficulty_order = [
+        Difficulty.EASY,
+        Difficulty.MEDIUM,
+        Difficulty.HARD,
+        Difficulty.EXPERT,
+    ]
     min_idx = difficulty_order.index(min_difficulty)
     max_idx = difficulty_order.index(max_difficulty)
 

@@ -50,7 +50,7 @@ class DisruptionTemplate:
     passenger_impact: str
     probability: float
     description: str = ""
-    root_causes: list[str] = None
+    root_causes: list[str] | None = None
     recovery_duration_minutes: tuple[int, int] = (5, 15)
     cascade_probability: float = 0.1
 
@@ -61,9 +61,7 @@ class DisruptionTemplate:
 
         valid_severities = {"low", "medium", "high", "critical"}
         if self.severity not in valid_severities:
-            raise ValueError(
-                f"severity must be one of {valid_severities}"
-            )
+            raise ValueError(f"severity must be one of {valid_severities}")
 
         valid_impacts = {
             "service_delay",
@@ -71,14 +69,10 @@ class DisruptionTemplate:
             "service_suspended",
         }
         if self.passenger_impact not in valid_impacts:
-            raise ValueError(
-                f"passenger_impact must be one of {valid_impacts}"
-            )
+            raise ValueError(f"passenger_impact must be one of {valid_impacts}")
 
         if self.duration_minutes[0] > self.duration_minutes[1]:
-            raise ValueError(
-                "duration_minutes min must be <= max"
-            )
+            raise ValueError("duration_minutes min must be <= max")
 
         if self.root_causes is None:
             self.root_causes = []
@@ -351,7 +345,4 @@ def get_templates_by_severity(severity: str) -> list[DisruptionTemplate]:
     Returns:
         List of DisruptionTemplate objects with matching severity
     """
-    return [
-        t for t in DISRUPTION_TEMPLATES.values()
-        if t.severity == severity
-    ]
+    return [t for t in DISRUPTION_TEMPLATES.values() if t.severity == severity]

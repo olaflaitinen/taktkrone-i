@@ -53,7 +53,9 @@ class IngestionAdapter(ABC):
         pass
 
     @abstractmethod
-    def fetch_network_snapshot(self, timestamp: datetime | None = None) -> NetworkSnapshot:
+    def fetch_network_snapshot(
+        self, timestamp: datetime | None = None
+    ) -> NetworkSnapshot:
         """
         Fetch current network state snapshot.
 
@@ -121,12 +123,23 @@ class IngestionAdapter(ABC):
         Returns:
             Dictionary with adapter information
         """
-        return {
+        metadata = {
+            "operator": self.operator_code,
             "operator_code": self.operator_code,
             "adapter_class": self.__class__.__name__,
             "supported_lines": self.get_supported_lines(),
             "config": self.config,
         }
+
+        base_url = (
+            getattr(self, "BASE_URL", None)
+            or getattr(self, "BASE_API_URL", None)
+            or getattr(self, "BASE_GTFS_RT_URL", None)
+        )
+        if base_url is not None:
+            metadata["base_url"] = base_url
+
+        return metadata
 
 
 __all__ = ["IngestionAdapter"]
