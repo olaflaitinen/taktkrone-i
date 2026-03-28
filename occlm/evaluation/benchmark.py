@@ -632,30 +632,30 @@ class UnifiedBenchmarkRunner:
         """Generate unified HTML report with plots."""
         report_path = self.output_dir / "unified_report.html"
 
-        html = """<!DOCTYPE html>
+        html = f"""<!DOCTYPE html>
 <html>
 <head>
     <title>TAKTKRONE-I Evaluation Report</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #4CAF50; color: white; }
-        .pass { color: green; }
-        .fail { color: red; }
+        body {{ font-family: Arial, sans-serif; margin: 20px; }}
+        table {{ border-collapse: collapse; width: 100%; margin: 20px 0; }}
+        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+        th {{ background-color: #4CAF50; color: white; }}
+        .pass {{ color: green; }}
+        .fail {{ color: red; }}
     </style>
 </head>
 <body>
     <h1>TAKTKRONE-I Benchmark Results</h1>
-    <p>Generated: {}</p>
-    <p>Model: {}</p>
+    <p>Generated: {datetime.now().isoformat()}</p>
+    <p>Model: {self.model_name}</p>
     <table>
         <tr>
             <th>Benchmark</th>
             <th>Metric</th>
             <th>Value</th>
         </tr>
-""".format(datetime.now().isoformat(), self.model_name)
+"""
 
         for benchmark_name, metrics in self.results.items():
             for metric_name, value in metrics.items():

@@ -163,29 +163,29 @@ class DialogueGenerator:
             **incident,
         }
 
-        # Find all production-values
-        production-value_pattern = r"\{\{(\w+)\}\}"
-        production-values = re.findall(production-value_pattern, result)
+        # Find all production values
+        production_value_pattern = r"\{\{(\w+)\}\}"
+        production_values = re.findall(production_value_pattern, result)
 
-        for production-value in production-values:
-            value = flat_context.get(production-value, f"{{{{unknown}}}}")
+        for production_value in production_values:
+            value = flat_context.get(production_value, f"{{{{unknown}}}}")
 
             # Generate reasonable values for common slots
-            if production-value == "num_trains_bunched" and value == "{{unknown}}":
+            if production_value == "num_trains_bunched" and value == "{{unknown}}":
                 value = random.randint(2, 5)
-            elif production-value == "trains_affected" and value == "{{unknown}}":
+            elif production_value == "trains_affected" and value == "{{unknown}}":
                 value = random.randint(2, 8)
-            elif production-value == "affected_tracks" and value == "{{unknown}}":
+            elif production_value == "affected_tracks" and value == "{{unknown}}":
                 value = random.choice(["northbound", "southbound", "both"])
-            elif production-value == "signal_location" and value == "{{unknown}}":
+            elif production_value == "signal_location" and value == "{{unknown}}":
                 value = f"Signal {random.randint(1, 100)}"
-            elif production-value == "start_station" and value == "{{unknown}}":
+            elif production_value == "start_station" and value == "{{unknown}}":
                 value = f"Station {random.choice(string.ascii_uppercase)}"
-            elif production-value == "end_station" and value == "{{unknown}}":
+            elif production_value == "end_station" and value == "{{unknown}}":
                 value = f"Station {random.choice(string.ascii_uppercase)}"
-            elif production-value == "maintainer_eta" and value == "{{unknown}}":
+            elif production_value == "maintainer_eta" and value == "{{unknown}}":
                 value = random.randint(10, 45)
-            elif production-value == "estimated_repair_minutes" and value == "{{unknown}}":
+            elif production_value == "estimated_repair_minutes" and value == "{{unknown}}":
                 value = random.randint(15, 120)
             elif production-value == "short_turn_before" and value == "{{unknown}}":
                 value = f"Station {random.choice(string.ascii_uppercase)}"

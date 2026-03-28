@@ -216,7 +216,7 @@ class GTFSStaticParser:
             stop_connections[stop_id] = []
 
         # Connect stops within each route
-        for route_id, stop_ids in route_stops.items():
+        for _route_id, stop_ids in route_stops.items():
             stop_list = sorted(stop_ids)
             for i in range(len(stop_list) - 1):
                 stop1, stop2 = stop_list[i], stop_list[i + 1]

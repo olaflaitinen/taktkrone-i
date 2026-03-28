@@ -70,13 +70,13 @@ class ExperimentTracker:
     def _detect_backend(self) -> str:
         """Auto-detect available tracking backend."""
         try:
-            import wandb
+            import wandb  # noqa: F401
             return "wandb"
         except ImportError:
             pass
 
         try:
-            import mlflow
+            import mlflow  # noqa: F401
             return "mlflow"
         except ImportError:
             pass

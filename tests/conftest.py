@@ -3,15 +3,15 @@
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
-from occlm.schemas import IncidentRecord, Operator, Provenance, RealtimeEvent
+from occlm.schemas import Operator
 
 
 @pytest.fixture
-def sample_realtime_event() -> Dict[str, Any]:
+def sample_realtime_event() -> dict[str, Any]:
     """Sample realtime event fixture."""
     return {
         "id": "evt_mta_20260327_001",
@@ -37,7 +37,7 @@ def sample_realtime_event() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def sample_incident_record() -> Dict[str, Any]:
+def sample_incident_record() -> dict[str, Any]:
     """Sample incident record fixture."""
     return {
         "id": "inc_mta_20260327_001",

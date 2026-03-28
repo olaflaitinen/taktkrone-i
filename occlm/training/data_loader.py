@@ -11,10 +11,9 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from datasets import Dataset, Datasetload_dataset
+    from datasets import Dataset, load_dataset
 except ImportError:
     Dataset = None
-    DatasetDict = None
     load_dataset = None
 
 from pydantic import BaseModel, Field, field_validator
