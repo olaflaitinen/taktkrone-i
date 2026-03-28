@@ -10,6 +10,7 @@ Provides structured knowledge about transit operations including:
 - Recovery strategies
 """
 
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Optional, Set

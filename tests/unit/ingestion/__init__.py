@@ -50,6 +50,8 @@ Test Organization:
     - test_storage.py: Storage interface tests
 """
 
+from __future__ import annotations
+
 from typing import Dict, Any
 from dataclasses import dataclass
 from pathlib import Path

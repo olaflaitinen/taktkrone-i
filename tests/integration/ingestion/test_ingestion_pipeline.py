@@ -68,3 +68,5 @@ class TestIngestionPipeline:
         assert event is not None
         assert event.operator == Operator.MTA_NYCT
         assert hasattr(event, "model_dump")  # Pydantic V2 method
+
+from __future__ import annotations

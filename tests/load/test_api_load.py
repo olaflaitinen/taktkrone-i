@@ -4,6 +4,8 @@ Load Testing for TAKTKRONE-I API - Phase 5 Production.
 Concurrent request testing, latency measurements, error tracking.
 """
 
+from __future__ import annotations
+
 import asyncio
 import json
 import statistics

@@ -10,6 +10,7 @@ Provides retrieval capabilities including:
 - Semantic search optimization
 """
 
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from typing import Any, Optional, Tuple

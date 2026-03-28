@@ -135,6 +135,7 @@ occlm = ["data/**/*", "configs/**/*", "py.typed"]
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+exclude = ["notebooks/", ".git/", ".venv/", "build/", "dist/"]
 
 [tool.ruff.lint]
 select = [

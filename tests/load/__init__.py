@@ -43,6 +43,8 @@ Environment Variables:
     - API_BASE_URL: Base URL for API load tests
 """
 
+from __future__ import annotations
+
 import os
 from typing import Dict, Any
 from dataclasses import dataclass

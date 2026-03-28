@@ -2,16 +2,19 @@
 Unit tests for canonical schemas
 """
 
-import pytest
+from __future__ import annotations
+
 from datetime import datetime
+
+import pytest
 from pydantic import ValidationError
 
 from occlm.schemas import (
+    Message,
+    OCCDialogueSample,
     Operator,
     Provenance,
     RealtimeEvent,
-    OCCDialogueSample,
-    Message,
 )
 
 

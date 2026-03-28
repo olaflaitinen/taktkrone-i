@@ -67,3 +67,5 @@ class TestDataValidator:
         required_fields = ["id", "timestamp", "operator"]
         result = validator.validate_completeness(event, required_fields)
         assert isinstance(result, ValidationResult)
+
+from __future__ import annotations

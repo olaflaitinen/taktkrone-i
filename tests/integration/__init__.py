@@ -29,8 +29,10 @@ Environment Variables:
     - MBTA_API_KEY: API key for MBTA integration tests (optional)
 """
 
+from __future__ import annotations
+
 import os
-from typing import Dict, Any
+from typing import Any
 
 # Integration test configuration
 INTEGRATION_TIMEOUT = 180  # seconds

@@ -1,16 +1,19 @@
 """Unit tests for synthesis modules."""
 
-import pytest
+from __future__ import annotations
+
 from datetime import datetime
 
+import pytest
+
 from occlm.synthesis import (
-    DisruptionTemplate,
-    DISRUPTION_TEMPLATES,
-    TopologySimulator,
-    ScenarioEngine,
     ConversationTemplate,
     DialogueGenerator,
+    DisruptionTemplate,
+    DISRUPTION_TEMPLATES,
     QualityScorer,
+    ScenarioEngine,
+    TopologySimulator,
 )
 
 
@@ -25,7 +28,7 @@ class TestDisruptionTemplates:
 
     def test_template_structure(self) -> None:
         """Test template structure is valid."""
-        for name, template in DISRUPTION_TEMPLATES.items():
+        for _name, template in DISRUPTION_TEMPLATES.items():
             assert isinstance(template, DisruptionTemplate)
             assert template.incident_type is not None
             assert template.duration_minutes[0] <= template.duration_minutes[1]
@@ -206,7 +209,7 @@ class TestConversationTemplates:
         """Test template structure is valid."""
         from occlm.synthesis.templates.occ_conversations import CONVERSATION_TEMPLATES
 
-        for name, template in CONVERSATION_TEMPLATES.items():
+        for _name, template in CONVERSATION_TEMPLATES.items():
             assert isinstance(template, ConversationTemplate)
             assert template.incident_type is not None
             assert len(template.turns) >= 2
