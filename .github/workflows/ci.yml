@@ -50,7 +50,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mypy types-requests types-PyYAML
+          pip install mypy pydantic types-requests types-PyYAML
 
       - name: Run mypy
         run: mypy occlm/schemas occlm/ingestion/__init__.py occlm/ingestion/adapters occlm/normalization occlm/storage occlm/synthesis --ignore-missing-imports
