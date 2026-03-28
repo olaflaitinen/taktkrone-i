@@ -105,7 +105,7 @@ dev = [
     "jsonschema>=4.19.0",
 ]
 gpu = [
-    "torch>=2.0.0+cu118",
+    "torch>=2.0.0",
     "faiss-gpu>=1.7.4",
 ]
 serving = [
@@ -118,7 +118,7 @@ Homepage = "https://taktkrone.ai"
 Repository = "https://github.com/olaflaitinen/taktkrone-i"
 Documentation = "https://taktkrone.ai/docs"
 "Bug Tracker" = "https://github.com/olaflaitinen/taktkrone-i/issues"
-"Model on HuggingFace" = "https://huggingface.co/olaflaitinen/taktkrone-lora-v1"
+"Model on HuggingFace" = "https://huggingface.co/olaflaitinen/taktkrone-i"
 "Dataset on HuggingFace" = "https://huggingface.co/datasets/olaflaitinen/taktkrone-occ-corpus"
 
 [project.scripts]
