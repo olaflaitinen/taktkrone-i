@@ -2,6 +2,9 @@
 Load Testing for TAKTKRONE-I API - Phase 5 Production.
 
 Concurrent request testing, latency measurements, error tracking.
+
+Note: These tests require a running API server and are skipped in CI/CD.
+Run locally with: pytest tests/load/ -v --asyncio-mode=auto
 """
 
 from __future__ import annotations
@@ -14,6 +17,8 @@ from typing import Dict, List, Optional, Tuple
 
 import httpx
 import pytest
+
+pytestmark = pytest.mark.skip(reason="Requires running API server - run locally only")
 
 __all__ = [
     "test_single_request",

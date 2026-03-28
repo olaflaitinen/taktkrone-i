@@ -19,12 +19,12 @@ class TestIngestionPipeline:
     @pytest.fixture
     def adapter(self) -> MTAAdapter:
         """Create MTA adapter."""
-        return MTAAdapter(operator_code="mta_nyct", api_key="test_key")
+        return MTAAdapter(api_key="test_key")
 
     @pytest.fixture
     def normalizer(self) -> SchemaNormalizer:
         """Create normalizer."""
-        return SchemaNormalizer(operator=Operator.MTA_NYCT, timezone_str="UTC")
+        return SchemaNormalizer(operator=Operator.MTA_NYCT, id_prefix="mta", timezone_str="UTC")
 
     @pytest.fixture
     def storage(self, temp_storage_path: Path) -> ParquetStore:
