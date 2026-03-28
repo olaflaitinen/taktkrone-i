@@ -30,7 +30,9 @@ class TestMTAAdapter:
         """Test get_metadata returns valid structure."""
         metadata = adapter.get_metadata()
         assert isinstance(metadata, dict)
-        assert "base_url" in metadata
+        assert "adapter_class" in metadata
+        assert "operator_code" in metadata
+        assert metadata["operator_code"] == "mta_nyct"
 
     def test_fetch_realtime_events_not_implemented(
         self, adapter: MTAAdapter
@@ -61,6 +63,6 @@ class TestMTAAdapter:
     def test_validate_connection_not_implemented(
         self, adapter: MTAAdapter
     ) -> None:
-        """Test validate_connection raises NotImplementedError."""
-        with pytest.raises(NotImplementedError):
-            adapter.validate_connection()
+        """Test validate_connection returns bool."""
+        result = adapter.validate_connection()
+        assert isinstance(result, bool)

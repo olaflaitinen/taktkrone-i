@@ -52,7 +52,7 @@ class TestIngestionPipeline:
     def test_storage_path_creation(self, storage: ParquetStore, temp_storage_path: Path) -> None:
         """Test storage creates proper partitioned paths."""
         # Storage should be able to create paths
-        assert storage.base_path == str(temp_storage_path)
+        assert Path(storage.base_path) == temp_storage_path
 
     def test_end_to_end_pipeline(
         self,

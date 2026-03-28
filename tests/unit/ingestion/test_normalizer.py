@@ -50,9 +50,10 @@ class TestDataValidator:
     ) -> None:
         """Test realtime event validation."""
         event = RealtimeEvent(**sample_realtime_event)
-        result = validator.validate_realtime_event(event)
-        assert isinstance(result, ValidationResult)
-        assert result.is_valid
+        is_valid, errors = validator.validate_realtime_event(event)
+        assert isinstance(is_valid, bool)
+        assert isinstance(errors, list)
+        assert is_valid is True
 
     def test_validation_result_structure(self) -> None:
         """Test ValidationResult has correct structure."""
@@ -66,5 +67,6 @@ class TestDataValidator:
         """Test completeness validation."""
         event = RealtimeEvent(**sample_realtime_event)
         required_fields = ["id", "timestamp", "operator"]
-        result = validator.validate_completeness(event, required_fields)
-        assert isinstance(result, ValidationResult)
+        is_valid, errors = validator.validate_completeness(event, required_fields)
+        assert isinstance(is_valid, bool)
+        assert isinstance(errors, list)
